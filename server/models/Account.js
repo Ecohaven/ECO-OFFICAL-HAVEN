@@ -20,13 +20,18 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(100), // hashed password
             allowNull: false
         },
+        role: {
+            type: DataTypes.STRING(50),
+            allowNull: false,
+            defaultValue: 'User'
+        },
         profile_pic: {
             type: DataTypes.STRING(20),
             allowNull: true
         }
-    }, 
-    {
-        tableName: 'Accounts',
-    });
+    },
+        {
+            tableName: 'Accounts',
+        });
     return Account;
 }
