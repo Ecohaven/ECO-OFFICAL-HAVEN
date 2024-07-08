@@ -1,0 +1,90 @@
+/* banner */
+/* Styling page banner */
+.ban {
+  position: relative;
+  background-image: url('../src/assets/images/homebanner.jpg') !important;
+  background-size: cover;
+width: 1600px;
+  height: 200px ;
+  margin-top: -20px;
+margin-left: -50px;
+  text-align: center;
+font-size: 10px;
+padding-top: 150px;
+padding-bottom: 40px;
+
+}
+.whyus h1{
+margin-top: -200px;
+padding-top: -100px;
+padding-left: 370px;
+font-size: 40px;
+overflow: hidden; 
+position:absolute;
+}
+.chooseus {
+  position: relative;
+  background-image: url('../src/assets/images/Reviews_Bg.jpg') ;
+  width: 1520px;
+  height: 500px; 
+  margin-top: -60px;
+  text-align: center;
+  font-size: 10px;
+  margin-left: -300px;
+  overflow: hidden; 
+}
+
+.review::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%; 
+  height: 100%; 
+  opacity: 50%;
+  background-color: rgba(255, 255, 255, 0.75); 
+}
+
+.reviews img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
+}
+
+.latestEvents{
+margin-top: 100px;
+margin-left:260px;
+font-size:20px;
+text-align:center;
+width:1000px;
+}
+.view{
+ color:white !important;
+font-weight: bold;
+background-Color:green !important;
+}
+.whyus{
+width:800px;
+margin-bottom:150px;
+}
+.bubble-text{
+text-align: center;
+margin-right: 100px;
+}
+.logo{
+justify-content: center;
+margin-right: -550px;
+margin-top: 10px;
+}
+/* Review section */
+.review {
+  position: relative;
+  background-image: url('../src/assets/images/background_banner.png') ;
+  width: 1520px;
+  height: 500px; 
+  margin-top: 40px;
+  text-align: center;
+  font-size: 10px;
+  margin-left: -600px;
+  overflow: hidden; 
+}

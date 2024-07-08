@@ -1,0 +1,120 @@
+/* Style for the footer container */
+.footer-container {
+    background-color: #353535;
+    padding: 20px;
+    width: 100%;
+}
+
+h6 {
+    font-size: 20px;
+    color: white;
+    margin-bottom: 30px;
+}
+
+.col {
+    padding: 10px;
+}
+
+.col1, .col2, .col3 {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.col1 a, .col2 a, .col3 a {
+    display: block;
+    text-decoration: none;
+    margin-bottom: 10px;
+    color: white;
+}
+
+.col1 a:hover, .col2 a:hover, .col3 a:hover {
+    color: #91E1A3;
+    text-decoration: underline;
+}
+
+.contact {
+    font-size: 17px;
+    color: white;
+}
+
+.newsletter-form {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.form-group {
+    display: inline-block;
+    margin: 0 auto;
+}
+
+.newsletter-form input[type="email"] {
+    padding: 6px;
+    border: none;
+    font-size: 17px;
+    width: 250px;
+    border: 2px solid black;
+}
+
+.newsletter-form button {
+    padding: 6px 10px;
+    color: white;
+    background: black;
+    font-size: 17px;
+    border: none;
+    cursor: pointer;
+    border: 2px solid black;
+}
+
+.newsletter-form button:hover {
+    background: #14772B;
+}
+
+.social img {
+    width: 35px;
+    margin-top: -10px;
+    padding-left: 30px;
+}
+
+.social a {
+    display: inline-block;
+}
+
+.copyright-text {
+    background-color: #353535;
+    padding: 10px 0;
+    color: white;
+    font-size: 10px;
+    width: 100%;
+}
+
+@media (min-width: 960px) {
+    .footer-content {
+        justify-content: space-between;
+    }
+
+    .col2 {
+        margin-left: -200px; /* Adjust this value to move col2 more to the left */
+    }
+
+    .col3 {
+        margin-left: -100px; /* Adjust this value to move col3 more to the left */
+    }
+
+    .form-group {
+        display: flex;
+    }
+}
+
+@media (max-width: 959px) {
+    .col2, .col3 {
+        margin-left: 0;
+    }
+
+    .col1, .col2, .col3 {
+        width: 100%;
+    }
+
+    .form-group {
+        display: flex;
+    }
+}
