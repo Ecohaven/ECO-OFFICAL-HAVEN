@@ -30,9 +30,18 @@ db.sequelize.sync({alter: true}).then(() => {
 });
 
 
-// Routes
+// Account Routes
 const accountRoute = require('./routes/account');
 app.use("/account", accountRoute);
 
+//Account file route 
 const fileRoute = require('./routes/file');
 app.use("/file", fileRoute);
+
+// item upload image route
+const ecoRoute = require('./routes/eco');
+app.use("/eco", ecoRoute);
+
+// Collection route
+const collectionRoute = require('./routes/collection');
+app.use("/collect", collectionRoute);

@@ -29,6 +29,14 @@ import Contact_Us from './pages/Nav_Links/Contact_Us';
 
 import Account_Deleted from './pages/Get_Started/account_deleted';
 
+{/* Rewards part */}
+import RedemptionShop from './pages/Rewards/RedemptionShop';
+import RedeemForm from './pages/Rewards/RedeemForm';
+import SuccessCollect from './pages/Rewards/SuccessCollect';
+
+import RewardProduct from './pages/Rewards/RewardProduct';
+import CollectionProduct from './pages/Rewards/CollectionProduct';
+
 function App() {
   const navigate = useNavigate();
   const [account, setAccount] = useState(null);
@@ -277,6 +285,15 @@ function App() {
         <Route path={"/contact_us"} element={<Contact_Us />} />
 
         <Route path={"/account_deleted"} element={<Account_Deleted/>} />
+
+        {/* Rewards part */}
+        <Route path={"/redemptionshop"} element={<RedemptionShop/>} />
+        <Route path="/redeemform/:id" element={<RedeemForm />} />
+        <Route path="/successcollect" element={<SuccessCollect />} />
+
+        <Route path={"/rewardproduct"} element={<RewardProduct/>} />
+        <Route path={"/collectionproduct"} element={<CollectionProduct/>} />
+
       </Routes>
     </Container>
   </AccountContext.Provider>

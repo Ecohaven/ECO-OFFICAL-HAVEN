@@ -1,0 +1,157 @@
+/* banner */
+.headbanner {
+    position: relative;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.headbanner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    max-height: 250px;
+}
+
+.headbanner h1 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 40px;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* back */
+.back {
+    display: flex;
+    margin-left: 30px;
+    margin-bottom: 20px;
+}
+
+.back img {
+    width: 30px;
+    height: 30px;
+    margin-top: 10px;
+}
+
+.back p {
+    margin-top: 12px;
+    margin-left: 10px;
+}
+
+.back p a {
+    color: black;
+    text-decoration: none;
+}
+
+.back p a:hover {
+    color: #14772B;
+    text-decoration: underline;
+}
+
+/* h2 text */
+.info {
+    margin-top: 30px;
+    margin-left: 100px;
+    margin-bottom: 30px;
+}
+
+/* product */
+.product-details {
+    margin-left: auto;
+    text-align: center;
+    width: 300px;
+}
+
+.product-details h2 {
+    margin-top: 20px;
+}
+
+.product-details img {
+    width: 200px;
+    height: 200px;
+    display: block;
+    margin: 10px auto;
+    border: 5px solid #14772B;
+}
+
+.product-details p {
+    margin: 10px 0;
+}
+
+/* form */
+.rewardform .MuiInputBase-input {
+    width: 320px !important;
+    font-size: 0.875rem !important;
+    padding: 8px 12px !important;
+    border-radius: 8px !important;
+    color: #000 !important;
+    border: 1px solid #ccc !important;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.1) !important;
+}
+
+.rewardform .MuiInputBase-input:hover {
+    border-color: #14772B !important;
+}
+
+.rewardform .MuiInputBase-input:focus {
+    outline: 0 !important;
+    border-color: #2196f3 !important;
+    /* Replace with your desired focus border color */
+    box-shadow: 0 0 0 1px #14772B !important;
+    /* Replace with your desired focus box-shadow */
+}
+
+.asterisk {
+    color: red;
+}
+
+.form-section {
+    display: flex;
+    justify-content: flex-end;
+    margin-left: 200px;
+    margin-right: 200px;
+}
+
+.form-wrapper {
+    flex: 1;
+    margin-right: 20px; /* Adjust the space between form and product details */
+}
+
+/* button */
+.submitbutton {
+    background-color: #14772B;
+    color: white;
+    padding: 14px 40px;
+    font-size: 20px;
+    border-radius: 15px;
+    border: none;
+    display: block;
+    margin-left: 200px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.submitbutton a {
+    color: white;
+    text-decoration: none;
+}
+
+.submitbutton:hover {
+    background-color: #45a049;
+}
+
+/* detail */
+.detail {
+    margin-left: 100px;
+}
+
+/* validation error */
+.error-message {
+    color: red;
+    margin-left: 100px;
+    margin-top: -10px;
+    margin-bottom: 20px;
+}

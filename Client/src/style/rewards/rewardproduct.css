@@ -1,0 +1,60 @@
+.header {
+  text-align: left;
+}
+
+/* Move the table to the left */
+.data-grid {
+  width: 70% !important;
+  /* Adjust the percentage to make the table width smaller */
+  margin-left: 250px !important;
+  /* Align the table to the left */
+  margin-top: 80px !important;
+  height: 400px !important;
+}
+
+.addnewproductbutton {
+  position: absolute;
+  left: 250px;
+  background-color: #14772B !important;
+  color: white !important;
+  margin-top: 10px !important;
+}
+
+.addbutton,
+.editbutton,
+.savebutton,
+.viewbutton,
+.closebutton,
+.deletebutton {
+  background-color: #14772B !important;
+}
+
+.addbutton,
+.savebutton {
+  margin-top: 20px !important;
+  margin-left: 70px !important;
+}
+
+.deletebutton {
+  margin-top: 20px !important;
+}
+
+.addbutton {
+  margin-top: 20px !important;
+  margin-left: 120px !important;
+}
+
+.cancelbutton {
+  background-color: red !important;
+  margin-top: 20px !important;
+  margin-left: 10px !important;
+}
+
+.popup {
+  color: #14772B !important;
+  text-align: center;
+}
+
+.data-grid {
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}

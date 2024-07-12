@@ -1,0 +1,279 @@
+/* banner */
+.headbanner {
+    position: relative;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.headbanner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    max-height: 250px;
+}
+
+.headbanner h1 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 40px;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* greenreward */
+.greenreward {
+    margin-bottom: 40px;
+}
+
+h1 {
+    font-size: 40px;
+    text-align: center;
+    width: 700px;
+    margin: auto;
+    margin-bottom: 30px;
+}
+
+.greenreward p {
+    text-align: center;
+    width: 680px;
+    margin: auto;
+}
+
+/* button */
+.greenreward .signupbutton {
+    background-color: #14772B;
+    display: block;
+    margin: auto;
+    padding: 14px 40px;
+    font-size: 20px;
+    border-radius: 15px;
+    border: none;
+    margin-top: 20px;
+}
+
+.signupbutton a {
+    color: white;
+    text-decoration: none;
+}
+
+.greenreward .signupbutton:hover {
+    background-color: #45a049;
+}
+
+/* divider */
+.divider {
+    margin: 20px auto;
+    border: none;
+    border-top: 5px solid #14772B;
+    width: 80%;
+}
+
+/* steps */
+.desc {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.desc p {
+    margin: 5px 0;
+}
+
+/* rewards */
+.rewards {
+    padding-top: 30px;
+    background-color: #91E1A3;
+    padding-bottom: 30px;
+}
+
+.rewards h1 {
+    font-size: 30px;
+    text-align: center;
+    width: 1000px;
+    margin: auto;
+}
+
+.rewards p {
+    text-align: center;
+    width: 700px;
+    margin: auto;
+    padding-top: 50px;
+}
+
+.rewards .redeempagebutton {
+    background-color: #14772B;
+    display: block;
+    margin: auto;
+    padding: 14px 40px;
+    font-size: 20px;
+    border-radius: 15px;
+    border: none;
+    margin-top: -20px;
+}
+
+.redeempagebutton a {
+    color: white;
+    text-decoration: none;
+}
+
+.rewards .redeempagebutton:hover {
+    background-color: #45a049;
+}
+
+/* products */
+.rewards .products {
+    display: flex;
+    justify-content: center; /* Align items in the center horizontally */
+    align-items: flex-start;
+    flex-wrap: nowrap; /* Ensures items stay in a single row */
+    overflow-x: hidden; /* Hides horizontal overflow */
+    margin-left: 10px;
+    margin-right: 10px;
+    width: 100%; /* Ensures the products span the full width */
+}
+
+.rewards .product-item {
+    flex: 0 0 auto;
+    box-sizing: border-box;
+    margin-right: -300px;
+    /* Adjust spacing between items */
+    margin-top: 20px;
+    text-align: center;
+}
+
+.rewards .product-item:last-child {
+    margin-right: 0;
+    /* Remove margin from last item to avoid extra space */
+}
+
+.rewards .product-item h2 {
+    margin-top: 10px;
+    /* Adjust spacing as needed */
+}
+
+.rewards .product-item img {
+    width: 200px;
+    height: 200px;
+    max-width: 100%;
+    display: block;
+    margin: auto;
+    border: 5px solid #14772B;
+    border-radius: 15px;
+}
+
+.rewards .product-item p {
+    margin-top: -30px;
+}
+
+/* greenreward2 */
+.greenreward2 {
+    background-color: #14772B;
+    padding-bottom: 10px;
+}
+
+.greenreward2 h1 {
+    color: white;
+    font-size: 40px;
+    text-align: center;
+    width: 700px;
+    margin: auto;
+    padding-top: 30px;
+    margin-bottom: 30px;
+}
+
+.greenreward2 p {
+    color: white;
+    text-align: center;
+    width: 680px;
+    margin: auto;
+}
+
+/* button */
+.greenreward2 .signupbutton {
+    background-color: white;
+    display: block;
+    margin: auto;
+    padding: 14px 40px;
+    font-size: 20px;
+    border-radius: 15px;
+    border: none;
+    margin-top: 20px;
+}
+
+.greenreward2 .signupbutton a {
+    color: #14772B;
+    text-decoration: none;
+}
+
+.greenreward2 .signupbutton:hover {
+    background-color: lightgrey;
+}
+
+/* button */
+.rewards .redeempagebutton {
+    /* display: block;
+    margin: auto; */
+    padding: 14px 40px;
+    font-size: 20px;
+    border-radius: 15px;
+    border: none;
+    margin-top: 20px;
+}
+
+.qn {
+    padding-top: 50px;
+}
+
+/* Responsive design for mobile devices */
+@media (max-width: 768px) {
+
+    .greenreward h1,
+    .stepsheader h1,
+    .greenreward2 h1 {
+        width: 90%;
+        font-size: 5vw;
+    }
+
+    .rewards h1 {
+        width: 90%;
+        font-size: 4vw;
+    }
+
+    .greenreward p,
+    .rewards p,
+    .greenreward2 p {
+        width: 90%;
+        font-size: 2.5vw;
+    }
+
+    .greenreward .signupbutton,
+    .greenreward2 .signupbutton,
+    .rewards .redeempagebutton {
+        font-size: 3vw;
+        padding: 10px 20px;
+    }
+
+    .redeempagebutton {
+        font-size: 4vw;
+        padding: 10px 20px;
+    }
+
+    .rewards .products {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .rewards .product-item {
+        margin: 10px;
+        flex: 1 1 90%;
+        max-width: 300px;
+    }
+
+    .rewards .product-item img {
+        width: 100%;
+        width: 200px;
+        height: 200px;
+    }
+}
