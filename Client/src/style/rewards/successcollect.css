@@ -1,0 +1,99 @@
+/* banner */
+.headbanner {
+    position: relative;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.headbanner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    max-height: 250px;
+}
+
+.headbanner h1 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 40px;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* id number */
+.idnumber {
+    margin-top: -10px;
+    margin-bottom: 50px;
+    color: #14772B;
+}
+
+/* detail */
+.collectiondetail {
+    text-align: center;
+}
+
+.time {
+    padding-left: 50px;
+}
+
+.extra {
+    color: red;
+    font-size: 15px;
+}
+
+/* button */
+.backtohome {
+    background-color: #14772B;
+    display: block;
+    margin: auto;
+    padding: 14px 40px;
+    font-size: 20px;
+    border-radius: 15px;
+    border: none;
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+.backtohome a {
+    color: white;
+    text-decoration: none;
+}
+
+.backtohome:hover {
+    background-color: #45a049;
+}
+
+/* Responsive design for mobile devices */
+@media (max-width: 768px) {
+    .headbanner h1 {
+        font-size: 6vw;
+    }
+
+    .collectionid h1,
+    .idnumber {
+        font-size: 6vw;
+        width: 90%;
+    }
+
+    .collectiondetail h2 {
+        font-size: 4vw;
+        width: 90%;
+    }
+
+    .collectiondetail p {
+        font-size: vw;
+        width: 90%;
+    }
+
+    .time {
+        padding-left: 20px;
+    }
+
+    .backtohome {
+        font-size: 4vw;
+        padding: 10px 20px;
+    }
+}

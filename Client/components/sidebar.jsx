@@ -136,10 +136,10 @@ const Sidebar = () => {
           </ListItem>
           <Collapse in={openReward} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              <ListItem button component={Link} to="/collection" selected={isActive('/collection')}>
+              <ListItem button component={Link} to="/collectionproduct" selected={isActive('/collection')}>
                 <ListItemText primary="Collection" />
               </ListItem>
-              <ListItem button component={Link} to="/shop" selected={isActive('/shop')}>
+              <ListItem button component={Link} to="/rewardproduct" selected={isActive('/shop')}>
                 <ListItemText primary="Shop" />
               </ListItem>
             </List>
