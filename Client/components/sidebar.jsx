@@ -70,7 +70,7 @@ const Sidebar = () => {
       >
         <div className="ecohaven-background">
           <Link to="/" style={{ textDecoration: 'none', color: 'white', display: 'block', textAlign: 'center', paddingTop: '20px', paddingBottom: '20px' }}>
-            <span style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>Eco</span><span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'black' }}>Haven</span>
+            <span style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>EcoHaven</span>
           </Link>
         </div>
         <List>
