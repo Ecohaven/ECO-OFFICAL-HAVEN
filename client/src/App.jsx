@@ -28,6 +28,14 @@ import Rewards from './pages/Nav_Links/Rewards';
 import Volunteer from './pages/Nav_Links/Volunteer';
 
 
+{/* Rewards part */}
+import RedemptionShop from './pages/Rewards/RedemptionShop';
+import RedeemForm from './pages/Rewards/RedeemForm';
+import SuccessCollect from './pages/Rewards/SuccessCollect';
+
+import RewardProduct from './pages/Rewards/RewardProduct';
+import CollectionProduct from './pages/Rewards/CollectionProduct';
+
 function App() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -122,6 +130,14 @@ function App() {
       <Route path="/volunteer" element={<Volunteer />} />
       <Route path="/" element={<Homepage />} />
       <Route path="*" element={<Navigate to="/" />} />
+
+      {/* Rewards part */}
+      <Route path={"/redemptionshop"} element={<RedemptionShop/>} />
+      <Route path="/redeemform/:id" element={<RedeemForm />} />
+      <Route path="/successcollect" element={<SuccessCollect />} />
+
+      <Route path={"/rewardproduct"} element={<RewardProduct/>} />
+      <Route path={"/collectionproduct"} element={<CollectionProduct/>} />
     </Routes>
   );
 
