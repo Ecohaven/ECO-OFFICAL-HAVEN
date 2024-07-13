@@ -2,7 +2,7 @@
 /* Styling page banner */
 .ban {
   position: relative;
-  background-image: url('../src/assets/images/homebanner.jpg') !important;
+  background-image: url('../assets/images/homebanner.jpg') !important;
   background-size: cover;
 width: 1600px;
   height: 200px ;
@@ -24,7 +24,7 @@ position:absolute;
 }
 .chooseus {
   position: relative;
-  background-image: url('../src/assets/images/Reviews_Bg.jpg') ;
+  background-image: url('../assets/images/Reviews_Bg.jpg') ;
   width: 1520px;
   height: 500px; 
   margin-top: -60px;
@@ -79,7 +79,7 @@ margin-top: 10px;
 /* Review section */
 .review {
   position: relative;
-  background-image: url('../src/assets/images/background_banner.png') ;
+  background-image: url('../assets/images/background_banner.png') ;
   width: 1520px;
   height: 500px; 
   margin-top: 40px;

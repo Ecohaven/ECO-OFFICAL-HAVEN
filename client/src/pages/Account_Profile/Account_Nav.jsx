@@ -5,56 +5,66 @@ import { styled } from '@mui/material/styles';
 
 // Styling for nav in Account Pages
 const ActiveListItem = styled(ListItemButton)(({ selected }) =>({
-  color: selected ? '#4CAF50' : 'inherit', // Green text color for active link
-  borderLeft: selected ? '3px solid #4CAF50' : 'none', // Green bar beside the text for active link
+    color: selected ? '#4CAF50' : 'black', // Green text color for active link
+    borderLeft: selected ? '3px solid #4CAF50' : 'none', // Green bar beside the text for active link
+    textDecoration: 'none', // Remove underline from links
 }));
 
+const StyledLink = styled(Link)({
+    textDecoration: 'none', // Remove underline from links
+    color: 'inherit', // Inherit color from the ActiveListItem
+});  
+
 function Account_Nav() {
-  const { username } = useParams();
   const location = useLocation();
 
   return (
     <Grid>
       <List>
         <div>
-            <Link to={`/${username}`}>
-                <ActiveListItem selected={location.pathname === `/${username}`}>
+            <StyledLink to={`/account`}>
+                <ActiveListItem selected={location.pathname === `/account`}>
                     <ListItemText primary="Account" />
                 </ActiveListItem>
-            </Link>
-            {location.pathname === `/${username}` && <Divider sx={{ backgroundColor: '#4CAF50' }} />} {/* Green colored divider */}
+            </StyledLink>
+            {location.pathname === `/account` && <Divider sx={{ backgroundColor: '#4CAF50' }} />} {/* Green colored divider */}
+            <Divider />
         </div>
         <div>
-            <Link to={`/${username}/events`}>
-                <ActiveListItem selected={location.pathname === `/${username}/events`}>
+            <StyledLink to={`/account/events`}>
+                <ActiveListItem selected={location.pathname === `/account/events`}>
                     <ListItemText primary="Events" />
                 </ActiveListItem>
-            </Link>
-            {location.pathname === `/${username}/events` && <Divider sx={{ backgroundColor: '#4CAF50' }} />}
+            </StyledLink>
+            {location.pathname === `/account/events` && <Divider sx={{ backgroundColor: '#4CAF50' }} />}
+            <Divider />
         </div>
         <div>
-            <Link to={`/${username}/qr_codes`}>
-                <ActiveListItem selected={location.pathname === `/${username}/qr_codes`}>
+            <StyledLink to={`/account/qr_codes`}>
+                <ActiveListItem selected={location.pathname === `/account/qr_codes`}>
                     <ListItemText primary="QR_Codes" />
                 </ActiveListItem>
-            </Link>
-            {location.pathname === `/${username}/qr_codes` && <Divider sx={{ backgroundColor: '#4CAF50' }} />}
+            </StyledLink>
+            {location.pathname === `/account/qr_codes` && <Divider sx={{ backgroundColor: '#4CAF50' }} />}
+            <Divider />
         </div>
         <div>
-            <Link to={`/${username}/payments`}>
-                <ActiveListItem selected={location.pathname === `/${username}/payments`}>
+            <StyledLink to={`/account/payments`}>
+                <ActiveListItem selected={location.pathname === `/account/payments`}>
                     <ListItemText primary="Payments" />
                 </ActiveListItem>
-            </Link>
-            {location.pathname === `/${username}/payments` && <Divider sx={{ backgroundColor: '#4CAF50' }} />}
+            </StyledLink>
+            {location.pathname === `/account/payments` && <Divider sx={{ backgroundColor: '#4CAF50' }} />}
+            <Divider />
         </div>
         <div>
-            <Link to={`/${username}/rewards`}>
-                <ActiveListItem selected={location.pathname === `/${username}/settings`}>
+            <StyledLink to={`/account/rewards`}>
+                <ActiveListItem selected={location.pathname === `/account/rewards`}>
                     <ListItemText primary="Rewards" />
                 </ActiveListItem>
-            </Link>
-            {location.pathname === `/${username}/rewards` && <Divider sx={{ backgroundColor: '#4CAF50' }} />}
+            </StyledLink>
+            {location.pathname === `/account/rewards` && <Divider sx={{ backgroundColor: '#4CAF50' }} />}
+            <Divider />
         </div>
       </List>
     </Grid>

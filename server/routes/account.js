@@ -6,6 +6,10 @@ const yup = require("yup");
 const { sign } = require('jsonwebtoken');
 require('dotenv').config();
 const { validateToken } = require('../middlewares/auth');
+const fs = require('fs');
+const path = require('path');
+
+
 
 router.post("/register", async (req, res) => {
     let data = req.body;
@@ -246,6 +250,30 @@ router.put("/:username/password", async (req, res) => {
     }
 });
 
+// delete profile pic in server before deleting account
+async function deleteProfilePic(userId) {
+    try {
+        const user = await Account.findOne({ where: { id: userId } });
+        if (!user) {
+            console.error(`User with ID ${userId} not found`);
+            return;
+        }
+        const oldProfilePic = user.profile_pic;
+        if (oldProfilePic) {
+            const oldProfilePicPath = path.join(__dirname, '../public/uploads/', oldProfilePic);
+            fs.unlink(oldProfilePicPath, (err) => {
+                if (err) {
+                    console.error(`Error deleting profile picture ${oldProfilePic}: ${err}`);
+                } else {
+                    console.log(`Profile picture ${oldProfilePic} deleted successfully`);
+                }
+            });
+            await Account.update({ profile_pic: null }, { where: { id: userId } });
+        }
+    } catch (err) {
+        console.error(`Error deleting profile picture: ${err}`);
+    }
+}
 // delete account
 router.delete("/:username", async (req, res) => {
     let username = req.params.username;
@@ -266,6 +294,8 @@ router.delete("/:username", async (req, res) => {
             res.status(400).json({ message: "Password is not correct" });
             return;
         }
+        await deleteProfilePic(account.id); // Delete profile picture
+
         await Account.destroy({ where: { username: username } }); // Delete account
         res.json({ message: "Account deleted successfully" });
     } catch (err) {

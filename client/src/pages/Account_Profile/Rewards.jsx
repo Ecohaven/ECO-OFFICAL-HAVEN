@@ -5,6 +5,15 @@ import { Grid, List, ListItem, ListItemText, TextField, Container, Button, Divid
 import Account_Nav from './Account_Nav';
 
 function Account_Profile_Rewards() {
+  const navigate = useNavigate();
+
+  // check if user is not logged in
+  useEffect(() => {
+      if (!localStorage.getItem('accessToken')) {
+          navigate('/login');
+      }
+  }, [navigate]);
+
   return (
     <Container>
       <Grid container spacing={3}>

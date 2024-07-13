@@ -1,33 +1,59 @@
 import React from 'react'
-import { Box, Container, Typography, TextField, Button } from '@mui/material';
+import { Box, Container, Typography, TextField, Button, Grid } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route, Link} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import '../../style/loginandregister.css'
+import { Margin } from '@mui/icons-material';
 
 function Get_Started() {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        // Check if user is already logged in
+        if (localStorage.getItem('accessToken')) {
+            navigate('/'); // Redirect to homepage if user is already logged in
+        }
+    }, [navigate]); // Depend on navigate to ensure useEffect runs properly
+
+
   return (
     <Box>
-        <Link to="/" style={{ textDecoration: 'none' }}>&lt;</Link>
-        <Typography variant="h5" sx={{ my: 2 }}>
-            EcoHaven
-        </Typography>
-        <div>
-        <Link to="/register" style={{ textDecoration: 'none' }}>
-            <Button variant='contained'>
-                Register
-            </Button>
-        </Link>
-        </div>
-        <div>
-        <Link to="/login" style={{ textDecoration: 'none' }}>
-            <Button variant='contained' color='secondary'>
-                Login
-            </Button>
-        </Link>
-        </div>
-        <Link to="/">
-            <Typography variant="h6" component="div" color='secondary'>
-                Continue Without Account
+        <Grid container spacing={2} className='login-register-elements'>
+            <Grid item md={5} xs={12} className='image-container'>
+                <img src="../src/assets/images/login_bg.png" alt="eco-haven" className='eco-haven-image'/>
+            </Grid>
+            <Grid item md={7} xs={12} className='login-register-forms'>
+            <div className='get-started'>
+                <Link to="/" className='get-started-link'>&lt; Back</Link>
+            </div>
+            <Typography variant="h5" component="div" sx={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '4rem' }}>
+                <span style={{ color: 'green' }}>Eco</span>
+                <span style={{ color: 'black' }}>Haven</span>
             </Typography>
-        </Link>
+            <div style={{ margin: '2rem' }}>
+            <Link to="/register">
+                <Button variant='contained' sx={{ fontSize: '1.2rem', paddingLeft: '5rem', paddingRight: '5rem' }}>
+                    Register
+                </Button>
+            </Link>
+            </div>
+            <div style={{ margin: '2rem' }}>
+            <Link to="/login">
+                <Button variant='contained' color='secondary' sx={{ fontSize: '1.2rem', paddingLeft: '6rem', paddingRight: '6rem' }}>
+                    Login
+                </Button>
+            </Link>
+            </div>
+            <div style={{ margin: '50px' }}>
+            <Link to="/">
+                <Typography variant="h7" component="div" color='secondary' className='login-register-link'>
+                    Continue Without Account
+                </Typography>
+            </Link>
+            </div>
+            </Grid>
+        </Grid>
     </Box>
   )
 }

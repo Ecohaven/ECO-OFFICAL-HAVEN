@@ -19,6 +19,7 @@
   height: 45px;
   border-radius: 50%;
   overflow: hidden;
+  cursor: pointer;
 }
 .aspect-ratio-container-profile-pic-nav img {
   width: 100%;
@@ -28,8 +29,7 @@
 
 /* pfp styling in nav popup */
 .aspect-ratio-container-profile-pic {
-  margin: 0 auto;
-  margin-left: 0.5em;
+  margin-right: 0.5em;
   width: 130px;
   height: 130px;
   border-radius: 50%;
@@ -40,6 +40,23 @@
   height: 100%;
   object-fit: cover;
 }
+#manage_account_link {
+  text-decoration: none;
+}
+
+#account_profile_link {
+  margin: 0em;
+  padding: 0em;
+  color: #14772B;
+  font-size: 1em;
+  font-weight: bold;
+  text-decoration: underline;
+  transition: all 300ms;
+}
+#account_profile_link:hover {
+  color: #2a5f36;
+  text-decoration: underline;
+}
 
 #get_started_button {
   background-color: #19682c;
@@ -47,12 +64,11 @@
   border-radius: 0.5em;
   color: white;
   cursor: pointer;
-  font-size: 1em;
   font-weight: bold;
   margin: 1em;
-  padding: 0.5em 1em;
   transition: all 300ms;
 }
+
 #get_started_button:hover {
   background-color: #2a5f36;
   color: #d4d5e4aa;

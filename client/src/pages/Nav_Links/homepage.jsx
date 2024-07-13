@@ -1,10 +1,10 @@
 import React from 'react';
 import { Box, Grid, Button, Typography } from '@mui/material';
 import { styled } from '@mui/system';
-import '../../src/assets/style/frontend/homepage.css';
-import '../../src/assets/images/Reviews_Bg.jpg';
-import Navbar from '../../components/navbar';
-import Footer from '../../components/footer';
+import '../../style/homepage.css';
+//import '../../assets/images/Reviews_Bg.jpg';
+//import Navbar from '../../components/navbar';
+//import Footer from '../../components/footer';
 import Avatar from '@mui/material/Avatar';
 
 
@@ -17,7 +17,7 @@ const Item = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'space-between',
-width:'300px',
+  width:'300px',
   height: '400px',
 }));
 
@@ -43,7 +43,6 @@ function Homepage() {
   return (
     <div className="container">
       <div className='stylebar'>
-        <Navbar />
         <div className="ban">
           <h1 style={{color:'white',fontWeight:'bold',marginLeft:'30px',marginTop:'40px'}}>EcoHaven, your Ecofriendly Event Space.</h1>
         </div>
@@ -202,7 +201,6 @@ function Homepage() {
           </Box>
         </section>
       </div>
-      <Footer />
     </div>
   );
 }

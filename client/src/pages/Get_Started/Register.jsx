@@ -1,15 +1,23 @@
 import React, {useEffect, useState, useContext} from 'react';
-import { Box, Typography, TextField, Button, FormControl, Checkbox, FormHelperText, FormControlLabel } from '@mui/material';
+import { Box, Grid, Typography, TextField, Button, FormControl, Checkbox, FormHelperText, FormControlLabel } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route, Link} from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import http from '/src/http';
 import AccountContext from '/src/contexts/AccountContext';
+import '../../style/loginandregister.css'
 
 function Register() {
   const navigate = useNavigate();
   const { setAccount } = useContext(AccountContext);
+
+    useEffect(() => {
+        // Check if user is already logged in
+        if (localStorage.getItem('accessToken')) {
+            navigate('/'); // Redirect to homepage if user is already logged in
+        }
+    }, [navigate]); // Depend on navigate to ensure useEffect runs properly
 
   const formik = useFormik({
     initialValues: {
@@ -69,86 +77,99 @@ function Register() {
 
   return (
     <Box>
-      <Link to="/get_started" style={{ textDecoration: 'none' }}>&lt;</Link>
-      <Typography variant="h5" sx={{ my: 2, textAlign: 'left', fontWeight: 'bold' }}>
-        Register  
-      </Typography>
-      <Box component="form" onSubmit={formik.handleSubmit}> 
-        <TextField
-          fullWidth margin="dense" autoComplete="off"
-          label="Name"
-          name="name"
-          value={formik.values.name}
-          onChange={formik.handleChange}
-          error={formik.touched.name && Boolean(formik.errors.name)}
-          helperText={formik.touched.name && formik.errors.name}
-        />
-        <TextField
-          fullWidth margin="dense" autoComplete="off"
-          label="Username"
-          name="username"
-          value={formik.values.username}
-          onChange={formik.handleChange}
-          error={formik.touched.username && Boolean(formik.errors.username)}
-          helperText={formik.touched.username && formik.errors.username}
-        />
-        <TextField
-          fullWidth margin="dense" autoComplete="off"
-          label="Phone Number"
-          name="phone_no"
-          placeholder='98765432'
-          value={formik.values.phone_no}
-          onChange={formik.handleChange}
-          error={formik.touched.phone_no && Boolean(formik.errors.phone_no)}
-          helperText={formik.touched.phone_no && formik.errors.phone_no}
-        />
-        <TextField
-          fullWidth margin="dense" autoComplete="off"
-          label="Email"
-          name="email"
-          value={formik.values.email}
-          onChange={formik.handleChange}
-          error={formik.touched.email && Boolean(formik.errors.email)}
-          helperText={formik.touched.email && formik.errors.email}
-        />
-        <TextField
-          fullWidth margin="dense" autoComplete="off"
-          label="Password"
-          type="password"
-          name="password"
-          value={formik.values.password}
-          onChange={formik.handleChange}
-          error={formik.touched.password && Boolean(formik.errors.password)}
-          helperText={formik.touched.password && formik.errors.password}
-        />
-        <TextField
-          fullWidth margin="dense" autoComplete="off"
-          label="Confirm Password"
-          type="password"
-          name="confirm_password"
-          value={formik.values.confirm_password}
-          onChange={formik.handleChange}
-          error={formik.touched.confirm_password && Boolean(formik.errors.confirm_password)}
-          helperText={formik.touched.confirm_password && formik.errors.confirm_password}
-        />
-        <FormControl 
-          fullWidth margin="dense"
-          error={formik.touched.termsandconditions && Boolean(formik.errors.termsandconditions)}>
-          <FormControlLabel control={
-              <Checkbox name="termsandconditions"
-              checked={formik.values.termsandconditions}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur} />
-            } label="I agree with EcoHaven's Terms of Service & Privacy Policy" />
-          <FormHelperText>{formik.touched.termsandconditions && formik.errors.termsandconditions}</FormHelperText>
-        </FormControl>
-        <Box sx={{ mt: 2 }}>
-          <Button variant="contained" type="submit">
-            Sign Up
-          </Button>
-        </Box>
-      </Box>
-      <p>Already have an account?<Link to="/login">Login</Link></p>
+      <Grid container spacing={2} className='login-register-elements'>
+        <Grid item md={5} xs={12} className='image-container'>
+          <img src="/src/assets/images/register_bg.png" alt="eco-haven" className='eco-haven-image'/>
+        </Grid>
+        <Grid item md={7} xs={12} className='login-register-forms'>
+          <div className='get-started'>
+            <Link to="/get_started"className='get-started-link'>&lt; Back</Link>
+          </div>
+          <div className="login-register">
+            <Typography variant="h5" sx={{ my: 2, textAlign: 'left', fontWeight: 'bold' }}>
+              Register  
+            </Typography>
+            <Box component="form" onSubmit={formik.handleSubmit}> 
+              <Box className="login-register-form-fields">
+                <TextField
+                  fullWidth margin="dense" autoComplete="off"
+                  label="Name"
+                  name="name"
+                  value={formik.values.name}
+                  onChange={formik.handleChange}
+                  error={formik.touched.name && Boolean(formik.errors.name)}
+                  helperText={formik.touched.name && formik.errors.name}
+                />
+                <TextField
+                  fullWidth margin="dense" autoComplete="off"
+                  label="Username"
+                  name="username"
+                  value={formik.values.username}
+                  onChange={formik.handleChange}
+                  error={formik.touched.username && Boolean(formik.errors.username)}
+                  helperText={formik.touched.username && formik.errors.username}
+                />
+                <TextField
+                  fullWidth margin="dense" autoComplete="off"
+                  label="Phone Number"
+                  name="phone_no"
+                  placeholder='98765432'
+                  value={formik.values.phone_no}
+                  onChange={formik.handleChange}
+                  error={formik.touched.phone_no && Boolean(formik.errors.phone_no)}
+                  helperText={formik.touched.phone_no && formik.errors.phone_no}
+                />
+                <TextField
+                  fullWidth margin="dense" autoComplete="off"
+                  label="Email"
+                  name="email"
+                  value={formik.values.email}
+                  onChange={formik.handleChange}
+                  error={formik.touched.email && Boolean(formik.errors.email)}
+                  helperText={formik.touched.email && formik.errors.email}
+                />
+                <TextField
+                  fullWidth margin="dense" autoComplete="off"
+                  label="Password"
+                  type="password"
+                  name="password"
+                  value={formik.values.password}
+                  onChange={formik.handleChange}
+                  error={formik.touched.password && Boolean(formik.errors.password)}
+                  helperText={formik.touched.password && formik.errors.password}
+                />
+                <TextField
+                  fullWidth margin="dense" autoComplete="off"
+                  label="Confirm Password"
+                  type="password"
+                  name="confirm_password"
+                  value={formik.values.confirm_password}
+                  onChange={formik.handleChange}
+                  error={formik.touched.confirm_password && Boolean(formik.errors.confirm_password)}
+                  helperText={formik.touched.confirm_password && formik.errors.confirm_password}
+                />
+                <FormControl 
+                  fullWidth margin="dense"
+                  error={formik.touched.termsandconditions && Boolean(formik.errors.termsandconditions)}>
+                  <FormControlLabel control={
+                      <Checkbox name="termsandconditions"
+                      checked={formik.values.termsandconditions}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur} />
+                    } label="I agree with EcoHaven's Terms of Service & Privacy Policy" />
+                  <FormHelperText>{formik.touched.termsandconditions && formik.errors.termsandconditions}</FormHelperText>
+                </FormControl>
+              </Box>
+              <Box sx={{ mt: 2 }}>
+                <Button variant="contained" type="submit">
+                  Sign Up
+                </Button>
+              </Box>
+            </Box>
+            <p>Already have an account?<Link to="/login" className='login-register-link'>Login</Link></p>
+          </div>
+        </Grid>
+      </Grid>
     </Box>
   )
 }

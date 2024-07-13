@@ -28,6 +28,16 @@ module.exports = (sequelize, DataTypes) => {
         profile_pic: {
             type: DataTypes.STRING(20),
             allowNull: true
+        },
+        leaf_points: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 10
+        },
+        status: {
+            type: DataTypes.ENUM('Active', 'Inactive'),
+            allowNull: false,
+            defaultValue: 'Active'
         }
     },
         {
