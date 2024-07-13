@@ -6,7 +6,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Collapse from '@mui/material/Collapse';
-import IconButton from '@mui/material/IconButton'; 
+import IconButton from '@mui/material/IconButton';
 import {
   AccountBox as AccountIcon,
   Event as EventIcon,
@@ -32,7 +32,7 @@ const Sidebar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
 
-  const isMobile = useMediaQuery({ maxWidth: 960 }); // Adjust the breakpoint as needed
+  const isMobile = useMediaQuery({ maxWidth: 960 });
 
   const handleAccountClick = () => {
     setOpenAccount(!openAccount);
@@ -69,7 +69,19 @@ const Sidebar = () => {
         }}
       >
         <div className="ecohaven-background">
-          <Link to="/" style={{ textDecoration: 'none', color: 'white', display: 'block', textAlign: 'center', paddingTop: '20px', paddingBottom: '20px' }}>
+          <Link
+            to="/"
+            style={{
+              textDecoration: 'none',
+              color: 'white',
+              display: 'block',
+              textAlign: 'center',
+              paddingTop: '20px',
+              paddingBottom: '20px',
+            }}
+            onMouseEnter={(e) => e.target.style.color = 'green'} // Change color on hover
+            onMouseLeave={(e) => e.target.style.color = 'white'} // Restore text color on hover out
+          >
             <span style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>EcoHaven</span>
           </Link>
         </div>
