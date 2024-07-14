@@ -36,6 +36,9 @@ import SuccessCollect from './pages/Rewards/SuccessCollect';
 import RewardProduct from './pages/Rewards/RewardProduct';
 import CollectionProduct from './pages/Rewards/CollectionProduct';
 
+
+import Attendance from './pages/bookings/Attendance';
+
 function App() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -43,7 +46,7 @@ function App() {
   const [account, setAccount] = useState(null);
 
   // Define the paths where AppBar and Footer should not be rendered
-  const noAppBarFooterPaths = ['/get_started', '/login', '/register', '/account_deleted','/collectionproduct', '/rewardproduct'];
+  const noAppBarFooterPaths = ['/get_started', '/login', '/register', '/account_deleted','/collectionproduct', '/rewardproduct','/attendance'];
   const shouldShowAppBarFooter = !noAppBarFooterPaths.includes(location.pathname);
 
   useEffect(() => { 
@@ -138,7 +141,18 @@ function App() {
 
       <Route path={"/rewardproduct"} element={<RewardProduct/>} />
       <Route path={"/collectionproduct"} element={<CollectionProduct/>} />
+
+      {/* Events part */}
+
+
+      {/* Bookings  part */}
+
+
+       {/* Check-in part-backend */}
+        <Route path={"/attendance"} element={<Attendance/>} />
     </Routes>
+    
+
   );
 
   return (

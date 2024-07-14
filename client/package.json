@@ -17,9 +17,11 @@
     "@mui/material": "^5.15.19",
     "@mui/x-data-grid": "^7.10.0",
     "axios": "^1.7.2",
+    "date-fns": "^3.6.0",
     "formik": "^2.4.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-qr-scanner": "^1.0.0-alpha.11",
     "react-responsive": "^10.0.0",
     "react-router-dom": "^6.23.1",
     "yup": "^1.4.0"
