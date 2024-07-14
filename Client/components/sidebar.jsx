@@ -79,7 +79,7 @@ const Sidebar = () => {
               paddingTop: '20px',
               paddingBottom: '20px',
             }}
-            onMouseEnter={(e) => e.target.style.color = 'green'} // Change color on hover
+            onMouseEnter={(e) => e.target.style.color = 'black'} // Change color on hover
             onMouseLeave={(e) => e.target.style.color = 'white'} // Restore text color on hover out
           >
             <span style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>EcoHaven</span>
