@@ -300,7 +300,7 @@ const CollectionProduct = () => {
               label="Status"
               name="status"
             >
-              <MenuItem value="Not Collected">Not Collected</MenuItem>
+              <MenuItem value="Not collected">Not collected</MenuItem>
               <MenuItem value="Collected">Collected</MenuItem>
             </Select>
           </FormControl>

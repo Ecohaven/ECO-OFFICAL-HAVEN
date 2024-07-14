@@ -1,0 +1,34 @@
+/* leaves summary */
+hr {
+  margin-top: -20px;
+}
+
+.grey-rectangle {
+  width: 100%;
+  height: 300px; /* Adjust the height as needed */
+  background-color: #91E1A3; /* Grey color */
+  margin-bottom: 50px; /* Space between the rectangle and the table */
+}
+
+/* table */
+.table-container {
+  margin-top: 50px; /* change this later */
+}
+
+/* collection detail */
+.collectiondetail {
+  margin-top: 50px;
+}
+
+.collectiondetail h2 {
+  color: #14772B;
+}
+
+.collectiondetail h2,
+.collectiondetail p {
+  text-align: left;
+}
+
+.collectiondetail .extra {
+  margin-bottom: 50px;
+}

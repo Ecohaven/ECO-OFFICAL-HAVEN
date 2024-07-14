@@ -120,10 +120,10 @@ function RedemptionShop() {
               displayEmpty
               inputProps={{ 'aria-label': 'Sort by' }}
             >
-              <MenuItem value="lowestToHighest">Lowest to Highest (Leaves)</MenuItem>
-              <MenuItem value="highestToLowest">Highest to Lowest (Leaves)</MenuItem>
-              <MenuItem value="AtoZ">A-Z (Name)</MenuItem>
-              <MenuItem value="ZtoA">Z-A (Name)</MenuItem>
+              <MenuItem value="lowestToHighest">Leaves: Low → High</MenuItem>
+              <MenuItem value="highestToLowest">Leaves: High → Low </MenuItem>
+              <MenuItem value="AtoZ">A → Z</MenuItem>
+              <MenuItem value="ZtoA">Z → A</MenuItem>
               <MenuItem value="newest">Newest Items</MenuItem>
             </Select>
           </FormControl>

@@ -43,7 +43,7 @@ function App() {
   const [account, setAccount] = useState(null);
 
   // Define the paths where AppBar and Footer should not be rendered
-  const noAppBarFooterPaths = ['/get_started', '/login', '/register', '/account_deleted','/CollectionProduct'];
+  const noAppBarFooterPaths = ['/get_started', '/login', '/register', '/account_deleted','/collectionproduct', '/rewardproduct'];
   const shouldShowAppBarFooter = !noAppBarFooterPaths.includes(location.pathname);
 
   useEffect(() => { 
