@@ -41,10 +41,12 @@ import CollectionProduct from './pages/Rewards/CollectionProduct';
 
 {/* Events Part  */}
 import EventsBackend from './pages/Events/events(backend)';
+import AddEventBackend from './pages/Events/AddEvent';
 
 {/* Bookings Part  */}
 import Attendance from './pages/bookings/Attendance';
 import Bookings from './pages/bookings/bookings';
+import BookingForm from './pages/bookings/bookingForm';
 
 function App() {
   const location = useLocation();
@@ -53,7 +55,7 @@ function App() {
   const [account, setAccount] = useState(null);
 
   // Define the paths where AppBar and Footer should not be rendered
-  const noAppBarFooterPaths = ['/get_started', '/login', '/register', '/account_deleted','/collectionproduct', '/rewardproduct','/attendance'];
+  const noAppBarFooterPaths = ['/get_started', '/login', '/register', '/account_deleted','/collectionproduct', '/rewardproduct','/attendance','/bookings','/eventbackend','/AddEvent'];
   const shouldShowAppBarFooter = !noAppBarFooterPaths.includes(location.pathname);
 
   useEffect(() => { 
@@ -157,6 +159,7 @@ function App() {
 
       {/* Events part */}
        <Route path={"/eventbackend"} element={<EventsBackend/>} />
+       <Route path={"/AddEvent"} element={<AddEventBackend/>} />
       {/* ^ End of Events part ^*/}
 
       {/* Payments  part */}
@@ -165,6 +168,7 @@ function App() {
 
       {/* Bookings  part */}
          <Route path={"/bookings"} element={<Bookings/>} />
+          <Route path={"/BookingForm"} element={<BookingForm/>} />
 
       {/* ^ End of Bookings part ^*/}
 

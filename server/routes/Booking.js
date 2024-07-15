@@ -45,14 +45,17 @@ router.post("/", async (req, res) => {
         data.qrCodeText = qrCodeText;
         data.qrCodeUrl = qrCodeUrl;
 
-         // Set status as active by default
+        // Set status as active by default
         data.status = 'Active';
+
+        // Set createdAt field to current date and time
+        data.createdAt = new Date();
 
         // Create the booking
         let result = await Booking.create(data);
 
         // Create the corresponding check-in record
-        await CheckIn.create({  associatedBookingId: result.id, qrCodeText: qrCodeText });
+        await CheckIn.create({ associatedBookingId: result.id, qrCodeText: qrCodeText });
 
         res.json(result);
     } catch (err) {

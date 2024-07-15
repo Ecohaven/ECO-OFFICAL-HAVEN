@@ -4,9 +4,9 @@ import {
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
     Button, Modal, Box, TextField, Typography, Select, MenuItem, FormControl, InputLabel
 } from '@mui/material';
-import Sidebar from '../components/sidebar';
+import Sidebar from '../../../components/sidebar';
 import QrScanner from 'react-qr-scanner';
-import '../src/assets/style/backend/attendance.css';
+import '../../style/attendance.css';
 
 const CheckInPage = () => {
     const [checkIns, setCheckIns] = useState([]);
@@ -284,9 +284,6 @@ const CheckInPage = () => {
                                 style={{ width: '100%' }}
                             />
                         )}
-                        <Button type="submit" variant="contained" color="primary" onClick={handleCancelModal} style={{ backgroundColor: 'red', float: 'right', marginLeft: '10px' }}>
-                            Cancel
-                        </Button>
                     </Box>
                 </Modal>
             </div>

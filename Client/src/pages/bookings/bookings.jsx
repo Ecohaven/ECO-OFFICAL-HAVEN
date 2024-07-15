@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import { DataGrid } from '@mui/x-data-grid';
 import { Button, Dialog, DialogActions, DialogContent, Tooltip, Card, CardContent, Typography, Grid } from '@mui/material';
 import axios from "axios";
-import CustomAlert from '../../components/alert';
-import Sidebar from '../../components/sidebar';
-import ExclamationIcon from '../../src/assets/icons/exclamation-mark.png';
-import FilterDropdown from '../../components/BookingFilter';
-import '../../src/assets/style/backend/bookingtable.css';
+import CustomAlert from '../../../components/alert';
+import Sidebar from '../../../components/sidebar';
+import ExclamationIcon from '../../../src/assets/icons/exclamation-mark.png';
+import FilterDropdown from '../../../components/BookingFilter';
+import '../../style/bookingtable.css';
 
 const BookingList = () => {
     const [showAlert, setShowAlert] = useState(false);

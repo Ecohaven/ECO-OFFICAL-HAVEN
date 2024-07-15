@@ -1,0 +1,144 @@
+.event-list-container {
+    width: 75%;
+    max-width: 1200px;
+    margin-left: 250px; /* Adjust as needed */
+    margin-top: -25px;
+ /* margin: 70px auto 15px;  */
+    margin-bottom: 15px;
+    padding: 20px;
+}
+
+h2 {
+    text-align: left;
+    font-size: 3rem;
+    margin-bottom: 20px;
+
+}
+
+.data-grid-container {
+    height: 400px;
+    width: 100%;
+    overflow-x: auto;
+}
+
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-around;
+}
+
+.card {
+    width: 100%;
+    max-width: 250px;
+    background-color: green;
+    color: white;
+}
+.css-i9fmh8-MuiBackdrop-root-MuiModal-backdrop{
+background-color: transparent !important;
+}
+.form-input{
+margin-bottom: '15px';
+width:'800px';
+outline: none;
+}
+input[type="text"]{
+border:none !important;
+}
+.css-1jy569b-MuiFormLabel-root-MuiInputLabel-root  {
+color : black !important;
+font-weight: bold !important;
+}
+.add-event-button{
+background-color: green !important;
+margin-top: 20px !important;
+
+}
+.edit-icon {
+  color: blue;
+  cursor: pointer;
+  margin-left: 2px;
+  transition: box-shadow 0.3s ease;
+}
+
+.edit-icon:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.delete-icon {
+  color: red;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: box-shadow 0.3s ease;
+}
+
+.delete-icon:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+@media (min-width: 600px) {
+    .card {
+        max-width: 300px;
+    }
+
+}
+
+.dialog-content {
+    text-align: center;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+
+.dialog-content img {
+    width: 70px;
+    height: 70px;
+    display: block;
+    margin: 0 auto 20px;
+}
+
+.search-box {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+@media (min-width: 600px) {
+    .search-box {
+        text-align: right;
+    }
+.event-list-container {
+        margin-left: 250px; /* Keep left margin on wider screens */
+    }
+}
+    
+
+
+.alert-container {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999;
+    width: calc(100% - 40px); /* Adjust for mobile width */
+}
+
+@media (max-width: 600px) {
+    .events-list-container {
+        width: 100%; /* Full width on mobile */
+        margin-left: 0; /* No left margin on mobile */
+        margin-right: -5px; /* Adjust for mobile overflow */
+        padding: 10px; /* Reduce padding for smaller screens */
+    }
+}
+
+
+
+.h2 {
+    text-align: left;
+    font-size: 3rem;
+    margin-bottom: 20px; /* Reduce margin for smaller screens */
+}
+
+

@@ -111,7 +111,7 @@ const Sidebar = () => {
             </List>
           </Collapse>
 
-          <ListItem button component={Link} to="/events" selected={isActive('/events')}>
+          <ListItem button component={Link} to="/eventbackend" selected={isActive('/eventbackend')}>
             <ListItemIcon style={{ color: 'white' }}>
               <EventIcon />
             </ListItemIcon>

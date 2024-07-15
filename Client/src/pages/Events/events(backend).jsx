@@ -10,10 +10,10 @@ import TextField from '@mui/material/TextField';
 import axios from 'axios';
 import { Alert, Snackbar } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
-import Sidebar from '../../components/sidebar';
-import AddEventPage from './AddEventPage';
-import DeleteConfirmationModal from '../../components/Modal/DeleteModal';
-import '../../src/assets/style/backend/eventtable.css';
+import Sidebar from '../../../components/sidebar';
+import AddEvent from '../Events/AddEvent';
+import DeleteConfirmationModal from '../../../components/DeleteModal';
+import '../../style/eventtable.css';
 
 const EventDataTable = () => {
     const navigate = useNavigate();
@@ -167,7 +167,7 @@ const EventDataTable = () => {
     };
 
     const handleAddEventRedirect = () => {
-        navigate('/add-event'); // Navigate to '/add-event' route
+        navigate('/eventbackend'); 
     };
 
     const handleUpdateEvent = async () => {
