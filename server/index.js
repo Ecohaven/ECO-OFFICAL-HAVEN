@@ -47,30 +47,30 @@ const collectionRoute = require('./routes/collection');
 app.use("/collect", collectionRoute);
 
 
-// //events route
-// const eventsRoute = require('./routes/event');
-// app.use("/api/", eventsRoute);
+//events route
+const eventsRoute = require('./routes/event');
+app.use("/api/", eventsRoute);
 
-// // Booking Route 
-// const bookingRoute = require('./routes/booking');
-// app.use("/api/bookings", bookingRoute);
+const bookingsRoute = require('./routes/Booking');
+app.use("/api/bookings", bookingsRoute);
 
-// //Booking summary route - display of 3 boxes 
-// const bookingSummaryRouter = require('./routes/summary');
-// app.use('/api/booking-summary', bookingSummaryRouter);
 
-// //Check in routes (QrCodeText & QrcodePicture)
-// const checkInRoutes = require('./routes/checkin');
-// app.use('/checkin',checkInRoutes);
+//Booking summary route - display of 3 boxes 
+const bookingSummaryRouter = require('./routes/summary');
+app.use('/api/booking-summary', bookingSummaryRouter);
 
-// //search for search in backend bookings
-// const SearchRoutes = require('./routes/search');
-// app.use('/search', SearchRoutes);
+//Check in routes (QrCodeText & QrcodePicture)
+const checkInRoutes = require('./routes/checkin');
+app.use('/checkin',checkInRoutes);
 
-// // Sending mail API 
-// const mailerRoutes = require('./routes/mailer');
-// app.use('/send-email', mailerRoutes);
+//search for search in backend bookings
+const SearchRoutes = require('./routes/search');
+app.use('/search', SearchRoutes);
 
-//  //Filter Route
-// const Filter = require('./routes/Filter');
-// app.use('/api/', Filter);
+// Sending mail API 
+const mailerRoutes = require('./routes/mailer');
+app.use('/send-email', mailerRoutes);
+
+ //Filter Route
+const Filter = require('./routes/Filter');
+app.use('/api/', Filter);

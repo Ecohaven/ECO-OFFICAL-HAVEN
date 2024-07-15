@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
-    Button, Modal, Box, TextField, Typography
+    Button, Modal, Box, TextField, Typography, Select, MenuItem, FormControl, InputLabel
 } from '@mui/material';
-import Sidebar from '../../../components/sidebar';
+import Sidebar from '../components/sidebar';
 import QrScanner from 'react-qr-scanner';
-import '../../style/attendance.css';
+import '../src/assets/style/backend/attendance.css';
 
 const CheckInPage = () => {
     const [checkIns, setCheckIns] = useState([]);
@@ -19,12 +19,13 @@ const CheckInPage = () => {
     const [eventNameFilter, setEventNameFilter] = useState('');
     const [dateFilter, setDateFilter] = useState('');
     const [eventIdFilter, setEventIdFilter] = useState('');
+    const [qrCodeStatusFilter, setQrCodeStatusFilter] = useState(''); // Corrected state name
     const [alertMessage, setAlertMessage] = useState('');
 
     useEffect(() => {
         fetchEventNames();
         fetchCheckIns();
-    }, [eventNameFilter, dateFilter, eventIdFilter]);
+    }, [eventNameFilter, dateFilter, eventIdFilter, qrCodeStatusFilter]);
 
     const fetchEventNames = async () => {
         try {
@@ -41,11 +42,26 @@ const CheckInPage = () => {
                 params: {
                     eventName: eventNameFilter,
                     date: dateFilter,
-                    eventId: eventIdFilter
+                    eventId: eventIdFilter,
+                    qrCodeStatus: qrCodeStatusFilter
                 }
             });
-            setCheckIns(response.data.checkIns);
-            if (response.data.checkIns.length === 0) {
+
+            // Group check-ins by QR code text and keep only the latest checked record
+            const latestCheckIns = [];
+            const groupedCheckIns = {};
+
+            response.data.checkIns.forEach(checkIn => {
+                if (!groupedCheckIns[checkIn.qrCodeText] || new Date(groupedCheckIns[checkIn.qrCodeText].checkInTime) < new Date(checkIn.checkInTime)) {
+                    groupedCheckIns[checkIn.qrCodeText] = checkIn;
+                }
+            });
+
+            Object.keys(groupedCheckIns).forEach(key => latestCheckIns.push(groupedCheckIns[key]));
+
+            setCheckIns(latestCheckIns);
+
+            if (latestCheckIns.length === 0) {
                 setAlertMessage('No check-in records found.');
             } else {
                 setAlertMessage('');
@@ -78,7 +94,7 @@ const CheckInPage = () => {
 
     const handleScan = async (data) => {
         if (data) {
-            setQrCodeText(data.text); // Assuming 'text' is the property that holds the QR code text
+            setQrCodeText(data.text);
             setError('');
 
             try {
@@ -89,7 +105,7 @@ const CheckInPage = () => {
                 fetchCheckIns();
             } catch (error) {
                 console.error('Error during check-in:', error);
-                setError('Qr Code invalid,Staff please check booking records');
+                setError('Qr Code invalid, Staff please check booking records');
             }
         }
     };
@@ -115,10 +131,20 @@ const CheckInPage = () => {
         setEventNameFilter('');
         setDateFilter('');
         setEventIdFilter('');
+        setQrCodeStatusFilter(''); // Reset qrCodeStatusFilter
     };
 
     const handleSearchEvent = (event) => {
         setEventNameFilter(event.target.value);
+    };
+
+    const handleStatusChange = (event) => {
+        setQrCodeStatusFilter(event.target.value); // Corrected to setQrCodeStatusFilter
+    };
+
+    const handleCancelModal = () => {
+        setModalOpen(false);
+        setQrCodeText('');
     };
 
     return (
@@ -133,26 +159,40 @@ const CheckInPage = () => {
                             value={dateFilter}
                             onChange={(e) => setDateFilter(e.target.value)}
                             variant="outlined"
-                            size="small"
-                            style={{ marginRight: '10px', marginTop: '5px' }}
+                            style={{ marginRight: '10px', marginTop: '5px', marginBottom: '10px', height: '45px' }}
                         />
                         <TextField
                             value={eventNameFilter}
                             onChange={handleSearchEvent}
-                            label="search Event"
+                            label="Search Event"
                             variant="outlined"
-                            size="small"
-                            style={{ marginRight: '10px', marginTop: '5px' }}
+                            style={{ marginRight: '10px', marginTop: '5px', height: '45px' }}
                         />
-                        <TextField
-                            value={eventIdFilter}
-                            onChange={(e) => setEventIdFilter(e.target.value)}
-                            label="Event Id"
-                            variant="outlined"
-                            size="small"
-                            style={{ marginRight: '10px', marginTop: '5px' }}
-                        />
-                        <Button variant="contained" color="secondary" onClick={handleResetFilters} style={{ marginLeft: '10px', backgroundColor: 'red', marginTop: '6px' }}>
+                        <FormControl variant="outlined" style={{ height: '45px', textAlign: 'center' }} >
+                            <InputLabel id="qrCodeStatusFilter-label" style={{ marginTop: '5px' }}>Status</InputLabel>
+                            <Select
+                                labelId="qrCodeStatusFilter-label"
+                                id="qrCodeStatusFilter"
+                                value={qrCodeStatusFilter}
+                                onChange={handleStatusChange}
+                                label="Status"
+                                sx={{ mb: 1, width: '110px', marginRight: '10px', marginTop: '5px' }}
+                                MenuProps={{
+                                    PaperProps: {
+                                        style: {
+                                            width: '120px',
+                                            textAlign: 'left',
+                                        },
+                                    },
+                                }}
+                            >
+                                <MenuItem value="Checked">Checked</MenuItem>
+                                <MenuItem value="Not Checked">Not Checked</MenuItem>
+                                <MenuItem value="Cancelled">Cancelled</MenuItem>
+                            </Select>
+                        </FormControl>
+
+                        <Button variant="contained" color="secondary" onClick={handleResetFilters} style={{ marginLeft: '10px', backgroundColor: 'red', marginTop: '15px' }}>
                             Reset
                         </Button>
                     </div>
@@ -184,10 +224,10 @@ const CheckInPage = () => {
                                             <TableCell>{new Date(checkIn.checkInTime).toLocaleString()}</TableCell>
                                             <TableCell>
                                                 <span style={{ fontWeight: 'bold', color: checkIn.qrCodeStatus === 'Checked' ? 'green' : (checkIn.qrCodeStatus === 'Cancelled' ? 'red' : 'inherit') }}>
-                                                    {checkIn.qrCodeStatus === 'Cancelled' ? 'Cancelled' : checkIn.qrCodeStatus}
+                                                    {checkIn.qrCodeStatus}
                                                 </span>
                                             </TableCell>
-                                            <TableCell>{checkIn.associatedBookingId}</TableCell>
+                                            <TableCell>{checkIn.bookingId}</TableCell>
                                             <TableCell>{checkIn.leafPoints}</TableCell>
                                             <TableCell>{checkIn.eventName}</TableCell>
                                             <TableCell>{checkIn.eventId}</TableCell>
@@ -195,9 +235,7 @@ const CheckInPage = () => {
                                     ))
                                 ) : (
                                     <TableRow>
-                                        <TableCell colSpan={8} align="center">
-                                            No check-in records found.
-                                        </TableCell>
+                                        <TableCell colSpan={8} style={{ textAlign: 'center', padding: '20px' }}>No check-in records found.</TableCell>
                                     </TableRow>
                                 )}
                             </TableBody>
@@ -230,6 +268,10 @@ const CheckInPage = () => {
                                     helperText={error}
                                     style={{ marginBottom: '20px' }}
                                 />
+                                <Button type="submit" variant="contained" color="primary" onClick={handleCancelModal} style={{ backgroundColor: 'red', float: 'right', marginLeft: '10px' }}>
+                                    Cancel
+                                </Button>
+
                                 <Button type="submit" variant="contained" color="primary" style={{ backgroundColor: 'green', float: 'right' }}>
                                     Check-In
                                 </Button>
@@ -242,6 +284,9 @@ const CheckInPage = () => {
                                 style={{ width: '100%' }}
                             />
                         )}
+                        <Button type="submit" variant="contained" color="primary" onClick={handleCancelModal} style={{ backgroundColor: 'red', float: 'right', marginLeft: '10px' }}>
+                            Cancel
+                        </Button>
                     </Box>
                 </Modal>
             </div>

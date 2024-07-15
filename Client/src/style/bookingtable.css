@@ -1,0 +1,102 @@
+.booking-list-container {
+    width: 75%;
+    max-width: 1200px;
+    margin-left: 250px;
+    /* Adjust as needed */
+    margin-bottom: 15px;
+    padding: 20px;
+}
+
+.h2 {
+    text-align: left;
+    font-size: 3rem;
+    margin-bottom: 30px;
+    margin-top: 5px;
+}
+
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-around;
+}
+
+.card {
+    width: 100%;
+    max-width: 250px;
+    background-color: green;
+    color: white;
+}
+
+input.searchbox {
+    outline: 0.2px solid grey;
+}
+
+.pastDateRow {
+    opacity: 0.5;
+    color: red;
+}
+
+.currentDateRow {
+    color: blue;
+}
+
+@media (min-width: 600px) {
+    .card {
+        max-width: 300px;
+    }
+}
+
+.dialog-content {
+    text-align: center;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+
+.dialog-content img {
+    width: 70px;
+    height: 70px;
+    display: block;
+    margin: 0 auto 20px;
+}
+
+.search-box {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+@media (min-width: 600px) {
+    .search-box {
+        text-align: right;
+    }
+}
+
+.data-grid-container {
+    height: 400px;
+    width: 100%;
+    overflow-x: auto;
+}
+
+.alert-container {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999;
+    width: calc(100% - 40px);
+    /* Adjust for mobile width */
+}
+
+@media (max-width: 600px) {
+    .booking-list-container {
+        width: 100%;
+        /* Full width on mobile */
+        margin-left: 0;
+        /* No left margin on mobile */
+        margin-right: -5px;
+        padding: 10px;
+        /* Reduce padding for smaller screens */
+    }
+}

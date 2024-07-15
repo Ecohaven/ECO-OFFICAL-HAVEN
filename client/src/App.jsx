@@ -5,6 +5,7 @@ import http from '/src/http';
 
 import AccountContext from '/src/contexts/AccountContext';
 
+{/* Components */}
 import AccountNavbar from '../components/accountnavbar';
 import footer from '../components/footer';
 import Sidebar from '../components/sidebar';
@@ -14,19 +15,21 @@ import Register from './pages/Get_Started/Register';
 import Login from './pages/Get_Started/Login';
 import Account_Deleted from './pages/Get_Started/account_deleted';
 
+{/* Account_Profile  part */}
 import Account_Profile from './pages/Account_Profile/Account_Profile';
 import Account_Profile_Events from './pages/Account_Profile/Events';
 import Account_Profile_QR_Codes from './pages/Account_Profile/QR_Codes';
 import Account_Profile_Payments from './pages/Account_Profile/Payments';
 import Account_Profile_Rewards from './pages/Account_Profile/Rewards';
 
+{/* FrontEnd Navigation Links  */}
 import Homepage from './pages/Nav_Links/homepage';
 import About_Us from './pages/Nav_Links/About_Us';
 import Events from './pages/Nav_Links/Events';
 import Book_Now from './pages/Nav_Links/Book_Now';
 import Rewards from './pages/Nav_Links/Rewards';
 import Volunteer from './pages/Nav_Links/Volunteer';
-
+{/* ^ Frontend Navigation Links ^ */}
 
 {/* Rewards part */}
 import RedemptionShop from './pages/Rewards/RedemptionShop';
@@ -36,8 +39,12 @@ import SuccessCollect from './pages/Rewards/SuccessCollect';
 import RewardProduct from './pages/Rewards/RewardProduct';
 import CollectionProduct from './pages/Rewards/CollectionProduct';
 
+{/* Events Part  */}
+import EventsBackend from './pages/Events/events(backend)';
 
+{/* Bookings Part  */}
 import Attendance from './pages/bookings/Attendance';
+import Bookings from './pages/bookings/bookings';
 
 function App() {
   const location = useLocation();
@@ -118,12 +125,14 @@ function App() {
       <Route path="/account/payments" element={<Account_Profile_Payments />} />
       <Route path="/account/rewards" element={<Account_Profile_Rewards />} />
       <Route path="/account" element={<Account_Profile />} />
+      {/* ^End of authenticated users only^ */}
 
       {/* Routes available for guests only */}
       <Route path="/get_started" element={<Get_Started />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/account_deleted" element={<Account_Deleted />} />
+      {/* ^ End of guests only ^ */}
       
       {/* Routes available for users and guests  */}
       <Route path="/about_us" element={<About_Us />} />
@@ -133,6 +142,7 @@ function App() {
       <Route path="/volunteer" element={<Volunteer />} />
       <Route path="/" element={<Homepage />} />
       <Route path="*" element={<Navigate to="/" />} />
+        {/* ^ End of users and guests ^*/}
 
       {/* Rewards part */}
       <Route path={"/redemptionshop"} element={<RedemptionShop/>} />
@@ -142,14 +152,31 @@ function App() {
       <Route path={"/rewardproduct"} element={<RewardProduct/>} />
       <Route path={"/collectionproduct"} element={<CollectionProduct/>} />
 
-      {/* Events part */}
+      {/* ^ End of Rewards part ^*/}
 
+
+      {/* Events part */}
+       <Route path={"/eventbackend"} element={<EventsBackend/>} />
+      {/* ^ End of Events part ^*/}
+
+      {/* Payments  part */}
+
+      {/* ^ End of Payments part ^*/}
 
       {/* Bookings  part */}
+         <Route path={"/bookings"} element={<Bookings/>} />
+
+      {/* ^ End of Bookings part ^*/}
 
 
        {/* Check-in part-backend */}
         <Route path={"/attendance"} element={<Attendance/>} />
+
+       {/* End of check-In part */}
+
+
+
+
     </Routes>
     
 
