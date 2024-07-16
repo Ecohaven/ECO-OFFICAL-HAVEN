@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Grid, Button } from '@mui/material';
+import { Link } from 'react-router-dom';
 import '../../style/rewards/successcollect.css';
 
 function Rewards() {
@@ -33,31 +35,36 @@ function Rewards() {
   }, []);
 
   return (
-    <div>
+    <Grid container direction="column" spacing={4}>
       {/* banner */}
-      <div className="headbanner">
-        <img src="../../src/assets/images/rewardbanner.png" alt="Banner" />
-        <h1>Thank you!</h1>
-      </div>
+      <Grid item className="headbanner">
+        <div className="banner-content">
+          <img src="../../src/assets/images/rewardbanner.png" alt="Banner" />
+          <h1>Thank you!</h1>
+        </div>
+      </Grid>
 
       {/* collection id */}
-      <div className='collectionid'>
-        <h1>Collection ID</h1>
-        <h1 className='idnumber'>{collectionId}</h1>
-      </div>
+      <Grid item className="collectionid">
+        <div className="id-content">
+          <h1>Collection ID</h1>
+          <h1 className="idnumber">{collectionId}</h1>
+        </div>
+      </Grid>
 
       {/* collection detail */}
-      <div className='collectiondetail'>
-        <h2>Please remember the collection details</h2>
-        <p>Potong Pasir Community Club</p>
-        <p>6 Potong Pasir Ave 2, Singapore 358361</p>
-        <p>Monday - Friday: <span className='time'>11:00am - 8:00pm</span></p>
-        <p>Saturday & Sunday: <span className='time'>12:00pm - 4:00pm</span></p>
-        <p className='extra'>*please collect within a week</p>
-
-        <button className='backtohome'><a href='/home'>Back to home</a></button> {/* Adjust link as needed */}
-      </div>
-    </div>
+      <Grid item className="detail">
+        <div className="detail-content">
+          <h2>Please remember the collection details</h2>
+          <p>Potong Pasir Community Club</p>
+          <p>6 Potong Pasir Ave 2, Singapore 358361</p>
+          <p>Monday - Friday: <span className='time'>11:00am - 8:00pm</span></p>
+          <p>Saturday & Sunday: <span className='time'>12:00pm - 4:00pm</span></p>
+          <p className='extra'>*please collect within a week</p>
+          <button className='backtohome'><a href='/home'>Back to home</a></button> {/* Adjust link as needed */}
+        </div>
+      </Grid>
+    </Grid>
   );
 }
 

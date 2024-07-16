@@ -28,9 +28,11 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 function Account_Profile_Rewards() {
   const [collectionRows, setCollectionRows] = useState([]);
+  const [collectionDetail, setCollectionDetail] = useState({});
 
   useEffect(() => {
     fetchCollectionRows();
+    fetchCollectionDetail();
   }, []);
 
   const fetchCollectionRows = async () => {
@@ -42,7 +44,8 @@ function Account_Profile_Rewards() {
         return;
       }
 
-      const response = await axios.get('http://localhost:3001/collect/collections', {
+      const accountName = 'Cody'; // Replace with the actual account name or fetch dynamically
+      const response = await axios.get(`http://localhost:3001/collect/byAccount/${accountName}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -64,14 +67,46 @@ function Account_Profile_Rewards() {
     }
   };
 
+  const fetchCollectionDetail = async () => {
+    try {
+      const token = localStorage.getItem('accessToken');
+
+      if (!token) {
+        console.error('Access token not found');
+        return;
+      }
+
+      const accountName = 'Cody'; // Replace with the actual account name or fetch dynamically
+      const response = await axios.get(`http://localhost:3001/collect/byAccount/${accountName}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (Array.isArray(response.data) && response.data.length > 0) {
+        const detail = response.data[0]; // Assuming only one collection detail is fetched
+        setCollectionDetail({
+          name: detail.name,
+          address: detail.address,
+          openingHours: detail.openingHours,
+          extraInfo: detail.extraInfo,
+        });
+      } else {
+        console.error('Expected an array with collection detail from the API response');
+      }
+    } catch (error) {
+      console.error('Error fetching collection detail:', error);
+    }
+  };
+
   return (
     <Container>
       <Grid container spacing={3}>
-        
+
         <Grid item xs={12} md={3}>
           <Account_Nav />
         </Grid>
-        
+
         <Grid item xs={12} md={9}>
           <div className="table-container">
             {/* leaves summary */}
@@ -108,14 +143,13 @@ function Account_Profile_Rewards() {
             </TableContainer>
           </div>
 
-          {/* collection details */}
+          {/* collection detail */}
           <div className='collectiondetail'>
-            <h2>Collection of rewards is at</h2>
+            <h2>Please remember the collection details</h2>
             <p>Potong Pasir Community Club</p>
             <p>6 Potong Pasir Ave 2, Singapore 358361</p>
             <p>Monday - Friday: <span className='time'>11:00am - 8:00pm</span></p>
             <p>Saturday & Sunday: <span className='time'>12:00pm - 4:00pm</span></p>
-            <p className='extra'>*please collect within a week</p>
           </div>
         </Grid>
       </Grid>

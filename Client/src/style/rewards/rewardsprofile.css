@@ -27,13 +27,10 @@ hr {
 
 .collectiondetail h2 {
   color: #14772B;
+  font-size: 30px;
 }
 
 .collectiondetail h2,
 .collectiondetail p {
   text-align: left;
-}
-
-.collectiondetail .extra {
-  margin-bottom: 50px;
 }

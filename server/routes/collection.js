@@ -1,32 +1,33 @@
 // routes/collectionRoutes.js
 const express = require('express');
 const router = express.Router();
-const { CollectInformation } = require('../models'); // Adjust path as needed
+const { CollectInformation, User } = require('../models'); // Adjust path as needed
 
 // POST /collect/collections
 router.post('/', async (req, res) => {
   try {
-      const { name, phoneNumber, email, product } = req.body;
-      console.log('Received data:', { name, phoneNumber, email, product }); // Log received data
+    const { name, phoneNumber, email, product } = req.body;
+    console.log('Received data:', { name, phoneNumber, email, product }); // Log received data
 
-      // Generate a random 6-digit collectionId
-      const collectionId = Math.floor(100000 + Math.random() * 900000).toString();
+    // Generate a random 6-digit collectionId
+    const collectionId = Math.floor(100000 + Math.random() * 900000).toString();
 
-      // Create new collection entry
-      const newCollection = await CollectInformation.create({
-          name,
-          phoneNumber,
-          email,
-          product, // Ensure field name matches your model
-          collectionId
-      });
+    // Create new collection entry
+    const newCollection = await CollectInformation.create({
+      name: accountName, // Assuming accountName corresponds to the field in your model
+      phoneNumber,
+      email,
+      product, // Ensure field name matches your model
+      collectionId
+    });
 
-      res.status(201).json(newCollection);
+    res.status(201).json(newCollection);
   } catch (error) {
-      console.error('Error adding collection:', error);
-      res.status(400).json({ message: 'Error adding collection', error: error.message });
+    console.error('Error adding collection:', error);
+    res.status(400).json({ message: 'Error adding collection', error: error.message });
   }
 });
+
 
 // GET request to retrieve all collection details
 router.get('/collections', async (req, res) => {
@@ -84,6 +85,31 @@ router.get('/collectionIds', async (req, res) => {
     res.status(400).json({ message: 'Error retrieving collection IDs', error: error.message });
   }
 });
+
+
+// GET request to retrieve collection details by account name
+router.get('/byAccount/:accountName', async (req, res) => {
+  const accountName = req.params.accountName;
+
+  try {
+    const collections = await CollectInformation.findAll({
+      where: {
+        name: accountName // Adjust 'name' if it represents accountName in your CollectInformation model
+      },
+      attributes: ['collectionId', 'name', 'product', 'status'], // Adjust attributes as needed
+    });
+
+    if (collections.length === 0) {
+      return res.status(404).json({ message: 'No collections found for this account' });
+    }
+
+    res.json(collections);
+  } catch (error) {
+    console.error('Error retrieving collections by account:', error);
+    res.status(400).json({ message: 'Error retrieving collections', error: error.message });
+  }
+});
+
 
 
 

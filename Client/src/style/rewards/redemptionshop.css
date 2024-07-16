@@ -51,6 +51,12 @@
     margin-bottom: 50px;
 }
 
+.products h2 {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 30px;
+}
+
 /* button */
 .redeembutton {
     margin-left: 5px;

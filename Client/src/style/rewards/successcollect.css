@@ -26,13 +26,19 @@
 /* id number */
 .idnumber {
     margin-top: -10px;
-    margin-bottom: 50px;
     color: #14772B;
 }
 
 /* detail */
-.collectiondetail {
+.detail {
     text-align: center;
+}
+
+.detail h2 {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 24px;
+    color: black;
 }
 
 .time {
@@ -54,7 +60,7 @@
     border-radius: 15px;
     border: none;
     margin-top: 20px;
-    margin-bottom: 30px;
+    margin-bottom: 40px;
 }
 
 .backtohome a {

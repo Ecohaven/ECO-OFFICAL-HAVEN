@@ -64,9 +64,9 @@ function RewardForm() {
         try {
             // Post data to backend
             const response = await axios.post('http://localhost:3001/collect/', {
-                name: account.name,
-                phoneNumber: account.phone_no,
-                email: account.email,
+                accountName: account.username, // Pass account.username as accountName
+                phoneNumber: values.phoneNumber,
+                email: values.email,
                 product: product.itemName,
             });
     
@@ -75,9 +75,9 @@ function RewardForm() {
             setCollectionId(collectionId); // Set collectionId state with the received value
     
             // Store all necessary values in localStorage
-            localStorage.setItem('name', account.name);
-            localStorage.setItem('phoneNumber', account.phone_no);
-            localStorage.setItem('email', account.email);
+            localStorage.setItem('name', values.name);
+            localStorage.setItem('phoneNumber', values.phoneNumber);
+            localStorage.setItem('email', values.email);
             localStorage.setItem('product', product.itemName);
             localStorage.setItem('collectionId', collectionId);
     
