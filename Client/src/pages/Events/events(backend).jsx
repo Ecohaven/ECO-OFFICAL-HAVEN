@@ -167,7 +167,7 @@ const EventDataTable = () => {
     };
 
     const handleAddEventRedirect = () => {
-        navigate('/eventbackend'); 
+        navigate('/AddEvent'); 
     };
 
     const handleUpdateEvent = async () => {

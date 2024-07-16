@@ -84,7 +84,7 @@ const AddEventForm = () => {
         }
       );
       handleShowAlert('success', response.data.message);
-      window.location.href = '/events';
+      window.location.href = '/eventbackend';
     } catch (error) {
       console.error('Error adding event:', error);
       handleShowAlert('error', 'Error adding event. Please try again.');
@@ -243,7 +243,7 @@ const AddEventForm = () => {
                   fullWidth
                   required
                 >
-                  {['Free', 'Payment'].map((option) => (
+                  {['Free', 'Paid'].map((option) => (
                     <MenuItem key={option} value={option}>
                       {option}
                     </MenuItem>
