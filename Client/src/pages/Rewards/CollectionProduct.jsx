@@ -5,7 +5,7 @@ import TextField from '@mui/material/TextField';
 import { Alert, AlertTitle, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import Sidebar from '../../../components/sidebar';
 import EditIcon from '@mui/icons-material/Edit';
-import '../../style/rewards/rewardproduct.css';
+import '../../style/rewards/collectionproduct.css'; // Importing CSS file for styling
 
 const CollectionProduct = () => {
   const [rows, setRows] = useState([]);
@@ -215,17 +215,17 @@ const CollectionProduct = () => {
       width: 100,
       renderCell: (params) => (
         <Button onClick={() => handleEditClick(params.id)}>
-          <EditIcon />
+          <EditIcon style={{ color: 'blue' }} />
         </Button>
       ),
-    },
+    }
   ];
 
   return (
     <div className="rewardshopback">
       <Sidebar />
       <div className='header'>
-        <h2>Collection Products</h2>
+        <h2>Collection Items</h2>
         <TextField
           variant="outlined"
           placeholder="Search..."
@@ -315,15 +315,17 @@ const CollectionProduct = () => {
         </DialogActions>
       </Dialog>
 
-      <div style={{ height: 400, width: '100%' }}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          getRowId={(row) => row.id}
-          pageSize={5}
-          rowsPerPageOptions={[5, 10, 20]}
-          checkboxSelection
-        />
+      <div className="table-container">
+        <div style={{ height: 400, width: '100%' }}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            getRowId={(row) => row.id}
+            pageSize={5}
+            rowsPerPageOptions={[5, 10, 20]}
+            checkboxSelection
+          />
+        </div>
       </div>
     </div>
   );

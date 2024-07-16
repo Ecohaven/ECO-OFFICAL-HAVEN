@@ -1,4 +1,8 @@
 /* leaves summary */
+.header {
+  margin-left: 0px !important;
+}
+
 hr {
   margin-top: -20px;
 }
@@ -13,6 +17,7 @@ hr {
 /* table */
 .table-container {
   margin-top: 50px; /* change this later */
+  margin-left: 0px !important;
 }
 
 /* collection detail */

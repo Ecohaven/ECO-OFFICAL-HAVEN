@@ -1,0 +1,29 @@
+.rewardshopback .header {
+    margin-left: 250px !important;
+}
+
+.collection-product-container {
+    display: flex;
+}
+
+.content {
+    flex: 1;
+    /* Take remaining width */
+    padding: 20px;
+}
+
+.data-grid-container {
+    width: calc(100% - 250px);
+    /* Adjust width based on sidebar width */
+    padding: 20px;
+    overflow-x: auto;
+    /* Enable horizontal scroll if needed */
+}
+
+.rewardshopback .table-container {
+    margin-left: 250px !important; /* Adjust the margin-left as needed */
+  }
+  
+  .MuiDataGrid-root {
+    width: calc(100% - 250px); /* Adjust width based on sidebar width */
+  }
