@@ -1,4 +1,4 @@
-#payment-form {
+/* #payment-form {
     max-width: 400px;
     margin: 0 auto;
     padding: 20px;
@@ -145,10 +145,10 @@
   .success {
     color: green;
     text-align: center;
-  }
+  } */
 
   /* paymentform.css */
-.backend-container {
+/* .backend-container {
   padding: 20px;
 }
 
@@ -433,10 +433,10 @@ body {
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  overflow-x: auto; /* Add this to handle overflow */
-}
+  overflow-x: auto;
+} */
 
-h1 {
+/* h1 {
   font-size: 24px;
   margin-bottom: 20px;
   color: #333;
@@ -702,4 +702,4 @@ h1 {
   background-color: white;
   color: black;
   border: 2px solid #008cba;
-}
+} */
