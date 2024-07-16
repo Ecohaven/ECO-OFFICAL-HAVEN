@@ -150,6 +150,8 @@ h1 {
 
 .rewards .product-item h2 {
     margin-top: 10px;
+    text-align: center;
+    font-size: 24px;
     /* Adjust spacing as needed */
 }
 
