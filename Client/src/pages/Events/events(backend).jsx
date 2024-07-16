@@ -451,7 +451,7 @@ const EventDataTable = () => {
                             style={{ marginBottom: '16px' }}
                         >
                             <MenuItem value="Free">Free</MenuItem>
-                            <MenuItem value="Payment">Payment</MenuItem>
+                            <MenuItem value="Paid">Paid</MenuItem>
                         </TextField>
 
                         <TextField

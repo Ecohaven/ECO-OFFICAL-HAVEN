@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Grid, Typography, Modal, Box, Button, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import axios from 'axios';
-import { format, isSameDay } from 'date-fns';
+import { format, isSameDay, isBefore, parseISO } from 'date-fns';
 
 const Events = () => {
   const theme = useTheme();
@@ -20,10 +20,13 @@ const Events = () => {
     try {
       const response = await axios.get('http://localhost:3001/api/events');
       if (Array.isArray(response.data)) {
-        const eventsWithIds = response.data.map((event, index) => ({
-          ...event,
-          id: event.eventId,
-        }));
+        const currentDate = new Date();
+        const eventsWithIds = response.data
+          .filter(event => !isBefore(parseISO(event.endDate), currentDate)) // Filter out expired events
+          .map((event, index) => ({
+            ...event,
+            id: event.eventId,
+          }));
         setEvents(eventsWithIds);
       } else {
         console.error('Expected an array from the API response');
@@ -89,17 +92,17 @@ const Events = () => {
                 alt={event.eventName}
                 style={{ width: '100%', height: 200, objectFit: 'cover', borderRadius: 10 }}
               />
-              <Typography variant="h7" sx={{ mt: 4,mb:2, fontWeight: 'bold',color:'black',fontSize:'20px' }}>
+              <Typography variant="h7" sx={{ mt: 4, mb: 2, fontWeight: 'bold', color: 'black', fontSize: '20px' }}>
                 {event.eventName}
               </Typography>
-              <Typography variant="body1" color="black" sx={{ mb: 2,mt:1 }}>
+              <Typography variant="body1" color="black" sx={{ mb: 2, mt: 1 }}>
                 {event.description}
               </Typography>
               <Typography variant="h7" color="black">
-                <strong>Date: {formatDatesRange(event.startDate, event.endDate)}</strong> 
+                <strong>Date: {formatDatesRange(event.startDate, event.endDate)}</strong>
               </Typography>
               <Typography variant="body1" color="black">
-                <strong>Time: {event.time}</strong> 
+                <strong>Time: {event.time}</strong>
               </Typography>
             </Box>
           </Grid>
@@ -113,8 +116,8 @@ const Events = () => {
         aria-labelledby="event-modal-title"
         aria-describedby="event-modal-description"
         style={{
-          backdropFilter: 'blur(1px)',  // blur effect to the background
-          backgroundColor: 'rgba(0, 0, 0, 0.8)',  // Dark semi-transparent background
+          backdropFilter: 'blur(1px)', // blur effect to the background
+          backgroundColor: 'rgba(0, 0, 0, 0.8)', // Dark semi-transparent background
         }}
       >
         <Box
@@ -136,7 +139,7 @@ const Events = () => {
             alignItems: isMobile ? 'flex-start' : 'center',
           }}
         >
-      {/* Mobile style */}
+          {/* Mobile style */}
           {selectedEvent && (
             <>
               <img

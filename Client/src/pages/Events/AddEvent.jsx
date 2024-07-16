@@ -242,6 +242,13 @@ const AddEventForm = () => {
                   name="status"
                   fullWidth
                   required
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setFieldValue('status', value);
+                    if (value === 'Free') {
+                      setFieldValue('amount', 0);
+                    }
+                  }}
                 >
                   {['Free', 'Paid'].map((option) => (
                     <MenuItem key={option} value={option}>
@@ -260,6 +267,7 @@ const AddEventForm = () => {
                   fullWidth
                   placeholder="Enter amount"
                   required
+                  disabled={values.status === 'Free'}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -302,16 +310,15 @@ const AddEventForm = () => {
                 )}
               </Grid>
               <Grid item xs={12}>
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    disabled={isSubmitting}
-                  >
-                    Add Event
-                  </Button>
-                </Box>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  disabled={isSubmitting}
+                >
+                  Add Event
+                </Button>
               </Grid>
             </Grid>
           </Form>
@@ -322,13 +329,12 @@ const AddEventForm = () => {
 };
 
 const containerStyle = {
-  maxWidth: '800px',
-  width: '100%',
-  margin: 'auto',
+  maxWidth: '600px',
+  margin: '0 auto',
   padding: '20px',
+  borderRadius: '8px',
   backgroundColor: '#fff',
-  borderRadius: '12px',
-  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+  boxShadow: '0 0 10px rgba(0,0,0,0.1)',
 };
 
 const headingStyle = {
@@ -338,7 +344,9 @@ const headingStyle = {
 
 const fileInputStyle = {
   display: 'block',
-  marginBottom: '10px',
+  width: '100%',
+  padding: '10px',
+  marginTop: '10px',
 };
 
 export default AddEventForm;

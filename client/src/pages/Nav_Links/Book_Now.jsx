@@ -92,8 +92,8 @@ const BookNowPage = () => {
                 Date: {formatDateRange(event.startDate, event.endDate)}
               </Typography>
               <Typography variant="body1" color="black" sx={{ fontWeight: 'bold', mt: 2 }}>
-                {event.status === 'Payment' ? 'Price' : 'Admission: Free'}
-                {event.status === 'Payment' && (
+                {event.status === 'Paid' ? 'Price' : 'Admission: Free'}
+                {event.status === 'Paid' && (
                   <>: ${event.amount}</>
                 )}
               </Typography>
