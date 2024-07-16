@@ -39,6 +39,7 @@ router.post('/check-in/:qrCodeText', async (req, res) => {
             checkIn = await checkIn.update({
                 checkInTime: new Date(),
                 qrCodeChecked: true,
+                associatedBookingId: associatedBookingId,
                 qrCodeStatus: 'Checked',
                 leafPoints: booking.leafPoints, // Update leafPoints if necessary 
                 eventId: booking.eventDetails.eventId,
@@ -46,7 +47,7 @@ router.post('/check-in/:qrCodeText', async (req, res) => {
             });
         } else {
             checkIn = await CheckIn.create({
-                associatedBookingId: booking.id,
+               associatedBookingId: associatedBookingId,
                 qrCodeText: booking.qrCodeText,
                 checkInTime: new Date(),
                 qrCodeChecked: true,
@@ -185,7 +186,7 @@ router.post('/checkinbycam', async (req, res) => {
 
         // Create check-in record
         const checkIn = await CheckIn.create({
-            associatedBookingId: booking.id,
+            associatedBookingId: associatedBookingId,
             qrCodeText: booking.qrCodeText,
             checkInTime: new Date(),
             qrCodeChecked: true,

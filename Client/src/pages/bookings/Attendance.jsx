@@ -227,9 +227,11 @@ const CheckInPage = () => {
                                                     {checkIn.qrCodeStatus}
                                                 </span>
                                             </TableCell>
-                                            <TableCell>{checkIn.bookingId}</TableCell>
+                                            <TableCell>{checkIn.associatedBookingId}</TableCell>
                                             <TableCell>{checkIn.leafPoints}</TableCell>
                                             <TableCell>{checkIn.eventName}</TableCell>
+
+
                                             <TableCell>{checkIn.eventId}</TableCell>
                                         </TableRow>
                                     ))

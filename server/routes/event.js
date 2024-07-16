@@ -180,7 +180,7 @@ router.get('/events', async (req, res) => {
 router.get('/event-names', async (req, res) => {
     try {
         const eventNames = await db.events.findAll({
-            attributes: ['eventName'] // Fetch only eventName fields
+            attributes: ['eventName'] 
         });
         res.status(200).json(eventNames);
     } catch (err) {

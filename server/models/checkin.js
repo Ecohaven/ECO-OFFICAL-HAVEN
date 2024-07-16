@@ -29,22 +29,25 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: true
     },
- eventId: {
+    eventId: {
       type: DataTypes.INTEGER,
       allowNull: true
     },
-  eventName: {
+    eventName: {
       type: DataTypes.STRING,
       allowNull: true
     },
-
+    associatedBookingId: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
   }, {
     tableName: 'checkins'
   });
 
   CheckIn.associate = models => {
     CheckIn.belongsTo(models.Booking, { foreignKey: 'associatedBookingId' });
-    CheckIn.belongsTo(models.events, { foreignKey: 'eventId' }); 
+    CheckIn.belongsTo(models.events, { foreignKey: 'eventId', as: 'eventDetails' });
   };
 
   return CheckIn;
