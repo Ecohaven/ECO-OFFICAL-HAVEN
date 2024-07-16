@@ -1,0 +1,705 @@
+#payment-form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+  }
+  
+  #payment-form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  #card-element {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+  }
+  
+  button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button[type="submit"]:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+  
+  #payment-result {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #e0e0e0;
+    text-align: center;
+  }
+  
+  #payment-result.success {
+    background-color: #d4edda;
+    color: #155724;
+  }
+  
+  #payment-result.error {
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+  
+  .backend-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .filter-container {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+  }
+  
+  .filter-container select {
+    margin-right: 10px;
+  }
+  
+  .payment-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .payment-table th, .payment-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .payment-table th {
+    background-color: #f2f2f2;
+  }
+  
+  .payment-table .status-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 5px;
+  }
+  
+  .payment-table .complete .status-dot {
+    background-color: green;
+  }
+  
+  .payment-table .incomplete .status-dot {
+    background-color: red;
+  }
+  
+  .filter-button {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .filter-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .download-button {
+    padding: 5px 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .download-button:hover {
+    background-color: #218838;
+  }
+  
+  .error {
+    color: red;
+    text-align: center;
+  }
+  
+  .success {
+    color: green;
+    text-align: center;
+  }
+
+  /* paymentform.css */
+.backend-container {
+  padding: 20px;
+}
+
+.payment-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.payment-table th,
+.payment-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.payment-table th {
+  background-color: #f2f2f2;
+}
+
+.status-dot {
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.status-dot.complete {
+  background-color: green;
+}
+
+.status-dot.incomplete {
+  background-color: red;
+}
+
+.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.message {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+body, h1, h2, h3, h4, h5, h6, p, ul, ol, li, figure, figcaption, blockquote, dl, dd {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.payment-form-container {
+  background-color: #fff;
+  padding: 40px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  max-width: 600px;
+  width: 100%;
+}
+
+.payment-form-container h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.payment-form-container .form-group {
+  margin-bottom: 20px;
+}
+
+.payment-form-container .form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #333;
+}
+
+.payment-form-container .form-group input,
+.payment-form-container .form-group select {
+  width: calc(100% - 22px);
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.payment-form-container .form-group input[type="text"],
+.payment-form-container .form-group input[type="email"],
+.payment-form-container .form-group input[type="number"],
+.payment-form-container .form-group select {
+  width: calc(100% - 22px);
+  padding: 10px;
+  font-size: 16px;
+}
+
+.payment-form-container .form-group .expiry-group {
+  display: flex;
+  gap: 10px;
+}
+
+.payment-form-container .form-group .expiry-group input {
+  width: 100%;
+}
+
+.payment-form-container .form-group .payment-methods {
+  display: flex;
+  gap: 20px;
+}
+
+.payment-form-container .form-group .payment-methods label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.payment-form-container .payment-button {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #28a745;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.payment-form-container .payment-button:hover {
+  background-color: #218838;
+}
+
+.payment-form-container .message {
+  margin-top: 20px;
+  padding: 10px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.payment-form-container .message.success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.payment-form-container .message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f7f7f7;
+  margin: 0;
+  padding: 0;
+}
+
+.refund-form-container {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-group input,
+.form-group select {
+  width: calc(100% - 20px);
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.form-group input[type="radio"] {
+  width: auto;
+  margin-right: 5px;
+}
+
+.form-group .radio-label {
+  display: inline-block;
+  margin-right: 15px;
+}
+
+.button {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #28a745;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.button:disabled {
+  background-color: #ccc;
+}
+
+.error-message {
+  color: red;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.message {
+  margin-top: 15px;
+  font-size: 16px;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  text-align: center;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f7f7f7;
+  margin: 0;
+  padding: 0;
+}
+
+.backend-container {
+  max-width: 90%;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow-x: auto; /* Add this to handle overflow */
+}
+
+h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.filter-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.filter-container select,
+.filter-container .filter-button {
+  padding: 10px;
+  font-size: 16px;
+  margin-right: 10px;
+}
+
+.filter-container .filter-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.payment-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.payment-table th,
+.payment-table td {
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+.payment-table th {
+  background-color: #f2f2f2;
+  text-align: left;
+}
+
+.status-dot {
+  height: 10px;
+  width: 10px;
+  background-color: green;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status.pending .status-dot {
+  background-color: orange;
+}
+
+.status.paid .status-dot {
+  background-color: green;
+}
+
+.download-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+}
+
+.success {
+  color: green;
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .filter-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-container select,
+  .filter-container .filter-button {
+    margin-bottom: 10px;
+  }
+}
+
+.success-page-container {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.success-page-container h1 {
+  font-size: 24px;
+  color: #28a745;
+  margin-bottom: 20px;
+}
+
+.success-page-container p {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.success-page-container pre {
+  text-align: left;
+  background-color: #f8f9fa;
+  padding: 10px;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+.home-button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.success-page-container {
+  text-align: center;
+  padding: 20px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  max-width: 600px;
+  margin: 50px auto;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.success-page-container h1 {
+  color: green;
+}
+
+.success-page-container button.home-button {
+  background-color: green;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.success-page-container button.home-button:hover {
+  background-color: darkgreen;
+}
+.success-page-container {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.home-button,
+.refund-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.status-dot {
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.status-dot.paid {
+  background-color: green;
+}
+
+.status-dot.unpaid {
+  background-color: red;
+}
+
+.backend-container {
+  padding: 20px;
+}
+
+.filter-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.payment-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.payment-table th,
+.payment-table td {
+  padding: 12px;
+  text-align: left;
+}
+
+.payment-table th {
+  background-color: #f2f2f2;
+}
+
+.payment-table .status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.payment-table .status-dot.green {
+  background-color: green;
+}
+
+.payment-table .status-dot.red {
+  background-color: red;
+}
+
+.payment-table .download-button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+.payment-table .download-button:hover {
+  background-color: white;
+  color: black;
+  border: 2px solid #4caf50;
+}
+
+.filter-button {
+  background-color: #008cba;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+.filter-button:hover {
+  background-color: white;
+  color: black;
+  border: 2px solid #008cba;
+}

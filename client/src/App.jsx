@@ -48,6 +48,13 @@ import Attendance from './pages/bookings/Attendance';
 import Bookings from './pages/bookings/bookings';
 import BookingForm from './pages/bookings/bookingForm';
 
+
+{/* Payment part */}
+import Payment from './pages/Payment/PaymentPage';
+import Refund from './pages/Payment/RefundPage';
+import Paymenthistory from './pages/Payment/StaffPayHistoryPage';
+import PaymentSucess from './pages/Payment/SuccessPage';
+
 function App() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -163,6 +170,10 @@ function App() {
       {/* ^ End of Events part ^*/}
 
       {/* Payments  part */}
+      <Route path={"/payment"} element={<Payment/>} />
+      <Route path={"/refund"} element={<Refund/>} />
+      <Route path={"/historypayment"} element={<Paymenthistory/>} />
+      <Route path={"/paymentsucess"} element={<PaymentSucess/>} />
 
       {/* ^ End of Payments part ^*/}
 
