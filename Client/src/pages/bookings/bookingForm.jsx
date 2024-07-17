@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect,useContext } from 'react';
 import { Box, Button, Grid, Typography, TextField, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, MenuItem, Select } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import QRCode from 'qrcode.react';
+import AccountContext from '../../contexts/AccountContext'; // Import the AccountContext
 
 const BookingForm = () => {
   const { state } = useLocation();
@@ -17,6 +18,33 @@ const BookingForm = () => {
   const [bookingId, setBookingId] = useState(''); // State to store booking ID
   const [qrCodeText, setQrCodeText] = useState(''); // State to store QR code text
   const navigate = useNavigate();
+const { account, setAccount } = useContext(AccountContext); // Use the context
+
+
+
+    useEffect(() => {
+        // Fetch user data based on username
+        const fetchUserData = async () => {
+            try {
+                const username = 'exampleUser'; // Replace with dynamic username if available
+                const response = await axios.get(`http://localhost:3001/account/${username}`);
+                const userData = response.data.user;
+
+                setAccount({
+                    name: userData.name,
+                    email: userData.email,
+                    phone_no: userData.phone_no
+                });
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+                // Handle error if needed
+            }
+        };
+
+        if (!account) {
+            fetchUserData();
+        }
+    }, [account, setAccount]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,9 +58,9 @@ const BookingForm = () => {
         gender,
         numberOfPax,
         address,
-        Name,
-        email,
-        phoneNumber,
+        Name: account.name,
+                email: account.email,
+                phoneNumber: account.phone_no,
         location:event.location
       };
 
@@ -128,10 +156,10 @@ const sendEmail = async (formData, bookingId, qrCodeText) => {
             <div class="content">
               <h2>Here is a copy of your booking details</h2>
               ${bookingId ? `<p>Booking Successful: <strong>${bookingId}</strong></p>` : ''}
-              <h4>Greetings <strong>${formData.Name}</strong>! Thank you for signing up for our event! Please find the below information as your booking details. We're thrilled to see you there!</h4>
+              <h4>Greetings <strong>${account.name}</strong>! Thank you for signing up for our event! Please find the below information as your booking details. We're thrilled to see you there!</h4>
               <p>Event: <strong>${formData.eventName}</strong></p>
-              <p>Email: <strong>${formData.email}</strong></p>
-              <p>Phone Number: <strong>${formData.phoneNumber}</strong></p>
+              <p>Email: <strong>${account.email}</strong></p>
+              <p>Phone Number: <strong>${account.phone_no}</strong></p>
               <p>Date: <strong>${formData.bookingDate ? new Date(formData.bookingDate).toLocaleDateString('en-GB') : 'N/A'}</strong></p>
               <p>Number of Pax: <strong>${formData.numberOfPax}</strong></p>
               <p>Location: ${formData.location}</p>
@@ -326,36 +354,46 @@ const sendEmail = async (formData, bookingId, qrCodeText) => {
                     />
                   </Box>
                   <Box sx={{ mb: 2 }}>
-                    <TextField
-                      fullWidth
-                      label="Name"
-                      variant="outlined"
-                      value={Name}
-                      onChange={(e) => setName(e.target.value)}
-                      required
-                    />
-                  </Box>
-                  <Box sx={{ mb: 2 }}>
-                    <TextField
-                      fullWidth
-                      label="Email"
-                      variant="outlined"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                    />
-                  </Box>
-                  <Box sx={{ mb: 2 }}>
-                    <TextField
-                      fullWidth
-                      label="Phone Number"
-                      variant="outlined"
-                      type="tel"
-                      value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value)}
-                      required
-                    />
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                            label="Name"
+                            value={account ? account.name : ''}
+                            onChange={(e) => setAccount({ ...account, name: e.target.value })}
+                            fullWidth
+                            required
+                            variant="outlined"
+                            color="success"
+                            focused
+                            disabled
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            label="Email"
+                            type="email"
+                            value={account ? account.email : ''}
+                            onChange={(e) => setAccount({ ...account, email: e.target.value })}
+                            fullWidth
+                            required
+                            variant="outlined"
+                            color="success"
+                            focused
+                            disabled
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            label="Phone Number"
+                            value={account ? account.phone_no : ''}
+                            onChange={(e) => setAccount({ ...account, phone_no: e.target.value })}
+                            fullWidth
+                            required
+                            variant="outlined"
+                            color="success"
+                            focused
+                            disabled
+                        />
+                    </Grid>
                   </Box>
                   <Box sx={{ mt: 2 }}>
                     <Button type="submit" fullWidth variant="contained" color="primary">
