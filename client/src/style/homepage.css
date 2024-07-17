@@ -14,15 +14,15 @@ padding-top: 150px;
 padding-bottom: 40px;
 
 }
-.whyus h1{
+/* .whyus h1{
 margin-top: -200px;
 padding-top: -100px;
 padding-left: 370px;
 font-size: 40px;
 overflow: hidden; 
 position:absolute;
-}
-.chooseus {
+} */
+/* .chooseus {
   position: relative;
   background-image: url('../assets/images/Reviews_Bg.jpg') ;
   width: 1520px;
@@ -77,7 +77,7 @@ margin-right: -550px;
 margin-top: 10px;
 }
 /* Review section */
-.review {
+/* .review {
   position: relative;
   background-image: url('../assets/images/background_banner.png') ;
   width: 1520px;
@@ -87,4 +87,4 @@ margin-top: 10px;
   font-size: 10px;
   margin-left: -600px;
   overflow: hidden; 
-}
+} */ 

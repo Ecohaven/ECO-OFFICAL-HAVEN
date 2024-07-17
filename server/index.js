@@ -72,5 +72,14 @@ const mailerRoutes = require('./routes/mailer');
 app.use('/send-email', mailerRoutes);
 
  //Filter Route
-const Filter = require('./routes/Filter');
-app.use('/api/', Filter);
+const FilterRoutes = require('./routes/Filter');
+app.use('/api/', FilterRoutes);
+
+
+// //Payment 
+// const paymentRoutes = require('./routes/payment');
+// app.use('/pay/', paymentRoutes);
+
+//refund
+const refundRoutes = require('./routes/refund');
+app.use('/refund/', refundRoutes);

@@ -270,10 +270,7 @@ const CheckInPage = () => {
                                     helperText={error}
                                     style={{ marginBottom: '20px' }}
                                 />
-                                <Button type="submit" variant="contained" color="primary" onClick={handleCancelModal} style={{ backgroundColor: 'red', float: 'right', marginLeft: '10px' }}>
-                                    Cancel
-                                </Button>
-
+                               
                                 <Button type="submit" variant="contained" color="primary" style={{ backgroundColor: 'green', float: 'right' }}>
                                     Check-In
                                 </Button>
@@ -286,6 +283,9 @@ const CheckInPage = () => {
                                 style={{ width: '100%' }}
                             />
                         )}
+<Button type="submit" variant="contained" color="primary" onClick={handleCancelModal} style={{ backgroundColor: 'red', float: 'right', marginRight: '10px' }}>
+                                    Cancel
+                                </Button>
                     </Box>
                 </Modal>
             </div>
