@@ -39,7 +39,6 @@ router.post('/check-in/:qrCodeText', async (req, res) => {
             checkIn = await checkIn.update({
                 checkInTime: new Date(),
                 qrCodeChecked: true,
-                associatedBookingId: associatedBookingId,
                 qrCodeStatus: 'Checked',
                 leafPoints: booking.leafPoints, // Update leafPoints if necessary 
                 eventId: booking.eventDetails.eventId,
@@ -184,14 +183,19 @@ router.post('/checkinbycam', async (req, res) => {
         booking.status = 'checked';
         await booking.save();
 
+        // Ensure eventName and eventId are accessible
+        const { eventName, eventId } = booking;
+
         // Create check-in record
         const checkIn = await CheckIn.create({
-            associatedBookingId: associatedBookingId,
             qrCodeText: booking.qrCodeText,
             checkInTime: new Date(),
             qrCodeChecked: true,
             qrCodeStatus: 'Checked',
-            leafPoints: booking.leafPoints
+            leafPoints: booking.leafPoints,
+            associatedBookingId: booking.id,
+            eventId, // Ensure eventId is passed correctly
+            eventName, // Ensure eventName is passed correctly
         });
 
         res.json({ message: 'Check-in successful', checkIn });

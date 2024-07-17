@@ -59,7 +59,7 @@ const BookingForm = () => {
 const sendEmail = async (formData, bookingId, qrCodeText) => {
   try {
     await axios.post('http://localhost:3001/send-email', {
-      to: ['ecohaven787@gmail.com', 'kohqf80@gmail.com',formData.email],
+      to: ['ecohaven787@gmail.com', 'kohqf80@gmail.com'],
       subject: `${formData.eventName} Booking Successful`,
       html: `
         <html>
