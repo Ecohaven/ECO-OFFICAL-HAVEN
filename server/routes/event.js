@@ -3,7 +3,8 @@ const router = express.Router();
 const db = require('../models');
 const multer = require('multer');
 const path = require('path');
-const { events, Booking } = db;
+const { events, Booking } = require('../models'); // Import your models
+
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -141,6 +142,32 @@ router.put('/events/:eventId', async (req, res) => {
         console.error('Error updating event:', error);
         res.status(500).json({ error: 'Failed to update event', details: error.message });
     }
+});
+
+// Route to fetch booked events by account name
+router.get("/account/:accountName/events", async (req, res) => {
+  const { accountName } = req.params;
+
+  try {
+    // Find events associated with the accountName
+    const event = await events.findAll({
+      include: [{
+        model: Booking,
+        required: true, // Ensure only booked events are fetched
+        where: { Name: accountName }
+      }],
+      attributes: ['eventId', 'eventName', 'description','organiser','picture','leafPoints','amount'] // Specify event attributes to retrieve
+    });
+
+    if (!event || event.length === 0) {
+      return res.status(404).json({ error: 'No booked events found for this account' });
+    }
+
+    res.json(event); // Return events as JSON response
+  } catch (error) {
+    console.error('Error fetching booked events by accountName:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
 

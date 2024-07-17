@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const QRCodeLib = require('qrcode')
-const { Booking,CheckIn } = require('../models');
+const { Booking,CheckIn,Event } = require('../models');
 const yup = require('yup');
 const { Op } = require("sequelize");
 
@@ -92,6 +92,30 @@ router.get("/", async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch bookings' });
   }
 });
+
+// Route to fetch booking details by account name
+router.get("/account/:accountName/bookings", async (req, res) => {
+  const { accountName } = req.params;
+
+  try {
+    // Find bookings associated with the accountName
+    const bookings = await Booking.findAll({
+      where: { Name: accountName }, // Adjust based on your actual model field for account name
+      attributes: ['id', 'eventName', 'qrCodeText', 'qrCodeUrl','status'] // Specify booking attributes to retrieve
+    });
+
+    if (!bookings || bookings.length === 0) {
+      return res.status(404).json({ error: 'No bookings found for this account' });
+    }
+
+    res.json(bookings); // Return bookings as JSON response
+  } catch (error) {
+    console.error('Error fetching bookings by accountName:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
 
 // GET request to fetch booking details by bookingId
 router.get("/:bookingId", async (req, res) => {

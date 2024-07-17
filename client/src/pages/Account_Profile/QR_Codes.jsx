@@ -1,18 +1,128 @@
-import React, { useEffect, useState } from 'react'
-import { useParams, BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
-import http from '/src/http';
-import { Grid, List, ListItem, ListItemText, TextField, Container, Button, Divider, Dialog, DialogTitle, DialogContent, DialogContentText } from '@mui/material';
+import React, { useState, useEffect, useContext } from 'react';
+import axios from 'axios';
+import { Container, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import Account_Nav from './Account_Nav';
+import { tableCellClasses } from '@mui/material/TableCell';
+import fileSaver from 'file-saver'; // Import file-saver
+import AccountContext from '../../contexts/AccountContext';
+import '../../style/rewards/rewardsprofile.css';
 
-function Account_Profile_QR_Codes() {
-  const navigate = useNavigate();
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: '#14772B',
+    color: theme.palette.common.white,
+    fontSize: '1.2rem',
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: '1.2rem',
+  },
+}));
 
-  // check if user is not logged in
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: '#91E1A3',
+  },
+  '&:last-child td, &:last-child th': {
+    border: 0,
+  },
+}));
+
+function Account_Profile_Bookings() {
+  const [bookingRows, setBookingRows] = useState([]);
+  const [bookingDetail, setBookingDetail] = useState({});
+  const { account } = useContext(AccountContext); // Use context to get the account details
+
   useEffect(() => {
-      if (!localStorage.getItem('accessToken')) {
-          navigate('/login');
+    if (account && account.name) {
+      fetchBookingRows(account.name);
+    }
+  }, [account]);
+
+  const fetchBookingRows = async (accountName) => {
+    try {
+      const token = localStorage.getItem('accessToken');
+
+      if (!token) {
+        console.error('Account Access token not found');
+        return;
       }
-  }, [navigate]);
+
+      const response = await axios.get(`http://localhost:3001/api/bookings/account/${accountName}/bookings`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (Array.isArray(response.data)) {
+        const updatedRows = response.data.map((booking, index) => ({
+          id: index + 1,
+          bookingId: booking.id,
+          eventName: booking.eventName,
+          qrCodeText: booking.qrCodeText,
+          qrCodeUrl: booking.qrCodeUrl,
+          status: booking.status,
+        }));
+
+        // Sort the updatedRows array so that 'Active' statuses appear before 'Checked'
+        updatedRows.sort((a, b) => (a.status === 'Active' ? -1 : a.status.localeCompare(b.status)));
+
+        setBookingRows(updatedRows);
+
+        if (response.data.length > 0) {
+          // Fetch details for the first booking in the list
+          fetchBookingDetail(response.data[0].id);
+        }
+      } else {
+        console.error('Expected an array from the API response');
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  const fetchBookingDetail = async (bookingId) => {
+    try {
+      const token = localStorage.getItem('accessToken');
+
+      if (!token) {
+        console.error('Access token not found');
+        return;
+      }
+
+      const response = await axios.get(`http://localhost:3001/api/bookings/${bookingId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.data) {
+        const detail = response.data;
+        setBookingDetail({
+          bookingId: detail.id,
+          eventName: detail.eventName,
+          qrCodeText: detail.qrCodeText,
+          qrCodeUrl: detail.qrCodeUrl,
+          status: detail.status,
+        });
+      } else {
+        console.error('Expected an object with booking detail from the API response');
+      }
+    } catch (error) {
+      console.error('Error fetching booking detail:', error);
+    }
+  };
+
+  // Function to handle download of QR code image
+  const handleDownloadQRCode = async (url) => {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      fileSaver.saveAs(blob, 'qrcode.png'); // Save the blob as a file with name 'qrcode.png'
+    } catch (error) {
+      console.error('Error downloading QR code:', error);
+    }
+  };
 
   return (
     <Container>
@@ -21,11 +131,65 @@ function Account_Profile_QR_Codes() {
           <Account_Nav />
         </Grid>
         <Grid item xs={12} md={9}>
-          <div>qr_codes</div>
+          <div className="table-container" style={{ marginBottom: '80px' }}>
+            {/* Bookings */}
+            <h3 className='header'>Your Event bookings</h3>
+            <h4 style={{textAlign:'center'}}>Your Active bookings for events and history of past details for bookings </h4>
+            <hr></hr>
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 700, marginBottom: '30px', height: 'auto' }} aria-label="customized table">
+                <TableHead>
+                  <TableRow>
+                    <StyledTableCell>No.</StyledTableCell>
+                    <StyledTableCell align="center">Booking ID</StyledTableCell>
+                    <StyledTableCell align="center">Event Name</StyledTableCell>
+                    <StyledTableCell align="center">QR Code</StyledTableCell>
+                    <StyledTableCell align="center">QR Code Text</StyledTableCell>
+                    <StyledTableCell align="center">Status</StyledTableCell>
+                    <StyledTableCell align="center"></StyledTableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {bookingRows.map((row) => (
+                    <StyledTableRow key={row.id}>
+                      <StyledTableCell component="th" scope="row">
+                        {row.id}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">{row.bookingId}</StyledTableCell>
+                      <StyledTableCell align="center">{row.eventName}</StyledTableCell>
+                      <StyledTableCell align="center">
+                        {/* Adjusted styling for QR code based on status */}
+                        {row.status === 'Active' && (
+                          <div style={{ opacity: 1 }}>
+                            <img src={row.qrCodeUrl} alt="QR Code" style={{ width: '100px', height: '100px' }} />
+                          </div>
+                        )}
+                        {row.status === 'checked' && (
+                          <div style={{ opacity: 0.5 }}>
+                            <img src={row.qrCodeUrl} alt="QR Code" style={{ width: '100px', height: '100px', backgroundColor: 'transparent' }} />
+                          </div>
+                        )}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">{row.qrCodeText}</StyledTableCell>
+                      <StyledTableCell align="center">{row.status}</StyledTableCell>
+                      <StyledTableCell align="center">
+                        {/* Conditional rendering for Download button */}
+                        {row.status !== 'checked' && (
+                          <Button variant="contained" onClick={() => handleDownloadQRCode(row.qrCodeUrl)}>
+                            Download
+                          </Button>
+                        )}
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
         </Grid>
       </Grid>
     </Container>
   );
 }
 
-export default Account_Profile_QR_Codes;
+export default Account_Profile_Bookings;

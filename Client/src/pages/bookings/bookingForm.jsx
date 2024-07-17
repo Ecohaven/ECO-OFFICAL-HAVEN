@@ -59,9 +59,9 @@ const { account, setAccount } = useContext(AccountContext); // Use the context
         numberOfPax,
         address,
         Name: account.name,
-                email: account.email,
-                phoneNumber: account.phone_no,
-        location:event.location
+        email: account.email,
+        phoneNumber: account.phone_no,
+        location: event.location
       };
 
       const response = await axios.post('http://localhost:3001/api/bookings', formData);
