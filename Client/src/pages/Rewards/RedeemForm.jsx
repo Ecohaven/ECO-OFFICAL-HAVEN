@@ -5,7 +5,7 @@ import { FormControl, Input, Grid, Checkbox, FormControlLabel } from '@mui/mater
 import { styled } from '@mui/system';
 import * as Yup from 'yup';
 import { useLocation, useNavigate } from 'react-router-dom';
-import AccountContext from '/src/contexts/AccountContext';
+import AccountContext from '../../contexts/AccountContext';
 import axios from 'axios';
 
 const Label = styled('label')({
@@ -48,7 +48,7 @@ function RewardForm() {
     const { account } = useContext(AccountContext); // Use context if available
 
     useEffect(() => {
-        if (account && account.username) {
+        if (account && account.name) {
             setInitialValues({
                 name: account.name,
                 phoneNumber: account.phone_no,
@@ -63,10 +63,10 @@ function RewardForm() {
     const handleSubmit = async (values, { setSubmitting }) => {
         try {
             // Post data to backend
-            const response = await axios.post('http://localhost:3001/collect/', {
-                accountName: account.username, // Pass account.username as accountName
-                phoneNumber: values.phoneNumber,
-                email: values.email,
+            const response = await axios.post('http://localhost:3001/collect', {
+                name: account.name,
+                phoneNumber: account.phone_no,
+                email: account.email,
                 product: product.itemName,
             });
     
@@ -76,7 +76,7 @@ function RewardForm() {
     
             // Store all necessary values in localStorage
             localStorage.setItem('name', values.name);
-            localStorage.setItem('phoneNumber', values.phoneNumber);
+            localStorage.setItem('phoneNumber', account.phone_no);
             localStorage.setItem('email', values.email);
             localStorage.setItem('product', product.itemName);
             localStorage.setItem('collectionId', collectionId);

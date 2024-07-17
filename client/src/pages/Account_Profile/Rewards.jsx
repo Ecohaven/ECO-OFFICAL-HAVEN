@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { Container, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Account_Nav from './Account_Nav';
 import { tableCellClasses } from '@mui/material/TableCell';
 import '../../style/rewards/rewardsprofile.css';
+import AccountContext from '../../contexts/AccountContext';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -29,13 +30,15 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 function Account_Profile_Rewards() {
   const [collectionRows, setCollectionRows] = useState([]);
   const [collectionDetail, setCollectionDetail] = useState({});
+  const { account } = useContext(AccountContext); // Use context to get the account details
 
   useEffect(() => {
-    fetchCollectionRows();
-    fetchCollectionDetail();
-  }, []);
+    if (account && account.name) {
+      fetchCollectionRows(account.name);
+    }
+  }, [account]);
 
-  const fetchCollectionRows = async () => {
+  const fetchCollectionRows = async (accountName) => {
     try {
       const token = localStorage.getItem('accessToken');
 
@@ -44,7 +47,6 @@ function Account_Profile_Rewards() {
         return;
       }
 
-      const accountName = 'Cody'; // Replace with the actual account name or fetch dynamically
       const response = await axios.get(`http://localhost:3001/collect/byAccount/${accountName}`, {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -54,11 +56,18 @@ function Account_Profile_Rewards() {
       if (Array.isArray(response.data)) {
         const updatedRows = response.data.map((row, index) => ({
           id: index + 1,
-          product: row.product,
           collectionId: row.collectionId,
+          phoneNumber: row.phoneNumber,
+          email: row.email,
+          product: row.product,
           status: row.status,
         }));
         setCollectionRows(updatedRows);
+
+        if (response.data.length > 0) {
+          // Fetch details for the first collection in the list
+          fetchCollectionDetail(accountName, response.data[0].collectionId);
+        }
       } else {
         console.error('Expected an array from the API response');
       }
@@ -67,7 +76,7 @@ function Account_Profile_Rewards() {
     }
   };
 
-  const fetchCollectionDetail = async () => {
+  const fetchCollectionDetail = async (accountName, collectionId) => {
     try {
       const token = localStorage.getItem('accessToken');
 
@@ -76,23 +85,23 @@ function Account_Profile_Rewards() {
         return;
       }
 
-      const accountName = 'Cody'; // Replace with the actual account name or fetch dynamically
-      const response = await axios.get(`http://localhost:3001/collect/byAccount/${accountName}`, {
+      const response = await axios.get(`http://localhost:3001/collect/${collectionId}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
 
-      if (Array.isArray(response.data) && response.data.length > 0) {
-        const detail = response.data[0]; // Assuming only one collection detail is fetched
+      if (response.data) {
+        const detail = response.data; // Assuming only one collection detail is fetched
         setCollectionDetail({
-          name: detail.name,
-          address: detail.address,
-          openingHours: detail.openingHours,
-          extraInfo: detail.extraInfo,
+          collectionId: detail.collectionId,
+          phoneNumber: detail.phoneNumber,
+          email: detail.email,
+          product: detail.product,
+          status: detail.status,
         });
       } else {
-        console.error('Expected an array with collection detail from the API response');
+        console.error('Expected an object with collection detail from the API response');
       }
     } catch (error) {
       console.error('Error fetching collection detail:', error);
@@ -108,7 +117,7 @@ function Account_Profile_Rewards() {
         </Grid>
 
         <Grid item xs={12} md={9}>
-          <div className="table-container">
+          <div className="table-container" style={{marginBottom:'80px'}}>
             {/* leaves summary */}
             <h3 className='header'>Leaves summary</h3>
             <hr></hr>
@@ -122,8 +131,8 @@ function Account_Profile_Rewards() {
                 <TableHead>
                   <TableRow>
                     <StyledTableCell>No.</StyledTableCell>
-                    <StyledTableCell align="right">Item</StyledTableCell>
                     <StyledTableCell align="right">Collection ID</StyledTableCell>
+                    <StyledTableCell align="right">Product</StyledTableCell>
                     <StyledTableCell align="right">Status</StyledTableCell>
                   </TableRow>
                 </TableHead>
@@ -133,8 +142,8 @@ function Account_Profile_Rewards() {
                       <StyledTableCell component="th" scope="row">
                         {row.id}
                       </StyledTableCell>
-                      <StyledTableCell align="right">{row.product}</StyledTableCell>
                       <StyledTableCell align="right">{row.collectionId}</StyledTableCell>
+                      <StyledTableCell align="right">{row.product}</StyledTableCell>
                       <StyledTableCell align="right">{row.status}</StyledTableCell>
                     </StyledTableRow>
                   ))}
@@ -144,13 +153,7 @@ function Account_Profile_Rewards() {
           </div>
 
           {/* collection detail */}
-          <div className='collectiondetail'>
-            <h2>Please remember the collection details</h2>
-            <p>Potong Pasir Community Club</p>
-            <p>6 Potong Pasir Ave 2, Singapore 358361</p>
-            <p>Monday - Friday: <span className='time'>11:00am - 8:00pm</span></p>
-            <p>Saturday & Sunday: <span className='time'>12:00pm - 4:00pm</span></p>
-          </div>
+         
         </Grid>
       </Grid>
     </Container>
