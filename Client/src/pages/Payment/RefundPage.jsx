@@ -4,11 +4,12 @@ import axios from 'axios';
 import * as Yup from 'yup';
 import ModalComponent from '../../../components/RefundModal';
 import { useLocation } from 'react-router-dom';
-import '../../style/payment/paymentform.css';
+import { Container, Grid, TextField, Select, MenuItem, Button, Typography, FormHelperText } from '@mui/material';
+import '../../style/payment/paymentform.css'; // Adjust as needed
 
 const RefundForm = () => {
   const location = useLocation();
-  const { paymentData } = location.state || {};
+  const { paymentId, name, email, event } = location.state || {}; // Retrieve values from state
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
@@ -56,60 +57,106 @@ const RefundForm = () => {
   };
 
   return (
-    <div className="refund-form-container">
-      <h2>Refund Request Form</h2>
+    <Container maxWidth="sm" sx={{ mt: 4, mb: 4 }}>
+      <Typography variant="h4" align="center" gutterBottom>
+        Refund Request Form
+      </Typography>
       <Formik
         initialValues={{
-          paymentId: paymentData ? paymentData.id : '',
-          name: paymentData ? paymentData.cardholderName : '',
-          email: paymentData ? paymentData.email : '',
-          paymentMethod: paymentData ? paymentData.paymentMethod : 'Debit',
-          event: '',
+          paymentId: paymentId || '',
+          name: name || '',
+          email: email || '',
+          paymentMethod: 'Debit', // Default value; adjust as necessary
+          event: event || '',
           reason: '',
-          phoneNumber: paymentData ? paymentData.phoneNumber : '',
         }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
         {({ status, isSubmitting }) => (
           <Form>
-            <div className="form-group">
-              <label htmlFor="paymentId">Payment ID</label>
-              <Field type="text" id="paymentId" name="paymentId" />
-              <ErrorMessage name="paymentId" component="div" className="error-message" />
-            </div>
-            <div className="form-group">
-              <label htmlFor="name">Name</label>
-              <Field type="text" id="name" name="name" />
-              <ErrorMessage name="name" component="div" className="error-message" />
-            </div>
-            <div className="form-group">
-              <label htmlFor="email">Email</label>
-              <Field type="email" id="email" name="email" />
-              <ErrorMessage name="email" component="div" className="error-message" />
-            </div>
-            <div className="form-group">
-              <label htmlFor="paymentMethod">Payment Method</label>
-              <Field as="select" id="paymentMethod" name="paymentMethod">
-                <option value="Debit">Debit</option>
-                <option value="Credit">Credit</option>
-              </Field>
-              <ErrorMessage name="paymentMethod" component="div" className="error-message" />
-            </div>
-            <div className="form-group">
-              <label htmlFor="event">Requested Refund - Event Name</label>
-              <Field type="text" id="event" name="event" />
-              <ErrorMessage name="event" component="div" className="error-message" />
-            </div>
-            <div className="form-group">
-              <label htmlFor="reason">Refund Reason</label>
-              <Field type="text" id="reason" name="reason" />
-              <ErrorMessage name="reason" component="div" className="error-message" />
-            </div>
-            <button type="submit" className="button" disabled={isSubmitting}>
-              Submit Refund Request
-            </button>
-            {status && status.message && <div className="message">{status.message}</div>}
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Field
+                  name="paymentId"
+                  as={TextField}
+                  label="Payment ID"
+                  fullWidth
+                  variant="outlined"
+                  helperText={<ErrorMessage name="paymentId" />}
+                  error={<ErrorMessage name="paymentId" />}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Field
+                  name="name"
+                  as={TextField}
+                  label="Name"
+                  fullWidth
+                  variant="outlined"
+                  helperText={<ErrorMessage name="name" />}
+                  error={<ErrorMessage name="name" />}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Field
+                  name="email"
+                  as={TextField}
+                  label="Email"
+                  fullWidth
+                  variant="outlined"
+                  helperText={<ErrorMessage name="email" />}
+                  error={<ErrorMessage name="email" />}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Field
+                  name="paymentMethod"
+                  as={Select}
+                  fullWidth
+                  variant="outlined"
+                  label="Payment Method"
+                >
+                  <MenuItem value="Debit">Debit</MenuItem>
+                  <MenuItem value="Credit">Credit</MenuItem>
+                </Field>
+                <FormHelperText error={<ErrorMessage name="paymentMethod" />} />
+              </Grid>
+              <Grid item xs={12}>
+                <Field
+                  name="event"
+                  as={TextField}
+                  label="Requested Refund - Event Name"
+                  fullWidth
+                  variant="outlined"
+                  helperText={<ErrorMessage name="event" />}
+                  error={<ErrorMessage name="event" />}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Field
+                  name="reason"
+                  as={TextField}
+                  label="Refund Reason"
+                  fullWidth
+                  variant="outlined"
+                  helperText={<ErrorMessage name="reason" />}
+                  error={<ErrorMessage name="reason" />}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Button type="submit" variant="contained" color="primary" fullWidth disabled={isSubmitting}>
+                  Submit Refund Request
+                </Button>
+              </Grid>
+              {status && status.message && (
+                <Grid item xs={12}>
+                  <Typography variant="body1" color={status.message.includes('successfully') ? 'success.main' : 'error.main'}>
+                    {status.message}
+                  </Typography>
+                </Grid>
+              )}
+            </Grid>
           </Form>
         )}
       </Formik>
@@ -118,7 +165,7 @@ const RefundForm = () => {
         onRequestClose={() => setModalIsOpen(false)}
         message={modalMessage}
       />
-    </div>
+    </Container>
   );
 };
 

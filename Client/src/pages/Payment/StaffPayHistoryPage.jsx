@@ -108,99 +108,111 @@ const Backend = () => {
   };
 
   return (
-    <Box sx={{ padding: 4 }}>
-<Sidebar/>
-      <Typography variant="h4" gutterBottom>
-        Payment History
-      </Typography>
-      {status && (
-        <Typography color={status.error ? 'error' : 'success'}>
-          {status.message}
+    <Box sx={{ display: 'flex' }}>
+      <Sidebar />
+      <Box sx={{ flex: 1, padding: 4 }}>
+        <Typography variant="h4" gutterBottom>
+          Payment History
         </Typography>
-      )}
+        {status && (
+          <Typography color={status.error ? 'error' : 'success'}>
+            {status.message}
+          </Typography>
+        )}
 
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-        <Select value={filterStatus} onChange={handleFilterChange} displayEmpty>
-          <MenuItem value="">
-            <em>All</em>
-          </MenuItem>
-          <MenuItem value="Paid">Complete</MenuItem>
-          <MenuItem value="Unpaid">Incomplete</MenuItem>
-        </Select>
-        <Select value={searchCriteria} onChange={handleSearchCriteriaChange} displayEmpty sx={{ ml: 2 }}>
-          <MenuItem value="id">ID</MenuItem>
-          <MenuItem value="name">Name</MenuItem>
-          <MenuItem value="date">Date</MenuItem>
-          <MenuItem value="month">Month</MenuItem>
-          <MenuItem value="day">Day</MenuItem>
-          <MenuItem value="year">Year</MenuItem>
-        </Select>
-        <TextField
-          label="Search"
-          variant="outlined"
-          value={searchQuery}
-          onChange={handleSearchChange}
-          sx={{ ml: 2 }}
-        />
-      </Box>
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+          <Select
+            value={filterStatus}
+            onChange={handleFilterChange}
+            displayEmpty
+            sx={{ minWidth: 120 }}
+          >
+            <MenuItem value="">
+              <em>All</em>
+            </MenuItem>
+            <MenuItem value="Paid">Complete</MenuItem>
+            <MenuItem value="Unpaid">Incomplete</MenuItem>
+          </Select>
+          <Select
+            value={searchCriteria}
+            onChange={handleSearchCriteriaChange}
+            displayEmpty
+            sx={{ minWidth: 120, ml: 2 }}
+          >
+            <MenuItem value="id">ID</MenuItem>
+            <MenuItem value="name">Name</MenuItem>
+            <MenuItem value="date">Date</MenuItem>
+            <MenuItem value="month">Month</MenuItem>
+            <MenuItem value="day">Day</MenuItem>
+            <MenuItem value="year">Year</MenuItem>
+          </Select>
+          <TextField
+            label="Search"
+            variant="outlined"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            sx={{ ml: 2, flex: 1 }}
+          />
+        </Box>
 
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell sx={{ fontWeight: 'bold' }}>Payment ID</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Cardholder Name</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Amount</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Date</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Refunds</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredPayments.map((payment) => (
-              <TableRow key={payment.id}>
-                <TableCell>{payment.id}</TableCell>
-                <TableCell>{payment.cardholderName}</TableCell>
-                <TableCell>${payment.amount}</TableCell>
-                <TableCell>{payment.date ? new Date(payment.date).toLocaleDateString() : 'Invalid Date'}</TableCell>
-                <TableCell>
-                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Box
-                      sx={{
-                        width: 10,
-                        height: 10,
-                        borderRadius: '50%',
-                        backgroundColor: payment.status?.toLowerCase() === 'paid' ? 'green' : 'red',
-                        mr: 1,
-                      }}
-                    />
-                    {payment.status}
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  {payment.refunds && payment.refunds.length > 0 ? (
-                    <ul>
-                      {payment.refunds.map(refund => (
-                        <li key={refund.id}>
-                          Status: {refund.status}, Reason: {refund.reason}
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    'No refunds'
-                  )}
-                </TableCell>
-                <TableCell>
-                  <Button variant="contained" color="success" onClick={() => generatePdf(payment)}>
-                    Download
-                  </Button>
-                </TableCell>
+        <TableContainer component={Paper} elevation={3} sx={{ mb: 4 }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell sx={{ fontWeight: 'bold' }}>Payment ID</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Cardholder Name</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Amount</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Date</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Refunds</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Action</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {filteredPayments.map((payment) => (
+                <TableRow key={payment.id}>
+                  <TableCell>{payment.id}</TableCell>
+                  <TableCell>{payment.cardholderName}</TableCell>
+                  <TableCell>${payment.amount}</TableCell>
+                  <TableCell>{payment.date ? new Date(payment.date).toLocaleDateString() : 'Invalid Date'}</TableCell>
+                  <TableCell>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                      <Box
+                        sx={{
+                          width: 12,
+                          height: 12,
+                          borderRadius: '50%',
+                          backgroundColor: payment.status?.toLowerCase() === 'paid' ? 'green' : 'red',
+                          mr: 1,
+                        }}
+                      />
+                      {payment.status}
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    {payment.refunds && payment.refunds.length > 0 ? (
+                      <ul>
+                        {payment.refunds.map(refund => (
+                          <li key={refund.id}>
+                            Status: {refund.status}, Reason: {refund.reason}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      'No refunds'
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <Button variant="contained" color="success" onClick={() => generatePdf(payment)}>
+                      Download
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
     </Box>
   );
 };

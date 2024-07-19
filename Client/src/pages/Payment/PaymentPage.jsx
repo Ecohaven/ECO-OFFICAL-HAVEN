@@ -64,7 +64,7 @@ const PaymentForm = () => {
 
   return (
     <Container maxWidth="sm" sx={{ mt: 4 }}>
-      <Typography variant="h4" component="h1" gutterBottom>
+      <Typography variant="h4" component="h1" style={{ textAlign: 'left' }} gutterBottom>
         Payment Form
       </Typography>
       <Formik
@@ -114,6 +114,7 @@ const PaymentForm = () => {
                       fullWidth
                       error={meta.touched && Boolean(meta.error)}
                       helperText={<ErrorMessage name="amount" />}
+                      disabled
                     />
                   )}
                 </Field>
@@ -128,6 +129,7 @@ const PaymentForm = () => {
                       fullWidth
                       error={meta.touched && Boolean(meta.error)}
                       helperText={<ErrorMessage name="email" />}
+                      disabled
                     />
                   )}
                 </Field>
@@ -142,6 +144,7 @@ const PaymentForm = () => {
                       fullWidth
                       error={meta.touched && Boolean(meta.error)}
                       helperText={<ErrorMessage name="phoneNumber" />}
+                      disabled
                     />
                   )}
                 </Field>
@@ -245,7 +248,7 @@ const PaymentForm = () => {
                 </Field>
               </Grid>
               <Grid item xs={12}>
-                <Button type="submit" variant="contained" color="primary" fullWidth disabled={isSubmitting}>
+                <Button type="submit" variant="contained" color="primary" fullWidth disabled={isSubmitting} style={{ marginBottom: '20px' }}>
                   Pay
                 </Button>
               </Grid>

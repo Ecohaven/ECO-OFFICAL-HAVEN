@@ -67,7 +67,6 @@ eventName: {
   Booking.associate = models => {
      Booking.belongsTo(models.events, { foreignKey: 'eventId', as: 'eventDetails' });
     Booking.hasMany(models.CheckIn, { foreignKey: 'associatedBookingId' , as: 'checkIns'});
-   Booking.hasOne(models.Payment, { foreignKey: 'bookingId', as: 'payment' }); // Assuming one-to-one relationship
   };
 
   return Booking;
