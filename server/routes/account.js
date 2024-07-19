@@ -162,9 +162,9 @@ router.get("/:username", async (req, res) => {
     console.log(username); // Debugging
 
     // Check if the logged-in user is accessing their own account
-    if (req.user.username !== username) {
-        return res.status(403).json({ message: "Access denied" });
-    }
+    // if (req.user.username !== username) {
+    //     return res.status(403).json({ message: "Access denied" });
+    // }
 
     let account = await Account.findOne({ where: { username: username } });
     console.log(account); // Debugging
@@ -237,9 +237,9 @@ router.put("/:username/password", async (req, res) => {
     let username = req.params.username;
 
     // Check if the logged-in user is accessing their own account
-    if (req.user.username !== username) {
-        return res.status(403).json({ message: "Access denied" });
-    }
+    // if (req.user.username !== username) {
+    //     return res.status(403).json({ message: "Access denied" });
+    // }
 
     // Validate request body
     let validationSchema = yup.object({
@@ -301,9 +301,9 @@ router.delete("/:username", async (req, res) => {
     let username = req.params.username;
 
     // Check if the logged-in user is accessing their own account
-    if (req.user.username !== username) {
-        return res.status(403).json({ message: "Access denied" });
-    }
+    // if (req.user.username !== username) {
+    //     return res.status(403).json({ message: "Access denied" });
+    // }
 
     // Validate request body
     let validationSchema = yup.object({
