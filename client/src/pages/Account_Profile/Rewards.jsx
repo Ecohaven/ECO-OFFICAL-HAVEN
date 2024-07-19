@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import { Container, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import { Container, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Account_Nav from './Account_Nav';
 import { tableCellClasses } from '@mui/material/TableCell';
@@ -121,7 +121,15 @@ function Account_Profile_Rewards() {
             {/* leaves summary */}
             <h3 className='header'>Leaves summary</h3>
             <hr></hr>
-            <div className="grey-rectangle"></div>
+            <div className="grey-rectangle">
+              <div className="grey-rectangle-content">
+                <Typography variant="h4" component="div">
+                  {account?.leaf_points}
+                </Typography>
+                <Typography variant="h6" component="div">total leaves</Typography>
+                <Typography variant="h7" component="div">as of today</Typography>
+              </div>
+            </div>
 
             {/* Collection of rewards */}
             <h3 className='header'>Collection of rewards</h3>

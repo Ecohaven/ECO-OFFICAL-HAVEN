@@ -10,7 +10,6 @@ const fs = require('fs');
 const path = require('path');
 
 
-
 router.post("/register", async (req, res) => {
     let data = req.body;
     console.log(data); // Debugging
@@ -28,7 +27,6 @@ router.post("/register", async (req, res) => {
         password: yup.string().trim().min(8).max(50).required()
             .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$/,
             "password must have a mix of lower and uppercase letters and at least 1 number")
-
     });
     try {
         data = await validationSchema.validate(data, { abortEarly: false });
@@ -58,7 +56,10 @@ router.post("/register", async (req, res) => {
             username: result.username,
             email: result.email,
             phone_no: result.phone_no,
-            profile_pic: result.profile_pic
+            profile_pic: result.profile_pic,
+            status: "Active",
+            role: "User",
+            leaf_points: 10
         };
         let accessToken = sign(userInfo, process.env.APP_SECRET,
             { expiresIn: process.env.TOKEN_EXPIRES_IN });
@@ -111,7 +112,10 @@ router.post("/login", async (req, res) => {
             username: account.username,
             email: account.email,
             phone_no: account.phone_no,
-            profile_pic: account.profile_pic
+            profile_pic: account.profile_pic,
+            status: account.status,
+            role: account.role,
+            leaf_points: account.leaf_points
         };
         let accessToken = sign(userInfo, process.env.APP_SECRET, // Create token
             { expiresIn: process.env.TOKEN_EXPIRES_IN });
@@ -133,7 +137,10 @@ router.get("/auth", validateToken, (req, res) => { // Validate token
         username: req.user.username,
         email: req.user.email,
         phone_no: req.user.phone_no,
-        profile_pic: req.user.profile_pic
+        profile_pic: req.user.profile_pic,
+        status: req.user.status,
+        role: req.user.role,
+        leaf_points: req.user.leaf_points
     };
     res.json({
         user: userInfo
@@ -153,6 +160,12 @@ router.post("/logout", validateToken, async (req, res) => { // Logout
 router.get("/:username", async (req, res) => {
     let username = req.params.username;
     console.log(username); // Debugging
+
+    // Check if the logged-in user is accessing their own account
+    if (req.user.username !== username) {
+        return res.status(403).json({ message: "Access denied" });
+    }
+
     let account = await Account.findOne({ where: { username: username } });
     console.log(account); // Debugging
     if (account) {
@@ -162,7 +175,10 @@ router.get("/:username", async (req, res) => {
             username: account.username,
             email: account.email,
             phone_no: account.phone_no,
-            profile_pic: account.profile_pic
+            profile_pic: account.profile_pic,
+            status: account.status,
+            role: account.role,
+            leaf_points: account.leaf_points
         };
         res.json({
             user: userInfo
@@ -219,6 +235,12 @@ router.put("/:username", async (req, res) => {
 // update password
 router.put("/:username/password", async (req, res) => {
     let username = req.params.username;
+
+    // Check if the logged-in user is accessing their own account
+    if (req.user.username !== username) {
+        return res.status(403).json({ message: "Access denied" });
+    }
+
     // Validate request body
     let validationSchema = yup.object({
         current_password: yup.string().trim().required("This is a required field"),
@@ -277,6 +299,12 @@ async function deleteProfilePic(userId) {
 // delete account
 router.delete("/:username", async (req, res) => {
     let username = req.params.username;
+
+    // Check if the logged-in user is accessing their own account
+    if (req.user.username !== username) {
+        return res.status(403).json({ message: "Access denied" });
+    }
+
     // Validate request body
     let validationSchema = yup.object({
         password: yup.string().trim().required("This is a required field")
