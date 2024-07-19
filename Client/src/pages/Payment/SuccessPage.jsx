@@ -1,69 +1,139 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { Box, Button, Typography } from '@mui/material';
-import '../../style/payment/paymentform.css';
+import axios from 'axios';
+import { Container, Typography, Box, Button, Paper } from '@mui/material';
 
-const SuccessPage = () => {
+const PaymentSuccess = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { paymentData, response } = location.state || {};
+  
+  const { paymentData, response, formData } = location.state || {};
+  
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [bookingDetails, setBookingDetails] = useState(null);
 
-  const handleReturnHome = () => {
+  useEffect(() => {
+    const createBooking = async () => {
+      try {
+        // Create booking
+        const bookingResponse = await axios.post('http://localhost:3001/api/bookings', formData);
+
+        if (bookingResponse.data.id && bookingResponse.data.qrCodeText) {
+          const { id, qrCodeText } = bookingResponse.data;
+
+          // // Optionally: Trigger email sending
+          // sendEmail(formData, id, qrCodeText);
+
+          setBookingDetails({ id, qrCodeText });
+          navigate('/confirmation', { state: { bookingId: id, qrCodeText } });
+        } else {
+          throw new Error('Booking ID or QR code text not received');
+        }
+      } catch (error) {
+        setError('Failed to create booking. Please try again.');
+        console.error('Failed to create booking:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (formData) {
+      createBooking();
+    }
+  }, [formData, navigate]);
+
+  const handleNavigateHome = () => {
     navigate('/');
   };
 
-  const handleRefund = () => {
-    navigate('/refund', { state: { paymentData } });
-  };
-
-  if (!paymentData || !response) {
+  if (loading) {
     return (
-      <Box className="success-page-container">
-        <Typography variant="h1">Payment Successful!</Typography>
-        <Typography>Thank you for your payment. Your transaction has been completed successfully.</Typography>
-        <Button variant="contained" style={{ backgroundColor: 'green', color: 'white' }} onClick={handleReturnHome}>
-          Return to Home
-        </Button>
-      </Box>
+      <Container maxWidth="sm" sx={{ mt: 4 }}>
+        <Typography variant="h4" component="h1" gutterBottom align="center">
+          Processing Payment...
+        </Typography>
+        {/* Optionally, display a loading spinner or message */}
+      </Container>
     );
   }
 
-  const { payment } = response;
-  const { date, id } = payment || {};
-
-  const formattedDate = new Date(date).toLocaleString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  });
-
   return (
-    <Box className="success-page-container" style={{ textAlign: 'left' }}>
-      <Box style={{ textAlign: 'center' }}>
-        <CheckCircleIcon style={{ fontSize: 80, color: 'green' }} />
-        <Typography variant="h2" style={{ fontSize: '2.5em', fontWeight: 'bold', textAlign: 'center', color: 'green', margin: '1em 0' }}>
+    <Container maxWidth="sm" sx={{ mt: 4 }}>
+      <Paper elevation={3} sx={{ padding: 3 }}>
+        <Typography variant="h4" component="h1" gutterBottom align="center">
           Payment Successful
         </Typography>
-      </Box>
-      <Typography variant="h5" style={{ fontSize: '1.7em', margin: '1em 0' }}>Payment Details:</Typography>      
-      <Typography style={{ margin: '1.5em 0' }}>Payment ID: <strong>{id}</strong></Typography>
-      <Typography style={{ margin: '1.5em 0' }}>Payment Method: <strong>{paymentData.paymentMethod}</strong></Typography>
-      <Typography style={{ margin: '1.5em 0' }}>Date: <strong>{formattedDate}</strong></Typography>
-
-      <Box style={{ marginTop: '2em', display: 'flex', justifyContent: 'center', gap: '1em' }}>
-      <Button variant="contained" style={{ backgroundColor: 'green', color: 'white' }} onClick={handleReturnHome}>
-          Return to Home
-        </Button>
-        <Button variant="contained" style={{ backgroundColor: 'red', color: 'white' }} onClick={handleRefund}>
-          Request Refund
-        </Button>
-      </Box>
-    </Box>
+        {error ? (
+          <Box sx={{ color: 'red', textAlign: 'center' }}>
+            <Typography variant="h6">{error}</Typography>
+          </Box>
+        ) : (
+          <Box mt={2}>
+            <Typography variant="h6" gutterBottom>
+              Payment Details:
+            </Typography>
+            {paymentData ? (
+              <>
+                <Typography variant="body1" gutterBottom>
+                  <strong>Event Name:</strong> {paymentData.eventName || 'N/A'}
+                </Typography>
+                <Typography variant="body1" gutterBottom>
+                  <strong>Amount:</strong> ${paymentData.amount || 'N/A'}
+                </Typography>
+                <Typography variant="body1" gutterBottom>
+                  <strong>Email:</strong> {paymentData.email || 'N/A'}
+                </Typography>
+                <Typography variant="body1" gutterBottom>
+                  <strong>Phone Number:</strong> {paymentData.phoneNumber || 'N/A'}
+                </Typography>
+                <Typography variant="body1" gutterBottom>
+                  <strong>Home Address:</strong> {paymentData.homeAddress || 'N/A'}
+                </Typography>
+                <Typography variant="body1" gutterBottom>
+                  <strong>Postal Code:</strong> {paymentData.postalCode || 'N/A'}
+                </Typography>
+                <Typography variant="body1" gutterBottom>
+                  <strong>Payment Method:</strong> {paymentData.paymentMethod || 'N/A'}
+                </Typography>
+                <Typography variant="body1" gutterBottom>
+                  <strong>Cardholder Name:</strong> {paymentData.cardholderName || 'N/A'}
+                </Typography>
+                <Typography variant="body1" gutterBottom>
+                  <strong>Card Number:</strong> {paymentData.cardNumber || 'N/A'}
+                </Typography>
+                <Typography variant="body1" gutterBottom>
+                  <strong>Expiry Date:</strong> {paymentData.expiryDate || 'N/A'}
+                </Typography>
+                <Typography variant="body1" gutterBottom>
+                  <strong>CVV:</strong> {paymentData.cvv || 'N/A'}
+                </Typography>
+                {bookingDetails && (
+                  <>
+                    <Typography variant="body1" gutterBottom>
+                      <strong>Booking ID:</strong> {bookingDetails.id || 'N/A'}
+                    </Typography>
+                    <Typography variant="body1" gutterBottom>
+                      <strong>QR Code Text:</strong> {bookingDetails.qrCodeText || 'N/A'}
+                    </Typography>
+                  </>
+                )}
+              </>
+            ) : (
+              <Typography variant="body1">
+                No payment data available.
+              </Typography>
+            )}
+          </Box>
+        )}
+        <Box mt={4} textAlign="center">
+          <Button variant="contained" color="primary" onClick={handleNavigateHome}>
+            Go to Home
+          </Button>
+        </Box>
+      </Paper>
+    </Container>
   );
 };
 
-export default SuccessPage;
+export default PaymentSuccess;

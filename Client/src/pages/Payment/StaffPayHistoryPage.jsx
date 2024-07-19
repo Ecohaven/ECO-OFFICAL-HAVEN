@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Select, MenuItem, Typography, Box, TextField } from '@mui/material';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import Sidebar from '../../../components/sidebar';
 
 const Backend = () => {
   const [payments, setPayments] = useState([]);
@@ -14,7 +15,7 @@ const Backend = () => {
   useEffect(() => {
     const fetchPayments = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/payments');
+        const response = await axios.get('http://localhost:3001/pay/payments');
         if (Array.isArray(response.data)) {
           setPayments(response.data);
         } else {
@@ -108,6 +109,7 @@ const Backend = () => {
 
   return (
     <Box sx={{ padding: 4 }}>
+<Sidebar/>
       <Typography variant="h4" gutterBottom>
         Payment History
       </Typography>

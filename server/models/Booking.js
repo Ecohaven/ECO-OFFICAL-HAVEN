@@ -21,10 +21,6 @@ eventName: {
       type: DataTypes.STRING(50),
       allowNull: false
     },
-    address: {
-      type: DataTypes.STRING,
-      allowNull: true
-    },
     bookingDate: {
       type: DataTypes.DATEONLY,
       allowNull: true
@@ -38,6 +34,10 @@ eventName: {
       allowNull: false
     },
     eventId: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+ amount: {
       type: DataTypes.INTEGER,
       allowNull: true
     },
@@ -67,6 +67,7 @@ eventName: {
   Booking.associate = models => {
      Booking.belongsTo(models.events, { foreignKey: 'eventId', as: 'eventDetails' });
     Booking.hasMany(models.CheckIn, { foreignKey: 'associatedBookingId' , as: 'checkIns'});
+   Booking.hasOne(models.Payment, { foreignKey: 'bookingId', as: 'payment' }); // Assuming one-to-one relationship
   };
 
   return Booking;

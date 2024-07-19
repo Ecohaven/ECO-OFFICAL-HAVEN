@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const QRCodeLib = require('qrcode')
-const { Booking,CheckIn,Event } = require('../models');
+const { Booking,CheckIn,Event,Payment } = require('../models');
 const yup = require('yup');
 const { Op } = require("sequelize");
 
@@ -114,7 +114,6 @@ router.get("/account/:accountName/bookings", async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
-
 
 
 // GET request to fetch booking details by bookingId

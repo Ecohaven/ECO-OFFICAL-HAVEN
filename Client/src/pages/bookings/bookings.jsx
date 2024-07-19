@@ -30,7 +30,8 @@ const BookingList = () => {
 
             const updatedBookings = bookingsResponse.data.map(booking => ({
                 ...booking,
-                status: booking.status || 'Active'
+                status: booking.status || 'Active',
+                eventStatus: booking.eventStatus === 'Free' ? 'Free' : 'Paid' 
             }));
 
             setBookings(updatedBookings);
@@ -174,6 +175,23 @@ const BookingList = () => {
                 </div>
             ),
         },
+
+  {
+        field: 'eventStatus',
+        headerName: 'Event Admission',
+        width: 130,  // Adjust width as needed
+        renderCell: (params) => (
+            <div style={{
+                borderRadius: '4px',
+                color: params.row.eventStatus === 'Paid' ? 'blue' :
+                      (params.row.eventStatus === 'Free' ? 'green' : 'inherit'),
+                fontWeight: 'bold',
+                textAlign: 'center'
+            }}>
+                {params.row.eventStatus}
+            </div>
+        ),
+    },
          {
             field: 'bookingDate',
             headerName: 'Booking Date',
@@ -192,7 +210,6 @@ const BookingList = () => {
         },
         { field: 'Name', headerName: 'Name', width: 130 },
         { field: 'id', headerName: 'Booking ID', width: 100 },
-        { field: 'eventId', headerName: 'Event ID', width: 120 },
         { field: 'eventName', headerName: 'Event Name', width: 120 },
         { field: 'numberOfPax', headerName: 'No.of Pax', width: 80 },
         { field: 'phoneNumber', headerName: 'Phone Number', width: 150 },

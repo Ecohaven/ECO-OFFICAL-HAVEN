@@ -157,7 +157,7 @@ const Sidebar = () => {
             </List>
           </Collapse>
 
-          <ListItem button component={Link} to="/payment" selected={isActive('/payment')}>
+          <ListItem button component={Link} to="/historypayment" selected={isActive('/historypayment')}>
             <ListItemIcon style={{ color: 'white' }}>
               <PaymentIcon />
             </ListItemIcon>

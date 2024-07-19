@@ -46,7 +46,7 @@ const { account, setAccount } = useContext(AccountContext); // Use the context
         }
     }, [account, setAccount]);
 
-  const handleSubmit = async (e) => {
+ const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
@@ -54,8 +54,8 @@ const { account, setAccount } = useContext(AccountContext); // Use the context
         eventId: event.eventId,
         eventName: event.eventName,
         leafPoints: event.leafPoints,
-        bookingDate: new Date(), // Assuming this is the current booking date
-        gender,
+        amount: event.amount,
+        bookingDate: new Date(),
         numberOfPax,
         address,
         Name: account.name,
@@ -64,13 +64,21 @@ const { account, setAccount } = useContext(AccountContext); // Use the context
         location: event.location
       };
 
+      // Check if event status is not 'Free' and there is an amount
+      if (event.status !== 'Free' && event.amount) {
+        // Redirect to payment page
+        navigate('/payment', { state: { formData,eventName: event.eventName, amount: event.amount, email: account.email, phoneNumber: account.phone_no , bookingId: bookingId} });
+        return; // Prevent further execution
+      }
+
+      // Proceed with booking creation
       const response = await axios.post('http://localhost:3001/api/bookings', formData);
 
       if (response.data.id && response.data.qrCodeText) {
         const { id, qrCodeText } = response.data;
 
-        setBookingId(id); // Store the booking ID in state
-        setQrCodeText(qrCodeText); // Store the QR code text in state
+        setBookingId(id);
+        setQrCodeText(qrCodeText);
 
         // Automatically send email here with bookingId and qrCodeText
         sendEmail(formData, id, qrCodeText);
@@ -79,9 +87,9 @@ const { account, setAccount } = useContext(AccountContext); // Use the context
       }
     } catch (error) {
       console.error('Failed to create booking:', error);
-      // Handle error if needed
     }
   };
+
 
   // Updated sendEmail function to include bookingId and qrCodeText
 const sendEmail = async (formData, bookingId, qrCodeText) => {
@@ -342,17 +350,8 @@ const sendEmail = async (formData, bookingId, qrCodeText) => {
                       ))}
                     </Select>
 
+                  </Box>
 
-                  </Box>
-                  <Box sx={{ mb: 2 }}>
-                    <TextField
-                      fullWidth
-                      label="Address (Optional)"
-                      variant="outlined"
-                      value={address}
-                      onChange={(e) => setAddress(e.target.value)}
-                    />
-                  </Box>
                   <Box sx={{ mb: 2 }}>
                       <Grid item xs={12} sm={6}>
                         <TextField

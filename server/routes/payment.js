@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../models');
-const { processPayment } = require('../mockpayment');
+const { processPayment } = require('./mockpayment');
 
 // Utility function to check for missing fields
 const checkMissingFields = (requiredFields, data) => {
@@ -13,7 +13,7 @@ const checkMissingFields = (requiredFields, data) => {
 router.post('/', async (req, res) => {
   const requiredFields = [
     'amount', 'email', 'phoneNumber', 'homeAddress', 'postalCode', 
-    'paymentMethod', 'cardholderName', 'cardNumber', 'expiryDate', 'cvv', 'currency'
+    'paymentMethod', 'cardholderName', 'cardNumber', 'expiryDate', 'cvv','eventName'
   ];
   const missingFields = checkMissingFields(requiredFields, req.body);
 
@@ -24,7 +24,7 @@ router.post('/', async (req, res) => {
     return res.status(400).json({ error: 'Missing required fields', missingFields });
   }
 
-  const { amount, email, phoneNumber, homeAddress, postalCode, paymentMethod, cardholderName, cardNumber, expiryDate, cvv, currency } = req.body;
+  const { amount, email, phoneNumber, homeAddress, postalCode, paymentMethod, cardholderName, cardNumber, expiryDate, cvv,eventName } = req.body;
 
   try {
     // Simulate payment processing
@@ -35,6 +35,7 @@ router.post('/', async (req, res) => {
     }
 
     const newPayment = await db.Payment.create({
+    eventName,
       amount,
       email,
       phoneNumber,

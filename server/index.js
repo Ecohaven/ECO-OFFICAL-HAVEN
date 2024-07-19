@@ -3,6 +3,7 @@ require('dotenv').config(); // read environment variable from .env file
 const express = require('express'); // import express
 const app = express(); // initialize express
 const db = require('./models'); // import models
+const mockpayment = require('./routes/mockpayment'); // simulate mockpayment
 
 app.use(express.json()); // enable json request body
 
@@ -75,10 +76,9 @@ app.use('/send-email', mailerRoutes);
 const FilterRoutes = require('./routes/Filter');
 app.use('/api/', FilterRoutes);
 
-
-// //Payment 
-// const paymentRoutes = require('./routes/payment');
-// app.use('/pay/', paymentRoutes);
+//Payment 
+const paymentRoutes = require('./routes/payment');
+app.use('/pay/', paymentRoutes);
 
 //refund
 const refundRoutes = require('./routes/refund');
