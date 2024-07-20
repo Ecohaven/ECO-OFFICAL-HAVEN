@@ -33,7 +33,7 @@
 }
 
 /* balance */
-.summary a{
+.summary a {
     color: #14772B;
     font-weight: bold;
 }
@@ -86,7 +86,8 @@
         font-size: 6vw;
     }
 
-    .balance h1, .shop h1 {
+    .balance h1,
+    .shop h1 {
         width: 90%;
         font-size: 5vw;
     }
@@ -121,5 +122,5 @@
         padding: 8px 16px;
         font-size: 15px;
     }
-    
+
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import '../../style/rewards/redemptionshop.css';
 // import Navbar from '../../components/Navbar';
 // import Footer from '../../components/footer';
@@ -10,11 +10,13 @@ import Box from '@mui/material/Box';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import AccountContext from '../../contexts/AccountContext';
 
 function RedemptionShop() {
   const [products, setProducts] = useState([]);
   const [sortedProducts, setSortedProducts] = useState([]);
   const [sortOption, setSortOption] = useState('lowestToHighest'); // Set default sorting option
+  const { account } = useContext(AccountContext); // Use context to get the account details
 
   useEffect(() => {
     fetchProducts();
@@ -84,9 +86,11 @@ function RedemptionShop() {
 
       <div className='balance'>
         <h1>Your balance:</h1>
-        <h1><span className='total'>150</span> leaves</h1>
+        <h3 className="leaf-points">
+          <h1>{account?.leaf_points} 🍃</h1>
+        </h3>
         <div className='summary'>
-          <p>View <a href='/:username/rewards'>leaves summary</a></p>
+          <p>View <a href='/'>leaves summary</a></p>
         </div>
       </div>
 
@@ -160,7 +164,7 @@ function RedemptionShop() {
                     borderRadius: '15px'
                   }}
                 />
-                <p><b>{product.leaves}</b> Leaves</p>
+                <p><b>{product.leaves}</b> 🍃</p>
                 <Link to={`/redeemform/${product.id}`} state={{ product }} className='redeembutton'>Redeem</Link>
               </Paper>
             </Grid>

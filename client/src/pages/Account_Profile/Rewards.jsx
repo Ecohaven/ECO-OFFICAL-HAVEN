@@ -117,17 +117,19 @@ function Account_Profile_Rewards() {
         </Grid>
 
         <Grid item xs={12} md={9}>
-          <div className="table-container" style={{marginBottom:'80px'}}>
+          <div className="table-container" style={{ marginBottom: '80px' }}>
+
             {/* leaves summary */}
             <h3 className='header'>Leaves summary</h3>
             <hr></hr>
-            <div className="grey-rectangle">
-              <div className="grey-rectangle-content">
-                <Typography variant="h4" component="div">
-                  {account?.leaf_points}
-                </Typography>
-                <Typography variant="h6" component="div">total leaves</Typography>
-                <Typography variant="h7" component="div">as of today</Typography>
+            <div className="summary-rectangle">
+              <div className="summary-rectangle-content">
+                <h3 className="balance">Your balance:</h3>
+                <h3 className="leaf-points">
+                  <h1>{account?.leaf_points} 🍃</h1>
+                </h3>
+                <p className="total-leaves">Total leaves</p>
+                <p className="as-of-today">As of today</p>
               </div>
             </div>
 
@@ -161,7 +163,7 @@ function Account_Profile_Rewards() {
           </div>
 
           {/* collection detail */}
-         
+
         </Grid>
       </Grid>
     </Container>

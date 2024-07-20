@@ -121,7 +121,7 @@ function RewardForm() {
                         <>
                             <h2>{product.itemName}</h2>
                             <img src={`http://localhost:3001/eco/product-images/${product.itemimg}`} alt={product.itemName} className='product-image' />
-                            <p><b>{product.leaves}</b> Leaves</p>
+                            <p><b>{product.leaves}</b> 🍃</p>
                         </>
                     )}
                 </div>
