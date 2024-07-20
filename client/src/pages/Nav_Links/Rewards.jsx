@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import '../../style/rewards/rewards.css';
 import { Grid } from '@mui/material';
-
-// import Navbar from '../../components/Navbar';
-// import Footer from '../../components/footer';
+import AccountContext from '../../contexts/AccountContext';
 
 function Rewards() {
   const [latestProducts, setLatestProducts] = useState([]);
+  const { account } = useContext(AccountContext); // Get account info from context
 
   useEffect(() => {
     const fetchLatestProducts = async () => {
@@ -40,7 +39,7 @@ function Rewards() {
       {/* greenreward */}
       <div className='greenreward'>
         <h1>Green rewards</h1>
-        <p>Earn leaves and exchange them for rewards! It takes less than 2 minutes to create a account. Sign up with us now!</p>
+        <p>Earn leaves and exchange them for rewards! It takes less than 2 minutes to create an account. Sign up with us now!</p>
         <button className='signupbutton'><a href='/redemptionshop'>Sign up now!</a></button> {/* change link afterwards */}
       </div>
 
@@ -54,7 +53,7 @@ function Rewards() {
           {[
             { img: '../../src/assets/images/signup.png', title: 'Sign up for free', description: 'Simply click here to create an account' },
             { img: '../../src/assets/images/leaves.png', title: 'Earn points', description: 'Get 1 leaf per event that you have signed up for & attended' },
-            { img: '../../src/assets/images//prize.png', title: 'Get rewarded', description: 'Use your leaves to redeem rewards' }
+            { img: '../../src/assets/images/prize.png', title: 'Get rewarded', description: 'Use your leaves to redeem rewards' }
           ].map((step, index) => (
             <Grid item key={index} xs={12} sm={6} md={4}>
               <img src={step.img} alt={step.title} style={{ width: '200px', height: 'auto', display: 'block', margin: '0 auto', marginBottom: '30px' }} />
@@ -82,14 +81,18 @@ function Rewards() {
           ))}
         </div>
 
-        <button className='redeempagebutton'><a href='/redemptionshop'>Redemption Shop</a></button>
+        {account ? (
+          <button className='redeempagebutton'><a href='/redemptionshop'>Redemption Shop</a></button>
+        ) : (
+          <button className='redeempagebutton' disabled>Redemption Shop</button>
+        )}
         <p>*Find more rewards at our redemption shop</p>
       </div>
 
       {/* greenreward2 */}
       <div className='greenreward2'>
         <h1>Green rewards</h1>
-        <p>Earn leaves and exchange them for rewards! It takes less than 2 minutes to create a account. Sign up with us now!</p>
+        <p>Earn leaves and exchange them for rewards! It takes less than 2 minutes to create an account. Sign up with us now!</p>
         <button className='signupbutton'><a href='/redemptionshop'>Sign up now!</a></button> {/* change link afterwards */}
         <p className='qn'>Any questions? Check out our <a href='/faq'>FAQ</a> here</p>
       </div>
@@ -103,7 +106,6 @@ function Rewards() {
           <li><a href="/rewardproduct">Reward Item</a></li>
         </div>
       </ul> */}
-
     </div>
   );
 }

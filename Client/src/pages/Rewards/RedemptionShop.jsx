@@ -90,7 +90,7 @@ function RedemptionShop() {
           <h1>{account?.leaf_points} 🍃</h1>
         </h3>
         <div className='summary'>
-          <p>View <a href='/'>leaves summary</a></p>
+          <p>View <a href='/account/rewards'>leaves summary</a></p>
         </div>
       </div>
 
