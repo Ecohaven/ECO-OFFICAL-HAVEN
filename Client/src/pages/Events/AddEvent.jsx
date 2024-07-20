@@ -84,7 +84,7 @@ const AddEventForm = () => {
         }
       );
       handleShowAlert('success', response.data.message);
-      window.location.href = '/eventbackend';
+      window.location.href = '/events';
     } catch (error) {
       console.error('Error adding event:', error);
       handleShowAlert('error', 'Error adding event. Please try again.');
@@ -242,15 +242,8 @@ const AddEventForm = () => {
                   name="status"
                   fullWidth
                   required
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    setFieldValue('status', value);
-                    if (value === 'Free') {
-                      setFieldValue('amount', 0);
-                    }
-                  }}
                 >
-                  {['Free', 'Paid'].map((option) => (
+                  {['Free', 'Payment'].map((option) => (
                     <MenuItem key={option} value={option}>
                       {option}
                     </MenuItem>
@@ -267,7 +260,6 @@ const AddEventForm = () => {
                   fullWidth
                   placeholder="Enter amount"
                   required
-                  disabled={values.status === 'Free'}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -310,15 +302,16 @@ const AddEventForm = () => {
                 )}
               </Grid>
               <Grid item xs={12}>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                  disabled={isSubmitting}
-                >
-                  Add Event
-                </Button>
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    disabled={isSubmitting}
+                  >
+                    Add Event
+                  </Button>
+                </Box>
               </Grid>
             </Grid>
           </Form>
@@ -329,12 +322,13 @@ const AddEventForm = () => {
 };
 
 const containerStyle = {
-  maxWidth: '600px',
-  margin: '0 auto',
+  maxWidth: '800px',
+  width: '100%',
+  margin: 'auto',
   padding: '20px',
-  borderRadius: '8px',
   backgroundColor: '#fff',
-  boxShadow: '0 0 10px rgba(0,0,0,0.1)',
+  borderRadius: '12px',
+  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
 };
 
 const headingStyle = {
@@ -344,9 +338,7 @@ const headingStyle = {
 
 const fileInputStyle = {
   display: 'block',
-  width: '100%',
-  padding: '10px',
-  marginTop: '10px',
+  marginBottom: '10px',
 };
 
 export default AddEventForm;
