@@ -21,6 +21,9 @@ const CheckInPage = () => {
     const [eventIdFilter, setEventIdFilter] = useState('');
     const [qrCodeStatusFilter, setQrCodeStatusFilter] = useState(''); // Corrected state name
     const [alertMessage, setAlertMessage] = useState('');
+const [paxName, setPaxName] = useState('');
+ const [paxQrCodeText, setPaxQrCodeText] = useState('');
+
 
     useEffect(() => {
         fetchEventNames();
@@ -92,29 +95,65 @@ const CheckInPage = () => {
         }
     };
 
-    const handleScan = async (data) => {
-        if (data) {
-            setQrCodeText(data.text);
-            setError('');
+const handleScan = async (data) => {
+    if (data && data.text) {
+        // Get the scanned QR code data
+        const qrCodeData = data.text;
 
-            try {
-                const response = await axios.post(`http://localhost:3001/checkin/checkinbycam`, { qrCodeText: data.text });
-                setModalMessage('Check-in by QR Code successful');
-                setModalOpen(false);
+        // Reset error state
+        setError('');
 
-                fetchCheckIns();
-            } catch (error) {
-                console.error('Error during check-in:', error);
-                setError('Qr Code invalid, Staff please check booking records');
+        try {
+            // Execute the API request with the entire QR code data
+            const response = await axios.post('http://localhost:3001/checkin/checkin', { data: qrCodeData });
+            
+            if (response.status === 200) {
+                setModalMessage(response.data.message || 'Check-in successful');
+                setModalOpen(true);
+                fetchCheckIns(); // Refresh check-in list
+            } else {
+                setError('Unexpected response from server');
+            }
+        } catch (error) {
+            console.error('Error during check-in:', error);
+
+            if (error.response) {
+                if (error.response.status === 404) {
+                    setError('Record not found. Please check the details.');
+                } else if (error.response.status === 400) {
+                    setError('Invalid data provided. Please ensure all fields are correct.');
+                } else {
+                    setError('An unexpected error occurred. Please try again later.');
+                }
+            } else if (error.request) {
+                setError('Network error. Please check your connection and try again.');
+            } else {
+                setError('An error occurred while processing the request.');
             }
         }
-    };
+    } else {
+        setError('Invalid QR Code data. Please try scanning again.');
+    }
+};
 
-    const handleError = (err) => {
-        console.error('Error during QR code scan:', err);
-        setError('Failed to scan QR code');
-        setQrCodeText(''); // Reset qrCodeText state on error
-    };
+
+
+// Utility function to handle errors
+const handleError = (error) => {
+    if (error.response) {
+        if (error.response.status === 404) {
+            return 'Record not found. Please check the details.';
+        } else if (error.response.status === 400) {
+            return 'Invalid data provided. Please ensure all fields are correct.';
+        } else {
+            return 'An unexpected error occurred. Please try again later.';
+        }
+    } else if (error.request) {
+        return 'Network error. Please check your connection and try again.';
+    } else {
+        return 'An error occurred while processing the request.';
+    }
+};
 
     const handleOpenModal = (type) => {
         setError('');

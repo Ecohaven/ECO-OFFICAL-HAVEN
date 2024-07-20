@@ -11,9 +11,21 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       defaultValue: DataTypes.NOW
     },
+ paxName: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    paxQrCodeText: {
+        type: DataTypes.JSON,
+        allowNull: true,
+    },
+    paxQrCodeUrl: {
+        type: DataTypes.JSON,
+        allowNull: true,
+    },
     qrCodeText: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     qrCodeChecked: {
       type: DataTypes.BOOLEAN,
@@ -25,6 +37,10 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       defaultValue: 'Not Checked'
     },
+paxQrCodeRecords: {
+    type: DataTypes.JSON,
+    allowNull: true,
+  },
     leafPoints: {
       type: DataTypes.INTEGER,
       allowNull: true

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const QRCodeLib = require('qrcode')
-const { Booking,CheckIn,Event,Payment } = require('../models');
+const { Booking, CheckIn, Event, Payment } = require('../models');
 const yup = require('yup');
 const { Op } = require("sequelize");
 
@@ -29,40 +29,89 @@ function generateRandomText(length) {
   }
   return result;
 }
-// Booking creation route
+
 router.post("/", async (req, res) => {
-    let data = req.body;
-    try {
-        // Validate the data
-        data = await validationSchema.validate(data, { abortEarly: false });
+  let data = req.body;
 
-        // Generate custom ID
-        data.id = generateCustomId();
+  try {
+    // Validate the data
+    data = await validationSchema.validate(data, { abortEarly: false });
 
-        // Generate QR code text and URL
-        const qrCodeText = generateRandomText(5);
-        const qrCodeUrl = await QRCodeLib.toDataURL(qrCodeText);
-        data.qrCodeText = qrCodeText;
-        data.qrCodeUrl = qrCodeUrl;
+    // Handle paxName as an array if it's an array in the schema
+    const paxName = Array.isArray(data.paxName) ? data.paxName : [];
 
-        // Set status as active by default
-        data.status = 'Active';
+    // Generate custom ID
+    data.id = generateCustomId();
 
-        // Set createdAt field to current date and time
-        data.createdAt = new Date();
+    // Generate QR code text and URL for the main booking
+    const mainQrCodeText = generateRandomText(5);
+    const mainQrCodeUrl = await QRCodeLib.toDataURL(mainQrCodeText);
+    data.qrCodeText = mainQrCodeText;
+    data.qrCodeUrl = mainQrCodeUrl;
 
-        // Create the booking
-        let result = await Booking.create(data);
+    // Set status as active by default
+    data.status = 'Active';
 
-        // Create the corresponding check-in record
-        await CheckIn.create({ associatedBookingId: result.id, qrCodeText: qrCodeText });
+    // Set createdAt field to current date and time
+    data.createdAt = new Date();
 
-        res.json(result);
-    } catch (err) {
-        console.error('Error creating booking:', err);
-        res.status(400).json({ errors: err.errors });
-    }
+    // Create the booking
+    const result = await Booking.create(data);
+
+    // Generate additional QR codes for each paxName if provided
+    const paxQrCodeRecords = await Promise.all(paxName.map(async (name) => {
+      if (!name) return null; // Skip if name is empty or undefined
+      const paxQrCodeText = generateRandomText(5);
+      const paxQrCodeUrl = await QRCodeLib.toDataURL(paxQrCodeText);
+      return {
+        name,
+        paxQrCodeText,
+        paxQrCodeUrl,
+        eventName: data.eventName,
+        eventId: data.eventId,
+        leafPoints: data.leafPoints
+      };
+    }));
+
+    // Store pax QR code details in the booking
+    const nonNullPaxQrCodeRecords = paxQrCodeRecords.filter(record => record !== null);
+    data.paxQrCodeRecords = nonNullPaxQrCodeRecords;
+
+    await Booking.update(
+      { paxQrCodeRecords: JSON.stringify(nonNullPaxQrCodeRecords) },
+      { where: { id: result.id } }
+    );
+
+    // Create check-in records for the main pax and additional pax
+    await CheckIn.create({
+      associatedBookingId: result.id,
+      qrCodeText: mainQrCodeText,
+      qrCodeUrl: mainQrCodeUrl,
+      eventName: data.eventName,
+    });
+
+    await Promise.all(
+      nonNullPaxQrCodeRecords.map(async (record) => {
+        return CheckIn.create({
+          associatedBookingId: result.id,
+          paxQrCodeText: record.paxQrCodeText,
+          paxQrCodeUrl: record.paxQrCodeUrl,
+          paxName: record.name,
+          eventName: data.eventName,
+          eventId: data.eventId,
+          leafPoints: data.leafPoints
+        });
+      })
+    );
+
+    res.json(result);
+  } catch (err) {
+    console.error('Error creating booking:', err);
+    res.status(400).json({ errors: err.errors || 'An error occurred while creating the booking' });
+  }
 });
+
+
 
 // GET route to fetch all bookings
 router.get("/", async (req, res) => {
@@ -101,7 +150,7 @@ router.get("/account/:accountName/bookings", async (req, res) => {
     // Find bookings associated with the accountName
     const bookings = await Booking.findAll({
       where: { Name: accountName }, // Adjust based on your actual model field for account name
-      attributes: ['id', 'eventName', 'qrCodeText', 'qrCodeUrl','status'] // Specify booking attributes to retrieve
+      attributes: ['id', 'eventName', 'qrCodeText', 'qrCodeUrl', 'status'] // Specify booking attributes to retrieve
     });
 
     if (!bookings || bookings.length === 0) {
@@ -145,10 +194,10 @@ router.get("/:bookingId", async (req, res) => {
 // /qr-code/(QRCODETEXT)
 router.get("/qr-code/:qrCodeText", async (req, res) => {
   const qrCodeText = req.params.qrCodeText;
-try{
-//find associated qr code in the booking by ID
-const booking = await Booking.findOne({where: {qrCodeText}});
-if (!booking) {
+  try {
+    //find associated qr code in the booking by ID
+    const booking = await Booking.findOne({ where: { qrCodeText } });
+    if (!booking) {
       return res.status(404).json({ error: 'Booking not found' });
     }
 
@@ -182,44 +231,44 @@ router.put("/:id", async (req, res) => {
 
 // Cancelling booking request
 router.put('/cancel/:id', async (req, res) => {
-    const bookingId = req.params.id;
+  const bookingId = req.params.id;
 
-    try {
-        // Find the booking by ID including associated check-ins
-        const booking = await Booking.findByPk(bookingId, {
-            include: { model: CheckIn, as: 'checkIns' }
-        });
+  try {
+    // Find the booking by ID including associated check-ins
+    const booking = await Booking.findByPk(bookingId, {
+      include: { model: CheckIn, as: 'checkIns' }
+    });
 
-        if (!booking) {
-            return res.status(404).json({ message: 'Booking not found' });
-        }
-
-        // Update the status to 'Cancelled' in booking
-        await booking.update({ status: 'Cancelled' });
-
-        // Update checkIn.qrCodeStatus to 'Cancelled' if checkIns exist
-        if (booking.checkIns && booking.checkIns.length > 0) {
-            for (let checkIn of booking.checkIns) {
-                await checkIn.update({ qrCodeStatus: 'Cancelled' });
-            }
-        }
-
-        // Fetch the updated booking with the new status and check-ins
-        const updatedBooking = await Booking.findByPk(bookingId, {
-            include: { model: CheckIn, as: 'checkIns' }
-        });
-
-        if (!updatedBooking) {
-            return res.status(404).json({ message: 'Updated booking not found' });
-        }
-
-        // Now you can perform operations with updatedBooking.status or any other properties
-
-        res.json({ message: 'Booking has been cancelled successfully', booking: updatedBooking });
-    } catch (error) {
-        console.error('Error cancelling booking:', error);
-        res.status(500).send('Server error');
+    if (!booking) {
+      return res.status(404).json({ message: 'Booking not found' });
     }
+
+    // Update the status to 'Cancelled' in booking
+    await booking.update({ status: 'Cancelled' });
+
+    // Update checkIn.qrCodeStatus to 'Cancelled' if checkIns exist
+    if (booking.checkIns && booking.checkIns.length > 0) {
+      for (let checkIn of booking.checkIns) {
+        await checkIn.update({ qrCodeStatus: 'Cancelled' });
+      }
+    }
+
+    // Fetch the updated booking with the new status and check-ins
+    const updatedBooking = await Booking.findByPk(bookingId, {
+      include: { model: CheckIn, as: 'checkIns' }
+    });
+
+    if (!updatedBooking) {
+      return res.status(404).json({ message: 'Updated booking not found' });
+    }
+
+    // Now you can perform operations with updatedBooking.status or any other properties
+
+    res.json({ message: 'Booking has been cancelled successfully', booking: updatedBooking });
+  } catch (error) {
+    console.error('Error cancelling booking:', error);
+    res.status(500).send('Server error');
+  }
 });
 
 
@@ -227,32 +276,32 @@ router.put('/cancel/:id', async (req, res) => {
 
 // specific route in backend for updating 
 router.put("/:id/update-details", async (req, res) => {
-    try {
-        // Extract the ID from the request parameters
-        const id = req.params.id;
-        
-        // Extract the updated details 
-        const { numberOfPax,event } = req.body;
+  try {
+    // Extract the ID from the request parameters
+    const id = req.params.id;
 
-     
-        const booking = await Booking.findByPk(id);
-
-     
-        if (!booking) {
-            return res.status(404).json({ error: 'Booking not found' });
-        }
-
-        // iimportant to store updated details 
-        booking.numberOfPax = numberOfPax;
-        booking.event = event;
-        await booking.save();
+    // Extract the updated details 
+    const { numberOfPax, event } = req.body;
 
 
-        return res.status(200).json({ message: 'Details has been updated successfully' });
-    } catch (error) {
-        console.error('Error updating number of pax:', error);
-        return res.status(500).json({ error: 'An error occurred while updating the number of pax' });
+    const booking = await Booking.findByPk(id);
+
+
+    if (!booking) {
+      return res.status(404).json({ error: 'Booking not found' });
     }
+
+    // iimportant to store updated details 
+    booking.numberOfPax = numberOfPax;
+    booking.event = event;
+    await booking.save();
+
+
+    return res.status(200).json({ message: 'Details has been updated successfully' });
+  } catch (error) {
+    console.error('Error updating number of pax:', error);
+    return res.status(500).json({ error: 'An error occurred while updating the number of pax' });
+  }
 });
 
 
