@@ -237,7 +237,7 @@ const BookingForm = () => {
           </Select>
         </Grid>
         <Grid item xs={12}>
-          <FormLabel>Number of Pax</FormLabel>
+          <FormLabel>Number of Additional Pax</FormLabel>
           <TextField
             type="number"
             value={numberOfPax}

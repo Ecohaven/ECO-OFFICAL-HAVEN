@@ -11,9 +11,9 @@ import axios from 'axios';
 import { Alert, Snackbar } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import Sidebar from '../../../components/sidebar';
-import AddEvent from '../Events/AddEvent';
 import DeleteConfirmationModal from '../../../components/DeleteModal';
 import '../../style/eventtable.css';
+
 
 const EventDataTable = () => {
     const navigate = useNavigate();
@@ -49,7 +49,7 @@ const EventDataTable = () => {
         try {
             const response = await axios.get('http://localhost:3001/api/events');
             if (Array.isArray(response.data)) {
-                const eventsWithIds = response.data.map((event, index) => ({
+                const eventsWithIds = response.data.map((event) => ({
                     ...event,
                     id: event.eventId,
                 }));
@@ -71,6 +71,16 @@ const EventDataTable = () => {
             return () => clearTimeout(timer);
         }
     }, [alertOpen]);
+
+
+
+const handleCheckIn = (eventName) => {
+    // Redirect immediately
+    navigate(`/attendance?eventName=${encodeURIComponent(eventName)}`);
+
+    // Optional: Add any additional logic if needed
+};
+
 
     const handleOpenEditEvent = (event) => {
         setSelectedEvent(event);
@@ -104,7 +114,7 @@ const EventDataTable = () => {
                 setFormValues((prevValues) => ({
                     ...prevValues,
                     status: value,
-                    amount: '', // Clear amount if status is Free
+                    amount: '', 
                 }));
             } else {
                 setFormValues((prevValues) => ({
@@ -170,19 +180,28 @@ const EventDataTable = () => {
         navigate('/AddEvent'); 
     };
 
-    const handleUpdateEvent = async () => {
-        try {
-            const response = await axios.put(`http://localhost:3001/api/events/${selectedEvent.id}`, formValues);
-            const updatedEvent = response.data.event;
-            const updatedEvents = events.map((event) => (event.id === updatedEvent.id ? updatedEvent : event));
-            setEvents(updatedEvents);
-            handleCloseEditEvent();
-            handleShowAlert('success', 'Event updated successfully!');
-        } catch (error) {
-            console.error('Error updating event:', error);
-            handleShowAlert('error', 'Error updating event. Please try again.');
-        }
-    };
+    const handleUpdateEvent = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    try {
+        const response = await axios.put(`http://localhost:3001/api/events/${selectedEvent.id}`, formValues);
+        const updatedEvent = response.data.event;
+        // Update the event in the state
+        setEvents((prevEvents) =>
+            prevEvents.map((event) => (event.id === updatedEvent.id ? updatedEvent : event))
+        );
+        handleCloseEditEvent();
+        handleShowAlert('success', 'Event updated successfully!');
+        // Fetch updated events
+        fetchEvents(); // Refresh the event list
+    } catch (error) {
+        console.error('Error updating event:', error);
+        handleShowAlert('error', 'Error updating event. Please try again.');
+    }
+};
+
+
     const handleEventNameFilterChange = (e) => {
         setEventNameFilter(e.target.value);
     };
@@ -203,7 +222,6 @@ const EventDataTable = () => {
         setEventNameFilter('');
         fetchEvents();
     };
-
 
     const columns = [
         {
@@ -256,6 +274,21 @@ const EventDataTable = () => {
                 />
             ),
         },
+{
+    field: 'checkIn',
+    headerName: 'Check In',
+    width: 200, 
+    renderCell: (params) => (
+        <Button
+            variant="contained"
+            color="primary"
+            onClick={() => handleCheckIn(params.row.eventName)}
+        >
+            Check In to {params.row.eventName}
+        </Button>
+    ),
+}
+
 
     ];
 
@@ -263,7 +296,6 @@ const EventDataTable = () => {
         <div className='event-list-container'>
             <Sidebar />
             <h2>Event's List</h2>
-
 
             {/*Event filter dropdown box */}
             <TextField
@@ -274,241 +306,220 @@ const EventDataTable = () => {
                 onChange={handleEventNameFilterChange}
                 variant="outlined"
                 sx={{ mb: 2, width: '200px' }}
-                SelectProps={{
-                    MenuProps: {
-                        PaperProps: {
-                            style: {
-                                width: '200px',
-                                textAlign: 'left',
-                            },
-                        },
-                    },
-                }}
             >
-                <MenuItem value="">All Events</MenuItem>
                 {events.map((event) => (
                     <MenuItem key={event.id} value={event.eventName}>
                         {event.eventName}
                     </MenuItem>
                 ))}
             </TextField>
-
-            {/*Event filter button  */}
             <Button
-                variant="contained"
                 onClick={handleFilterEvents}
-                sx={{
-                    mb: 2,
-                    ml: 2,
-                    backgroundColor: 'blue',
-                    height: '45px',
-                    marginTop: '5px',
-                    '&:hover': {
-                        boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.2)'
-                    }
-                }}
+                variant="contained"
+                color="primary"
+                style={{ marginRight: '10px', height: '55px' }}
             >
-                Filter Events
+                Filter
             </Button>
             <Button
-                variant="contained"
                 onClick={handleResetFilter}
-                sx={{
-                    mb: 2,
-                    ml: 2,
-                    backgroundColor: 'red',
-                    height: '45px',
-                    marginTop: '5px',
-                    '&:hover': {
-                        boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.2)'
-                    }
-                }}
+                variant="contained"
+                color="secondary"
+                style={{ height: '55px' }}
             >
                 Reset
             </Button>
 
-
-            {/* event table data*/}
-            <DataGrid
-                rows={events}
-                columns={columns}
-                pageSize={10}
-                rowsPerPageOptions={[10, 25, 50]}
-            />
-
-            {/* Delete Confirmation Modal */}
-            {deleteConfirmation && (
-                <DeleteConfirmationModal
-                    open={!!deleteConfirmation}
-                    onClose={() => setDeleteConfirmation(null)}
-                    onDelete={() => {
-                        handleDeleteEvent(deleteConfirmation.id);
-                        setDeleteConfirmation(null);
-                    }}
-                    itemName={deleteConfirmation.eventName}
-                />
-            )}
-
-            {/* Snackbar for Alerts */}
-            <Snackbar
-                open={alertOpen}
-                autoHideDuration={5000}
-                onClose={handleCloseAlert}
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            {/* Add Event Button */}
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={handleAddEventRedirect}
+                style={{ marginBottom: '10px', float: 'right', marginRight: '15px' }}
             >
-                <Alert onClose={handleCloseAlert} severity={alertType}>
-                    {alertMessage}
-                </Alert>
-            </Snackbar>
+                Add Event
+            </Button>
 
-            {/* Zoomed Image Modal */}
-            <Modal
-                open={openZoomModal}
-                onClose={handleCloseZoomModal}
-                aria-labelledby="zoomed-image-modal-title"
-                aria-describedby="zoomed-image-modal-description"
-                style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}
-            >
-                <Box className="zoomed-image-modal">
-                    <img
-                        src={zoomedImageUrl}
-                        alt="Zoomed Event Image"
-                        style={{ maxWidth: '90%', maxHeight: '90%', objectFit: 'contain' }}
-                    />
-                </Box>
-            </Modal>
+            <Box sx={{ height: 400, width: '100%', mt: 2 }}>
+                <DataGrid rows={events} columns={columns} pageSize={5} />
+            </Box>
 
             {/* Edit Event Modal */}
-            <Modal
-                open={openAddEventModal}
-                onClose={handleCloseEditEvent}
-                aria-labelledby="edit-event-modal-title"
-                aria-describedby="edit-event-modal-description"
-                style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    margin: '30px 400px',
-                }}
-            >
-                <Box
-                    className="edit-event-modal"
-                    sx={{
-                        backgroundColor: 'white',
-                        boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
-                        borderRadius: '8px',
-                        padding: '20px 40px',
-                        width: '80%',
-                        maxWidth: '600px',
-                        overflowY: 'auto',
-                        maxHeight: '90vh',
-                    }}
-                >
-                    <h2 style={{ color: 'black', textAlign: 'center', marginBottom: '20px', marginTop: '-10px', fontSize: '35px' }}>
-                        Edit Event: {selectedEvent?.eventName || 'Event'}
-                    </h2>
-                    <form className="edit-event-form" onSubmit={handleUpdateEvent}>
-                        {[
-                            { id: 'eventName', label: 'Event Name', type: 'text' },
-                            { id: 'description', label: 'Description', type: 'text', multiline: true, rows: 4 },
-                            { id: 'location', label: 'Location', type: 'text' },
-                            { id: 'startDate', label: 'Start Date', type: 'date' },
-                            { id: 'endDate', label: 'End Date', type: 'date' },
-                            { id: 'time', label: 'Time', type: 'text' },
-                            { id: 'leafPoints', label: 'Leaf Points', type: 'text' },
-                        ].map((field) => (
-                            <TextField
-                                key={field.id}
-                                id={field.id}
-                                name={field.id}
-                                label={field.label}
-                                type={field.type}
-                                variant="outlined"
-                                fullWidth
-                                value={formValues[field.id]}
-                                onChange={handleInputChange}
-                                className="form-input"
-                                style={{ marginBottom: '16px', color: 'black' }}
-                                multiline={field.multiline || false}
-                                rows={field.rows || 1}
-                            />
-                        ))}
+           <Modal open={openAddEventModal} onClose={handleCloseEditEvent}>
+    <Box sx={{
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '90%',
+    maxWidth: '600px',
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+    maxHeight: '80vh',  // Limits the height of the modal
+    overflowY: 'auto', // Adds a scrollbar if content overflows
+    borderRadius: '8px', // Optional: Adds rounded corners to the modal
+}}>
 
+
+                    <h2 style={{ color: 'green' }}>Edit Event</h2>
+                    <form onSubmit={handleUpdateEvent}>
                         <TextField
-                            id="status"
-                            name="status"
-                            label="status"
-                            select
-                            variant="outlined"
+                            label="Event Name"
+                            name="eventName"
+                            value={formValues.eventName}
+                            onChange={handleInputChange}
                             fullWidth
+                            margin="normal"
+                            required
+                        />
+                        <TextField
+                            label="Description"
+                            name="description"
+                            value={formValues.description}
+                            onChange={handleInputChange}
+                            fullWidth
+                            margin="normal"
+                            required
+                        />
+                        <TextField
+                            label="Location"
+                            name="location"
+                            value={formValues.location}
+                            onChange={handleInputChange}
+                            fullWidth
+                            margin="normal"
+                            required
+                        />
+                        <TextField
+                            label="Start Date"
+                            name="startDate"
+                            value={formValues.startDate}
+                            onChange={handleInputChange}
+                            fullWidth
+                            margin="normal"
+                            required
+                        />
+                        <TextField
+                            label="End Date"
+                            name="endDate"
+                            value={formValues.endDate}
+                            onChange={handleInputChange}
+                            fullWidth
+                            margin="normal"
+                            required
+                        />
+                        <TextField
+                            label="Time"
+                            name="time"
+                            value={formValues.time}
+                            onChange={handleInputChange}
+                            fullWidth
+                            margin="normal"
+                            required
+                        />
+                        <TextField
+                            label="Leaf Points"
+                            name="leafPoints"
+                            value={formValues.leafPoints}
+                            onChange={handleInputChange}
+                            fullWidth
+                            margin="normal"
+                            required
+                        />
+                        <TextField
+                            label="Status"
+                            name="status"
                             value={formValues.status}
                             onChange={handleInputChange}
-                            className="form-input"
-                            style={{ marginBottom: '16px' }}
+                            select
+                            fullWidth
+                            margin="normal"
+                            required
                         >
                             <MenuItem value="Free">Free</MenuItem>
                             <MenuItem value="Paid">Paid</MenuItem>
                         </TextField>
-
+                        {formValues.status === 'Paid' && (
+                            <TextField
+                                label="Amount"
+                                name="amount"
+                                value={formValues.amount}
+                                onChange={handleInputChange}
+                                fullWidth
+                                margin="normal"
+                                required
+                            />
+                        )}
                         <TextField
-                            id="amount"
-                            name="amount"
-                            label="Amount"
-                            type="text"
-                            variant="outlined"
-                            fullWidth
-                            value={formValues.amount}
+                            label="Organiser"
+                            name="organiser"
+                            value={formValues.organiser}
                             onChange={handleInputChange}
-                            className="form-input"
-                            style={{ marginBottom: '16px' }}
-                            disabled={formValues.status === 'Free'} // Disable if status is Free
+                            fullWidth
+                            margin="normal"
+                            required
                         />
-
-
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            color="primary"
+                        <TextField
+                            type="file"
+                            onChange={handleFileChange}
                             fullWidth
-                            className="submit-button"
-                            style={{ marginTop: '16px', backgroundColor: 'green', fontWeight: 'bold', width: '30%', textAlign: 'center', marginLeft: '120px', height: '50px' }}
-                        >
-                            Update Event
-                        </Button>
-                        <Button
-                            variant="contained"
-                            color="secondary"
-                            fullWidth
-                            className="cancel-button"
-                            style={{ marginTop: '16px', backgroundColor: 'red', fontWeight: 'bold', width: '30%', textAlign: 'center', marginLeft: '20px', height: '50px' }}
-                            onClick={handleCloseEditEvent}
-                        >
-                            Cancel
-                        </Button>
-
-                        {errorAdding && <p className="error-message" style={{ color: 'red', marginTop: '16px' }}>{errorAdding}</p>}
+                            margin="normal"
+                        />
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+                            <Button onClick={handleCloseEditEvent} color="secondary" variant="contained">Cancel</Button>
+                            <Button type="submit" color="primary" variant="contained">Save</Button>
+                        </Box>
+                        {errorAdding && <Alert severity="error">{errorAdding}</Alert>}
                     </form>
                 </Box>
             </Modal>
 
+            {/* Delete Confirmation Modal */}
+            <DeleteConfirmationModal
+                open={!!deleteConfirmation}
+                onClose={() => setDeleteConfirmation(null)}
+                onConfirm={() => {
+                    handleDeleteEvent(deleteConfirmation.id);
+                    setDeleteConfirmation(null);
+                }}
+            />
 
-            {/* Add Event Redirect Button */}
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
-                <Button
-                    variant="contained"
-                    Color="green"
-                    onClick={handleAddEventRedirect}
-                    className="add-event-button"
+            {/* Image Zoom Modal */}
+            <Modal open={openZoomModal} onClose={handleCloseZoomModal}>
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        bgcolor: 'background.paper',
+                        boxShadow: 24,
+                        p: 4,
+                        outline: 'none',
+                    }}
                 >
-                    Add Event
-                </Button>
-            </Box>
-        </div>
+                    <img
+                        src={zoomedImageUrl}
+                        alt="Zoomed Event"
+                        style={{ width: '100%', maxHeight: '80vh' }}
+                    />
+                </Box>
+            </Modal>
 
+            {/* Alert Snackbar */}
+            <Snackbar
+                open={alertOpen}
+                autoHideDuration={6000}
+                onClose={handleCloseAlert}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+                <Alert onClose={handleCloseAlert} severity={alertType} sx={{ width: '100%' }}>
+                    {alertMessage}
+                </Alert>
+            </Snackbar>
+        </div>
     );
 };
 

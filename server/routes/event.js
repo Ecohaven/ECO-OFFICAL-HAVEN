@@ -234,6 +234,7 @@ router.get('/events/:id', async (req, res) => {
     }
 });
 
+
 // DELETE event by id
 router.delete('/events/:eventId', async (req, res) => {
     const { eventId } = req.params;

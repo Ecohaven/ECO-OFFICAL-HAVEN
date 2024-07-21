@@ -4,6 +4,7 @@ import {
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
     Button, Modal, Box, TextField, Typography, Select, MenuItem, FormControl, InputLabel
 } from '@mui/material';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Sidebar from '../../../components/sidebar';
 import QrScanner from 'react-qr-scanner';
 import '../../style/attendance.css';
@@ -16,19 +17,20 @@ const CheckInPage = () => {
     const [modalMessage, setModalMessage] = useState('');
     const [modalType, setModalType] = useState('');
     const [eventNames, setEventNames] = useState([]);
-    const [eventNameFilter, setEventNameFilter] = useState('');
-    const [dateFilter, setDateFilter] = useState('');
-    const [eventIdFilter, setEventIdFilter] = useState('');
-    const [qrCodeStatusFilter, setQrCodeStatusFilter] = useState(''); // Corrected state name
+    const [selectedEventName, setSelectedEventName] = useState('');
     const [alertMessage, setAlertMessage] = useState('');
-const [paxName, setPaxName] = useState('');
- const [paxQrCodeText, setPaxQrCodeText] = useState('');
-
+    const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const eventNameFromQuery = queryParams.get('eventName');
+        if (eventNameFromQuery) {
+            setSelectedEventName(eventNameFromQuery);
+            fetchCheckIns(eventNameFromQuery);
+        }
         fetchEventNames();
-        fetchCheckIns();
-    }, [eventNameFilter, dateFilter, eventIdFilter, qrCodeStatusFilter]);
+    }, [location.search]);
 
     const fetchEventNames = async () => {
         try {
@@ -39,18 +41,12 @@ const [paxName, setPaxName] = useState('');
         }
     };
 
-    const fetchCheckIns = async () => {
+    const fetchCheckIns = async (eventName) => {
         try {
-            const response = await axios.get(`http://localhost:3001/api/filter-records`, {
-                params: {
-                    eventName: eventNameFilter,
-                    date: dateFilter,
-                    eventId: eventIdFilter,
-                    qrCodeStatus: qrCodeStatusFilter
-                }
+            const response = await axios.get('http://localhost:3001/checkin/check-eventName', {
+                params: { eventName }
             });
 
-            // Group check-ins by QR code text and keep only the latest checked record
             const latestCheckIns = [];
             const groupedCheckIns = {};
 
@@ -62,13 +58,15 @@ const [paxName, setPaxName] = useState('');
 
             Object.keys(groupedCheckIns).forEach(key => latestCheckIns.push(groupedCheckIns[key]));
 
-            setCheckIns(latestCheckIns);
+            // Sort check-ins: "Not Checked" first (red), then "Checked-In" (green)
+            latestCheckIns.sort((a, b) => {
+                if (a.qrCodeStatus === 'Not Checked' && b.qrCodeStatus !== 'Not Checked') return -1;
+                if (a.qrCodeStatus !== 'Not Checked' && b.qrCodeStatus === 'Not Checked') return 1;
+                return 0;
+            });
 
-            if (latestCheckIns.length === 0) {
-                setAlertMessage('No check-in records found.');
-            } else {
-                setAlertMessage('');
-            }
+            setCheckIns(latestCheckIns);
+            setAlertMessage(latestCheckIns.length === 0 ? 'No check-in records found.' : '');
         } catch (error) {
             console.error('Error fetching check-in records:', error);
             setAlertMessage('Failed to fetch check-in records.');
@@ -77,40 +75,55 @@ const [paxName, setPaxName] = useState('');
 
     const handleCheckInByText = async (e) => {
         e.preventDefault();
+
         if (!qrCodeText) {
             setError('QR Code Text is required');
             return;
         }
         setError('');
 
-        try {
-            const response = await axios.post(`http://localhost:3001/checkin/check-in/${qrCodeText}`);
-            setModalMessage('Check-in by QR Code Text successful');
-            setModalOpen(false);
+        const dataToSend = qrCodeText;
 
-            fetchCheckIns();
+        try {
+            const response = await axios.post(`http://localhost:3001/checkin/${dataToSend}`, {
+                eventName: selectedEventName
+            });
+
+            if (response.status === 200) {
+                setModalMessage('Check-in successful');
+                setModalType('success');
+                setModalOpen(true);
+                fetchCheckIns(selectedEventName);
+                navigate(`/attendance?eventName=${encodeURIComponent(selectedEventName)}`);
+            } else {
+                setError('Unexpected response from server');
+            }
         } catch (error) {
             console.error('Error during check-in:', error);
             setError('Failed to check-in');
         }
     };
 
+//IMPORTANT QR CODE CAM SCANNING 
 const handleScan = async (data) => {
     if (data && data.text) {
-        // Get the scanned QR code data
         const qrCodeData = data.text;
 
-        // Reset error state
         setError('');
 
         try {
-            // Execute the API request with the entire QR code data
             const response = await axios.post('http://localhost:3001/checkin/checkin', { data: qrCodeData });
-            
+
             if (response.status === 200) {
-                setModalMessage(response.data.message || 'Check-in successful');
-                setModalOpen(true);
-                fetchCheckIns(); // Refresh check-in list
+                // Check the qrCodeStatus from the response data
+                if (response.data.qrCodeStatus === 'Checked-In') {
+                    setModalMessage('This QR Code has already been checked in.');
+                } else {
+                    setModalMessage('Check-in successful');
+                    setModalType('success'); // Set modal type to 'success'
+                    handleOpenModal('success'); // Open the success modal
+                }
+                fetchCheckIns(selectedEventName); // Refresh check-ins after successful scan
             } else {
                 setError('Unexpected response from server');
             }
@@ -136,25 +149,6 @@ const handleScan = async (data) => {
     }
 };
 
-
-
-// Utility function to handle errors
-const handleError = (error) => {
-    if (error.response) {
-        if (error.response.status === 404) {
-            return 'Record not found. Please check the details.';
-        } else if (error.response.status === 400) {
-            return 'Invalid data provided. Please ensure all fields are correct.';
-        } else {
-            return 'An unexpected error occurred. Please try again later.';
-        }
-    } else if (error.request) {
-        return 'Network error. Please check your connection and try again.';
-    } else {
-        return 'An error occurred while processing the request.';
-    }
-};
-
     const handleOpenModal = (type) => {
         setError('');
         setModalType(type);
@@ -166,24 +160,11 @@ const handleError = (error) => {
         setQrCodeText('');
     };
 
-    const handleResetFilters = () => {
-        setEventNameFilter('');
-        setDateFilter('');
-        setEventIdFilter('');
-        setQrCodeStatusFilter(''); // Reset qrCodeStatusFilter
-    };
-
-    const handleSearchEvent = (event) => {
-        setEventNameFilter(event.target.value);
-    };
-
-    const handleStatusChange = (event) => {
-        setQrCodeStatusFilter(event.target.value); // Corrected to setQrCodeStatusFilter
-    };
-
-    const handleCancelModal = () => {
-        setModalOpen(false);
-        setQrCodeText('');
+    const handleDropdownChange = (event) => {
+        const newEventName = event.target.value;
+        setSelectedEventName(newEventName);
+        fetchCheckIns(newEventName);
+        navigate(`/attendance?eventName=${encodeURIComponent(newEventName)}`);
     };
 
     return (
@@ -193,46 +174,30 @@ const handleError = (error) => {
                 <div className="checkins-list">
                     <h2 style={{ marginTop: '5px', textAlign: 'left' }}>Check-In Records</h2>
                     <div className="filter-controls">
-                        <TextField
-                            type="date"
-                            value={dateFilter}
-                            onChange={(e) => setDateFilter(e.target.value)}
-                            variant="outlined"
-                            style={{ marginRight: '10px', marginTop: '5px', marginBottom: '10px', height: '45px' }}
-                        />
-                        <TextField
-                            value={eventNameFilter}
-                            onChange={handleSearchEvent}
-                            label="Search Event"
-                            variant="outlined"
-                            style={{ marginRight: '10px', marginTop: '5px', height: '45px' }}
-                        />
-                        <FormControl variant="outlined" style={{ height: '45px', textAlign: 'center' }} >
-                            <InputLabel id="qrCodeStatusFilter-label" style={{ marginTop: '5px' }}>Status</InputLabel>
+                        <FormControl variant="outlined" style={{ marginRight: '10px', marginTop: '5px', width: '200px' }}>
+                            <InputLabel id="eventNameFilter-label">Event Name</InputLabel>
                             <Select
-                                labelId="qrCodeStatusFilter-label"
-                                id="qrCodeStatusFilter"
-                                value={qrCodeStatusFilter}
-                                onChange={handleStatusChange}
-                                label="Status"
-                                sx={{ mb: 1, width: '110px', marginRight: '10px', marginTop: '5px' }}
-                                MenuProps={{
-                                    PaperProps: {
-                                        style: {
-                                            width: '120px',
-                                            textAlign: 'left',
-                                        },
-                                    },
-                                }}
+                                labelId="eventNameFilter-label"
+                                id="eventNameFilter"
+                                value={selectedEventName}
+                                onChange={handleDropdownChange}
+                                label="Event Name"
                             >
-                                <MenuItem value="Checked">Checked</MenuItem>
-                                <MenuItem value="Not Checked">Not Checked</MenuItem>
-                                <MenuItem value="Cancelled">Cancelled</MenuItem>
+                                {eventNames.map((eventName, index) => (
+                                    <MenuItem key={index} value={eventName}>
+                                        {eventName}
+                                    </MenuItem>
+                                ))}
                             </Select>
                         </FormControl>
-
-                        <Button variant="contained" color="secondary" onClick={handleResetFilters} style={{ marginLeft: '10px', backgroundColor: 'red', marginTop: '15px' }}>
-                            Reset
+                        <Button variant="contained" color="secondary" onClick={() => fetchCheckIns(selectedEventName)} style={{ marginLeft: '10px', marginTop: '15px' }}>
+                            Refresh
+                        </Button>
+                        <Button variant="contained" color="primary" onClick={() => handleOpenModal('text')} style={{ marginLeft: '10px', marginTop: '15px' }}>
+                            Check-In by QR Code Text
+                        </Button>
+                        <Button variant="contained" color="primary" onClick={() => handleOpenModal('scan')} style={{ marginLeft: '10px', marginTop: '15px' }}>
+                            Scan QR Code
                         </Button>
                     </div>
                     {alertMessage && (
@@ -245,88 +210,79 @@ const handleError = (error) => {
                             <TableHead style={{ backgroundColor: 'green' }}>
                                 <TableRow>
                                     <TableCell style={{ color: 'white', fontWeight: 'bold' }}>ID</TableCell>
+                                    <TableCell style={{ color: 'white', fontWeight: 'bold' }}>Name</TableCell>
                                     <TableCell style={{ color: 'white', fontWeight: 'bold' }}>QR Code Text</TableCell>
+                                    <TableCell style={{ color: 'white', fontWeight: 'bold' }}>Event Name</TableCell>
                                     <TableCell style={{ color: 'white', fontWeight: 'bold' }}>Check-In Time</TableCell>
                                     <TableCell style={{ color: 'white', fontWeight: 'bold' }}>Status</TableCell>
-                                    <TableCell style={{ color: 'white', fontWeight: 'bold' }}>Associated Booking ID</TableCell>
                                     <TableCell style={{ color: 'white', fontWeight: 'bold' }}>Leaf Points</TableCell>
-                                    <TableCell style={{ color: 'white', fontWeight: 'bold' }}>Event Name</TableCell>
-                                    <TableCell style={{ color: 'white', fontWeight: 'bold' }}>Event Id</TableCell>
+                                    <TableCell style={{ color: 'white', fontWeight: 'bold' }}>Additional Guest</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {checkIns.length > 0 ? (
-                                    checkIns.map((checkIn) => (
-                                        <TableRow key={checkIn.id}>
-                                            <TableCell>{checkIn.id}</TableCell>
-                                            <TableCell>{checkIn.qrCodeText}</TableCell>
-                                            <TableCell>{new Date(checkIn.checkInTime).toLocaleString()}</TableCell>
-                                            <TableCell>
-                                                <span style={{ fontWeight: 'bold', color: checkIn.qrCodeStatus === 'Checked' ? 'green' : (checkIn.qrCodeStatus === 'Cancelled' ? 'red' : 'inherit') }}>
-                                                    {checkIn.qrCodeStatus}
-                                                </span>
-                                            </TableCell>
-                                            <TableCell>{checkIn.associatedBookingId}</TableCell>
-                                            <TableCell>{checkIn.leafPoints}</TableCell>
-                                            <TableCell>{checkIn.eventName}</TableCell>
-
-
-                                            <TableCell>{checkIn.eventId}</TableCell>
-                                        </TableRow>
-                                    ))
-                                ) : (
-                                    <TableRow>
-                                        <TableCell colSpan={8} style={{ textAlign: 'center', padding: '20px' }}>No check-in records found.</TableCell>
+                                {checkIns.map((checkIn, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell>{checkIn.id || 'NA'}</TableCell>
+                                        <TableCell>{checkIn.Name || 'NA'}</TableCell>
+                                        <TableCell>{checkIn.qrCodeText || 'NA'}</TableCell>
+                                        <TableCell>{checkIn.eventName || 'NA'}</TableCell>
+                                        <TableCell>{checkIn.checkInTime || 'NA'}</TableCell>
+                                        <TableCell
+                                            style={{
+                                                color: checkIn.qrCodeStatus === 'Checked-In' ? 'green' : 'red'
+                                            }}
+                                        >
+                                            {checkIn.qrCodeStatus || 'NA'}
+                                        </TableCell>
+                                        <TableCell>{checkIn.leafPoints || 'NA'}</TableCell>
+                                        <TableCell>{checkIn.paxName || 'NA'}</TableCell>
                                     </TableRow>
-                                )}
+                                ))}
                             </TableBody>
                         </Table>
                     </TableContainer>
                 </div>
-                <div className="button-group" style={{ textAlign: 'center', marginTop: '20px', height: '45px' }}>
-                    <Button variant="contained" color="primary" onClick={() => handleOpenModal('text')} style={{ backgroundColor: 'green' }}>
-                        Check-In by QR Code Text
-                    </Button>
-                    <Button variant="contained" onClick={() => handleOpenModal('picture')} style={{ marginLeft: '10px', backgroundColor: 'blue' }}>
-                        Check-In by Camera Scanning
-                    </Button>
-                </div>
-                <Modal open={modalOpen} onClose={handleCloseModal}>
-                    <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
-                        <Typography variant="h6" component="h2" style={{ color: 'green', marginBottom: '20px' }}>
-                            {modalType === 'text' ? 'Check-In by QR Code Text' : 'Check-In by Camera Scanning'}
-                        </Typography>
-                        {modalType === 'text' ? (
-                            <form onSubmit={handleCheckInByText}>
-                                <TextField
-                                    label="QR Code Text"
-                                    variant="outlined"
-                                    fullWidth
-                                    required
-                                    value={qrCodeText}
-                                    onChange={(e) => setQrCodeText(e.target.value)}
-                                    error={error !== ''}
-                                    helperText={error}
-                                    style={{ marginBottom: '20px' }}
-                                />
-                               
-                                <Button type="submit" variant="contained" color="primary" style={{ backgroundColor: 'green', float: 'right' }}>
-                                    Check-In
-                                </Button>
-                            </form>
-                        ) : (
-                            <QrScanner
-                                delay={300}
-                                onError={handleError}
-                                onScan={handleScan}
-                                style={{ width: '100%' }}
-                            />
-                        )}
-<Button type="submit" variant="contained" color="primary" onClick={handleCancelModal} style={{ backgroundColor: 'red', float: 'right', marginRight: '10px' }}>
-                                    Cancel
-                                </Button>
-                    </Box>
-                </Modal>
+{/*QR CODE SCANNER */}
+ <Modal open={modalOpen} onClose={handleCloseModal}>
+    <Box sx={{ width: 400, bgcolor: 'background.paper', p: 4, borderRadius: 2, margin: 'auto', marginTop: '100px' }}>
+        <Typography variant="h6" component="h2">
+            {modalType === 'text' ? 'Check-In by QR Code Text' : 'Scan QR Code'}
+        </Typography>
+        {modalType === 'text' ? (
+            <Box component="form" onSubmit={handleCheckInByText} sx={{ mt: 2 }}>
+                <TextField
+                    fullWidth
+                    label="QR Code Text"
+                    value={qrCodeText}
+                    onChange={(e) => setQrCodeText(e.target.value)}
+                    error={!!error}
+                    helperText={error}
+                />
+                <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
+                    Submit
+                </Button>
+            </Box>
+        ) : (
+            <QrScanner
+                onScan={handleScan}
+                onError={(error) => setError(`Scan Error: ${error.message}`)}
+                style={{ width: '100%' }}
+            />
+        )}
+        {modalMessage && (
+            <Typography variant="body1" color={modalType === 'success' ? 'green' : modalType === 'warning' ? 'orange' : 'red'} sx={{ mt: 2 }}>
+                {modalMessage}
+            </Typography>
+        )}
+        <Button variant="outlined" onClick={handleCloseModal} sx={{ mt: 2 }}>
+            Close
+        </Button>
+    </Box>
+</Modal>
+
+
+
+
             </div>
         </div>
     );

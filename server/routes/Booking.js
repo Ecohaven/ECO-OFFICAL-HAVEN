@@ -58,13 +58,18 @@ router.post("/", async (req, res) => {
     // Create the booking
     const result = await Booking.create(data);
 
+
+    //Retreive name to display the name from form data 
+    const accountName = data.Name || 'Unknown';
+
     // Generate additional QR codes for each paxName if provided
     const paxQrCodeRecords = await Promise.all(paxName.map(async (name) => {
       if (!name) return null; // Skip if name is empty or undefined
       const paxQrCodeText = generateRandomText(5);
       const paxQrCodeUrl = await QRCodeLib.toDataURL(paxQrCodeText);
       return {
-        name,
+        Name:accountName,   //Main Booking person Name 
+        name,     //Pax name
         paxQrCodeText,
         paxQrCodeUrl,
         eventName: data.eventName,
@@ -82,12 +87,15 @@ router.post("/", async (req, res) => {
       { where: { id: result.id } }
     );
 
+
     // Create check-in records for the main pax and additional pax
     await CheckIn.create({
       associatedBookingId: result.id,
+      Name:accountName ,
       qrCodeText: mainQrCodeText,
       qrCodeUrl: mainQrCodeUrl,
       eventName: data.eventName,
+      leafPoints: data.leafPoints
     });
 
     await Promise.all(

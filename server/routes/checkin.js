@@ -1,94 +1,17 @@
 const express = require('express');
 const router = express.Router();
 const { Op } = require('sequelize');
-const { Booking, CheckIn,events } = require('../models');
+const { Booking, CheckIn,events,Account } = require('../models');
 
 
-// Check-in route by QR code text
-router.post('/check-in/:qrCodeText', async (req, res) => {
-    const qrCodeText = req.params.qrCodeText;
-
-    try {
-        // Find the booking using qrCodeText and include the associated event
-        const booking = await Booking.findOne({
-            where: { qrCodeText },
-            include: [
-                {
-                    model: events,
-                    as: 'eventDetails', // Use the alias 'eventDetails' as specified in the association
-                    attributes: ['eventId', 'eventName'] // Include only the id and name attributes of the event
-                }
-            ]
-        });
-
-        if (!booking) {
-            return res.status(404).json({ error: 'Booking not found for the provided QR code' });
-        }
-
-        // Retrieve leaf points from the booking
-        const leafPoints = booking.leafPoints || 0; // Default to 0 if leafPoints not available
-
-        // Check if QR code is already checked in
-        let checkIn = await CheckIn.findOne({ where: { associatedBookingId: booking.id } });
-
-        if (checkIn && checkIn.qrCodeChecked) {
-            return res.status(400).json({ error: 'QR code has already been checked in' });
-        }
-
-        // Update or create the check-in record with the check-in time and mark it as checked in
-        if (checkIn) {
-            checkIn = await checkIn.update({
-                checkInTime: new Date(),
-                qrCodeChecked: true,
-                qrCodeStatus: 'Checked',
-                leafPoints: booking.leafPoints, // Update leafPoints if necessary 
-                eventId: booking.eventDetails.eventId,
-                eventName: booking.eventDetails.eventName // Update eventName in CheckIn
-            });
-        } else {
-            checkIn = await CheckIn.create({
-               associatedBookingId: associatedBookingId,
-                qrCodeText: booking.qrCodeText,
-                checkInTime: new Date(),
-                qrCodeChecked: true,
-                qrCodeStatus: 'Checked',
-                leafPoints: booking.leafPoints, // Store leafPoints from the booking
-                eventId: booking.eventDetails.eventId,
-                eventName: booking.eventDetails.eventName // Store eventName in CheckIn
-            });
-        }
-
-        // Update the booking status to 'Attended'
-        await booking.update({
-            status: 'Attended'
-        });
-        const response = {
-            message: 'Check-in successful',
-            bookingId: booking.id,
-            checkIn,
-            leafPoints
-        };
-
-        res.json(response);
-    } catch (err) {
-        console.error('Error during check-in:', err);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-
-
-
-
-// Test URL: http://localhost:3001/checkin/check-in/:qrCodeText
-// To see if this particular qrCodeText has been checked in
-// Check-in route by QR code text
-router.post('/check-in/:qrCodeText', async (req, res) => {
-    const qrCodeText = req.params.qrCodeText;
+// Check-in route by QR code text or Pax name
+router.post('/check-in/:data', async (req, res) => {
+    const data = req.params.data; // This will be either qrCodeText or paxName
 
     try {
-        // Find the booking using qrCodeText and include the associated event
+        // Find the booking using qrCodeText and include the associated event details
         let booking = await Booking.findOne({
-            where: { qrCodeText },
+            where: { qrCodeText: data },
             include: [
                 {
                     model: events,
@@ -98,86 +21,41 @@ router.post('/check-in/:qrCodeText', async (req, res) => {
             ]
         });
 
-        // Check if it's a pax QR code if booking is not found
+        // If booking is not found by QR code text, check for a Pax booking using paxName
         if (!booking) {
-            const paxBooking = await PaxBooking.findOne({
-                where: { paxQrCodeText: qrCodeText },
+            booking = await Booking.findOne({
+                where: { paxName: data }, // Searching using paxName
                 include: [
                     {
-                        model: Booking,
-                        as: 'booking',
-                        include: [
-                            {
-                                model: events,
-                                as: 'eventDetails',
-                                attributes: ['eventId', 'eventName']
-                            }
-                        ]
+                        model: events,
+                        as: 'eventDetails',
+                        attributes: ['eventId', 'eventName']
                     }
                 ]
             });
 
-            if (!paxBooking) {
-                return res.status(404).json({ error: 'Booking or Pax booking not found for the provided QR code' });
+            if (!booking) {
+                return res.status(404).json({ error: 'Booking or Pax booking not found for the provided QR code or Pax name' });
             }
 
-            booking = paxBooking.booking;
-            booking.isPaxBooking = true; // Mark this as a pax booking
-            booking.paxName = paxBooking.paxName; // Add pax name for response
+            booking.isPaxBooking = true; // Mark this as a Pax booking if applicable
         }
 
-        // Retrieve leaf points from the booking
-        const leafPoints = booking.leafPoints || 0; // Default to 0 if leafPoints not available
+        // Update booking status to Checked-In
+        await Booking.update(
+            { qrCodeStatus: 'Checked-In', qrCodeChecked: true },
+            { where: { id: booking.id } }
+        );
 
-        // Check if QR code is already checked in
-        let checkIn = await CheckIn.findOne({ where: { associatedBookingId: booking.id, qrCodeText } });
+        // Return the booking with Pax name if it's a Pax booking
+        return res.json({
+            booking,
+            paxName: booking.isPaxBooking ? booking.paxName : null
+        });
 
-        if (checkIn && checkIn.qrCodeChecked) {
-            return res.status(400).json({ error: 'QR code has already been checked in' });
-        }
-
-        // Update or create the check-in record with the check-in time and mark it as checked in
-        if (checkIn) {
-            checkIn = await checkIn.update({
-                checkInTime: new Date(),
-                qrCodeChecked: true,
-                qrCodeStatus: 'Checked',
-                leafPoints: booking.leafPoints, // Update leafPoints if necessary 
-                eventId: booking.eventDetails.eventId,
-                eventName: booking.eventDetails.eventName // Update eventName in CheckIn
-            });
-        } else {
-            checkIn = await CheckIn.create({
-                associatedBookingId: booking.id,
-                qrCodeText,
-                checkInTime: new Date(),
-                qrCodeChecked: true,
-                qrCodeStatus: 'Checked',
-                leafPoints: booking.leafPoints, // Store leafPoints from the booking
-                eventId: booking.eventDetails.eventId,
-                eventName: booking.eventDetails.eventName // Store eventName in CheckIn
-            });
-        }
-
-        // Update the booking status to 'Attended' if it is the main booking QR code
-        if (!booking.isPaxBooking) {
-            await booking.update({
-                status: 'Attended'
-            });
-        }
-
-        const response = {
-            message: 'Check-in successful',
-            bookingId: booking.id,
-            checkIn,
-            leafPoints,
-            ...(booking.isPaxBooking && { paxName: booking.paxName }) // Add paxName to the response if it's a pax booking
-        };
-
-        res.json(response);
-    } catch (err) {
-        console.error('Error during check-in:', err);
-        res.status(500).json({ error: 'Internal server error' });
+    } catch (error) {
+        console.error('Error during check-in:', error);
+        return res.status(500).json({ error: 'An error occurred during check-in' });
     }
 });
 
@@ -228,7 +106,29 @@ router.get('/records/:bookingId', async (req, res) => {
     }
 });
 
-// Combined check-in endpoint
+// Route to get check-in records by event name
+router.get('/check-eventname', async (req, res) => {
+    try {
+        // Extract eventName from query parameters
+        const { eventName } = req.query;
+
+        if (!eventName) {
+            return res.status(400).json({ error: 'Event name is required' });
+        }
+
+        // Fetch check-ins based on event name
+        const checkIns = await CheckIn.findAll({
+            where: { eventName: eventName }
+        });
+
+        res.json({ checkIns });
+    } catch (err) {
+        console.error('Error fetching check-in records by event name:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Combined check in of pax and qrcodetext,using CAMERA SCANNING 
 router.post('/checkin', async (req, res) => {
   const { data } = req.body;
 
@@ -240,23 +140,46 @@ router.post('/checkin', async (req, res) => {
       return res.status(400).json({ error: 'Data is required' });
     }
 
-    // Attempt to check in by qrCodeText first
-    const checkInByQrCode = await CheckIn.findOne({ where: { qrCodeText: data } });
-    if (checkInByQrCode) {
+    // Check if the QR code has already been scanned
+    let checkInRecord = await CheckIn.findOne({ where: { qrCodeText: data } });
+    
+    if (checkInRecord) {
+      // If the QR code has already been checked in, return an appropriate message
+      if (checkInRecord.qrCodeStatus === 'Checked-In') {
+        return res.status(400).json({ error: 'QR Code has already been checked in' });
+      }
+
+      // Update check-in record status
       await CheckIn.update(
         { qrCodeStatus: 'Checked-In', qrCodeChecked: true },
-        { where: { id: checkInByQrCode.id } }
+        { where: { id: checkInRecord.id } }
       );
+
+      // Update the associated account with leaf points from the check-in record
+      const account = await Account.findOne({ where: { name: checkInRecord.Name } }); // Use accountName field
+      if (account) {
+        // Ensure leaf_points is updated correctly
+        await Account.update(
+          { leaf_points: (account.leaf_points || 0) + (checkInRecord.leafPoints || 0) },
+          { where: { name: checkInRecord.Name } } // Use accountName field
+        );
+      } else {
+        console.warn('Account not found for accountName:', checkInRecord.Name);
+      }
+
       return res.json({ message: 'Check-in by QR Code successful' });
     }
 
     // If not found by qrCodeText, check by paxName
-    const checkInByPaxName = await CheckIn.findOne({ where: { paxName: data } });
-    if (checkInByPaxName) {
+    checkInRecord = await CheckIn.findOne({ where: { paxName: data } });
+    if (checkInRecord) {
+      // Update check-in record status
       await CheckIn.update(
         { qrCodeStatus: 'Checked-In', qrCodeChecked: true },
-        { where: { id: checkInByPaxName.id } }
+        { where: { id: checkInRecord.id } }
       );
+
+      // No account update for paxName
       return res.json({ message: 'Check-in by Pax Name successful' });
     }
 
@@ -268,6 +191,7 @@ router.post('/checkin', async (req, res) => {
     res.status(500).json({ error: 'An error occurred while handling the check-in' });
   }
 });
+
 
 
 

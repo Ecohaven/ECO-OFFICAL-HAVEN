@@ -11,6 +11,10 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       defaultValue: DataTypes.NOW
     },
+ Name: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
  paxName: {
         type: DataTypes.STRING,
         allowNull: true,
@@ -37,10 +41,6 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true,
       defaultValue: 'Not Checked'
     },
-paxQrCodeRecords: {
-    type: DataTypes.JSON,
-    allowNull: true,
-  },
     leafPoints: {
       type: DataTypes.INTEGER,
       allowNull: true
