@@ -37,8 +37,9 @@ router.post("/", async (req, res) => {
     // Validate the data
     data = await validationSchema.validate(data, { abortEarly: false });
 
-    // Handle paxName as an array if it's an array in the schema
+    // Handle paxName and paxEmail as arrays if they're arrays in the schema
     const paxName = Array.isArray(data.paxName) ? data.paxName : [];
+    const paxEmail = Array.isArray(data.paxEmail) ? data.paxEmail : [];
 
     // Generate custom ID
     data.id = generateCustomId();
@@ -58,18 +59,19 @@ router.post("/", async (req, res) => {
     // Create the booking
     const result = await Booking.create(data);
 
-
-    //Retreive name to display the name from form data 
+    // Retrieve name to display the name from form data
     const accountName = data.Name || 'Unknown';
 
-    // Generate additional QR codes for each paxName if provided
-    const paxQrCodeRecords = await Promise.all(paxName.map(async (name) => {
+    // Generate additional QR codes for each paxName and paxEmail if provided
+    const paxQrCodeRecords = await Promise.all(paxName.map(async (name, index) => {
+      const email = paxEmail[index] || ''; // Get corresponding email or default to empty string
       if (!name) return null; // Skip if name is empty or undefined
       const paxQrCodeText = generateRandomText(5);
       const paxQrCodeUrl = await QRCodeLib.toDataURL(paxQrCodeText);
       return {
-        Name:accountName,   //Main Booking person Name 
-        name,     //Pax name
+        Name: accountName, // Main Booking person Name 
+        name, // Pax name
+        email, // Pax email
         paxQrCodeText,
         paxQrCodeUrl,
         eventName: data.eventName,
@@ -81,17 +83,20 @@ router.post("/", async (req, res) => {
     // Store pax QR code details in the booking
     const nonNullPaxQrCodeRecords = paxQrCodeRecords.filter(record => record !== null);
     data.paxQrCodeRecords = nonNullPaxQrCodeRecords;
+    data.paxEmail = paxEmail; // Store paxEmail array in the booking
 
     await Booking.update(
-      { paxQrCodeRecords: JSON.stringify(nonNullPaxQrCodeRecords) },
+      {
+        paxQrCodeRecords: JSON.stringify(nonNullPaxQrCodeRecords),
+        paxEmail: JSON.stringify(paxEmail) // Store paxEmail in the booking
+      },
       { where: { id: result.id } }
     );
-
 
     // Create check-in records for the main pax and additional pax
     await CheckIn.create({
       associatedBookingId: result.id,
-      Name:accountName ,
+      Name: accountName,
       qrCodeText: mainQrCodeText,
       qrCodeUrl: mainQrCodeUrl,
       eventName: data.eventName,
@@ -105,6 +110,7 @@ router.post("/", async (req, res) => {
           paxQrCodeText: record.paxQrCodeText,
           paxQrCodeUrl: record.paxQrCodeUrl,
           paxName: record.name,
+          paxEmail: record.email, // Include paxEmail in check-in records
           eventName: data.eventName,
           eventId: data.eventId,
           leafPoints: data.leafPoints
@@ -118,6 +124,7 @@ router.post("/", async (req, res) => {
     res.status(400).json({ errors: err.errors || 'An error occurred while creating the booking' });
   }
 });
+
 
 
 

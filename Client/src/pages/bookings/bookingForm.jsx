@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Box, Button, Grid, Typography, TextField, FormLabel, MenuItem, Select, Breadcrumbs, Link } from '@mui/material';
+import { Box, Button, Grid, Typography, TextField, FormLabel, MenuItem, Select } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import QRCode from 'qrcode.react';
@@ -13,9 +13,11 @@ const BookingForm = () => {
   const [bookingId, setBookingId] = useState(''); // State to store booking ID
   const [qrCodeText, setQrCodeText] = useState(''); // State to store QR code text
   const [dateOptions, setDateOptions] = useState([]); // State for date options
-  const [additionalNames, setAdditionalNames] = useState([]); 
+  const [additionalPax, setAdditionalPax] = useState([]); // State to store additional pax details
   const [paxQrCodeRecords, setPaxQrCodeRecords] = useState([]); // State to store pax QR code records
   const [bookingSuccessful, setBookingSuccessful] = useState(false); // State for booking success
+ const [buttonDisabled, setButtonDisabled] = useState(false);
+ const [buttonText, setButtonText] = useState('Submit Booking');
   const navigate = useNavigate();
   const { account, setAccount } = useContext(AccountContext); // Use the context
 
@@ -43,13 +45,17 @@ const BookingForm = () => {
   }, [account, setAccount]);
 
   useEffect(() => {
-    // Generate date options if event dates are available
+
+   // Generate date options and set booking date if needed
     const generateDateOptions = () => {
       if (event.startDate && event.endDate) {
         const startDate = new Date(event.startDate);
         const endDate = new Date(event.endDate);
 
-        if (startDate.getTime() !== endDate.getTime()) {
+        if (startDate.getTime() === endDate.getTime()) {
+          // Automatically set bookingDate if startDate and endDate are the same
+          setBookingDate(startDate.toISOString().split('T')[0]);
+        } else {
           const dates = [];
           let currentDate = new Date(startDate);
           while (currentDate <= endDate) {
@@ -64,16 +70,18 @@ const BookingForm = () => {
     generateDateOptions();
   }, [event]);
 
+
   const effectiveBookingDate = bookingDate || (event.startDate ? new Date(event.startDate).toISOString() : '');
 
-   const generatePaxQrCodeRecords = (additionalNames) => {
-    return additionalNames.map(paxName => {
-      if (!paxName) return null;
+  const generatePaxQrCodeRecords = (paxDetails) => {
+    return paxDetails.map(({ name, email }) => {
+      if (!name || !email) return null;
 
-      const paxQrCodeText = paxName;
+      const paxQrCodeText = name;
 
       return {
-        paxName: paxName,
+        paxName: name,
+        paxEmail: email,
         paxQrCodeText: paxQrCodeText,
         paxQrCodeUrl: `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(paxQrCodeText)}`
       };
@@ -89,7 +97,7 @@ const BookingForm = () => {
     }
 
     try {
-      const paxQrCodeRecords = generatePaxQrCodeRecords(additionalNames);
+      const paxQrCodeRecords = generatePaxQrCodeRecords(additionalPax);
       setPaxQrCodeRecords(paxQrCodeRecords);
 
       const formData = {
@@ -103,7 +111,8 @@ const BookingForm = () => {
         email: account.email,
         phoneNumber: account.phone_no,
         location: event.location,
-        paxName: additionalNames,
+        paxName: additionalPax.map(pax => pax.name),
+        paxEmail: additionalPax.map(pax => pax.email),
         paxQrCodeRecords
       };
 
@@ -120,9 +129,11 @@ const BookingForm = () => {
         setQrCodeText(qrCodeText);
 
         sendEmail(formData, id, qrCodeText, paxQrCodeRecords);
+        sendPaxEmails(paxQrCodeRecords);
 
-        // Set booking as successful
         setBookingSuccessful(true);
+        setButtonText('Booking Successful');
+        setButtonDisabled(true);
       } else {
         throw new Error('Booking ID or QR code text not received');
       }
@@ -184,99 +195,134 @@ const BookingForm = () => {
     }
   };
 
-  const handleDateChange = (e) => {
-    setBookingDate(e.target.value);
-  };
-
-  const handleDownloadQRCode = () => {
-    const canvas = document.getElementById('qr-code-canvas');
-    const pngUrl = canvas.toDataURL('image/png');
-    const downloadLink = document.createElement('a');
-    downloadLink.href = pngUrl;
-    downloadLink.download = 'QR_Code.png';
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
-  };
-
-  const handleNumberOfPaxChange = (e) => {
-    const num = e.target.value;
-    setNumberOfPax(num);
-    setAdditionalNames(Array.from({ length: num }, (_, i) => ''));
-  };
-
-  const handleAdditionalNameChange = (index, value) => {
-    const names = [...additionalNames];
-    names[index] = value;
-    setAdditionalNames(names);
+  const sendPaxEmails = async (paxQrCodeRecords) => {
+    try {
+      await Promise.all(paxQrCodeRecords.map(async (record) => {
+        await axios.post('http://localhost:3001/send-email', {
+          to: [record.paxEmail],
+          subject: `Your QR Code for ${event.eventName}`,
+          html: `
+            <html>
+              <head>
+                <style>
+                  /* Your email styling */
+                </style>
+              </head>
+              <body>
+                <div class="header">
+                  <h1>Eco<span style="color:black;">Haven</span></h1>
+                </div>
+                <div class="content">
+                  <h2>Hello ${record.paxName}!</h2>
+                  <p>Here is your QR code for the event: ${event.eventName}.</p>
+                  <p>Your QR Code:</p>
+                  <img src="${record.paxQrCodeUrl}" alt="QR Code for Pax Name ${record.paxName}">
+                </div>
+                <div class="footer">
+                  <i><b>This email is auto-generated by ECOHAVEN.</b></i>
+                </div>
+              </body>
+            </html>
+          `
+        });
+      }));
+      console.log('Pax emails sent successfully!');
+    } catch (error) {
+      console.error('Error sending pax emails:', error);
+    }
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: '600px', mx: 'auto', mt: 4 }}>
-      <Typography variant="h4" align="center" gutterBottom>
-        Booking Form
-      </Typography>
+    <Box component="form" onSubmit={handleSubmit} sx={{ padding: 2 }}>
+      <Typography variant="h4">Booking Form</Typography>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <FormLabel>Event</FormLabel>
-          <Typography variant="h6">{event?.eventName}</Typography>
+          <FormLabel>Event Name</FormLabel>
+          <Typography variant="h6">{event.eventName}</Typography>
         </Grid>
         <Grid item xs={12}>
-          <FormLabel>Date</FormLabel>
-          <Select
+          <FormLabel>Booking Date</FormLabel>
+          <TextField
+            type="date"
             value={bookingDate}
-            onChange={handleDateChange}
+            onChange={(e) => setBookingDate(e.target.value)}
+            InputLabelProps={{ shrink: true }}
             fullWidth
-            disabled={bookingSuccessful} // Disable if booking is successful
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <FormLabel>Number of Pax</FormLabel>
+          <Select
+            value={numberOfPax}
+            onChange={(e) => setNumberOfPax(e.target.value)}
+            fullWidth
           >
-            {dateOptions.map((date, index) => (
-              <MenuItem key={index} value={date.toISOString()}>
-                {date.toLocaleDateString('en-GB')}
-              </MenuItem>
+            {[1, 2, 3, 4, 5].map((pax) => (
+              <MenuItem key={pax} value={pax}>{pax}</MenuItem>
             ))}
           </Select>
         </Grid>
-        <Grid item xs={12}>
-          <FormLabel>Number of Additional Pax</FormLabel>
-          <TextField
-            type="number"
-            value={numberOfPax}
-            onChange={handleNumberOfPaxChange}
-            fullWidth
-            disabled={bookingSuccessful} // Disable if booking is successful
-          />
-        </Grid>
-        {additionalNames.map((name, index) => (
-          <Grid item xs={12} key={index}>
-            <TextField
-              label={`Additional Pax ${index + 1}`}
-              value={name}
-              onChange={(e) => handleAdditionalNameChange(index, e.target.value)}
-              fullWidth
-              disabled={bookingSuccessful} // Disable if booking is successful
-            />
+        {Array.from({ length: numberOfPax }).map((_, index) => (
+          <Grid container item xs={12} key={index} spacing={2}>
+            <Grid item xs={6}>
+              <TextField
+                label={`Additional Pax ${index + 1} Name`}
+                value={additionalPax[index]?.name || ''}
+                onChange={(e) => {
+                  const newAdditionalPax = [...additionalPax];
+                  newAdditionalPax[index] = { ...newAdditionalPax[index], name: e.target.value };
+                  setAdditionalPax(newAdditionalPax);
+                }}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                label={`Additional Pax ${index + 1} Email`}
+                value={additionalPax[index]?.email || ''}
+                onChange={(e) => {
+                  const newAdditionalPax = [...additionalPax];
+                  newAdditionalPax[index] = { ...newAdditionalPax[index], email: e.target.value };
+                  setAdditionalPax(newAdditionalPax);
+                }}
+                fullWidth
+              />
+            </Grid>
           </Grid>
         ))}
         <Grid item xs={12}>
-          <Button type="submit" variant="contained" color="primary" fullWidth disabled={bookingSuccessful}>
-            {bookingSuccessful ? 'Booking Successful' : 'Submit Booking'}
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={buttonDisabled}
+          >
+            {buttonText}
           </Button>
         </Grid>
       </Grid>
-      {bookingId && qrCodeText && (
-        <Box sx={{ textAlign: 'center', mt: 4 }}>
-          <Typography variant="h6">Booking Successful</Typography>
-          <Typography variant="body1">Booking ID: {bookingId}</Typography>
-          <Box>
-            <QRCode id="qr-code-canvas" value={qrCodeText} />
-          </Box>
-          <Button onClick={handleDownloadQRCode} variant="contained" color="secondary" sx={{ mt: 2 }}>
-            Download QR Code
-          </Button>
+
+      {bookingSuccessful && qrCodeText && (
+        <Box mt={2}>
+          <Typography variant="h6">Your QR Code:</Typography>
+          <QRCode value={qrCodeText} size={256} />
+        </Box>
+      )}
+      {paxQrCodeRecords.length > 0 && (
+        <Box sx={{ mt: 2 }}>
+          <Typography variant="body1">Additional Pax QR Codes:</Typography>
+          {paxQrCodeRecords.map((record, index) => (
+            <Box key={index} sx={{ mb: 2 }}>
+              <Typography variant="body2">Pax Name: {record.paxName}</Typography>
+              <QRCode value={record.paxQrCodeText} size={128} />
+            </Box>
+          ))}
         </Box>
       )}
     </Box>
   );
 };
+
+
 
 export default BookingForm;

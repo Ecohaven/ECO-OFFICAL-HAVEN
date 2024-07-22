@@ -70,6 +70,7 @@ input[type="text"] {
 
 .filter-controls {
     margin-bottom: 20px;
+    margin-right: 50px;
 }
 
 @media (max-width: 768px) {

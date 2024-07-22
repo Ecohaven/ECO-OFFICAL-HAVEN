@@ -36,6 +36,10 @@ paxQrCodeRecords: {
     type: DataTypes.JSON,
     allowNull: true, // Allow null because not all bookings will have pax
   },
+paxEmail: {
+      type: DataTypes.JSON, // Store emails as a JSON array
+      allowNull: true
+    },
     eventId: {
       type: DataTypes.INTEGER,
       allowNull: true

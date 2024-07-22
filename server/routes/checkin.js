@@ -4,59 +4,63 @@ const { Op } = require('sequelize');
 const { Booking, CheckIn,events,Account } = require('../models');
 
 
+
 // Check-in route by QR code text or Pax name
-router.post('/check-in/:data', async (req, res) => {
-    const data = req.params.data; // This will be either qrCodeText or paxName
+router.post('/checkin/text', async (req, res) => {
+  const { data } = req.body;
 
-    try {
-        // Find the booking using qrCodeText and include the associated event details
-        let booking = await Booking.findOne({
-            where: { qrCodeText: data },
-            include: [
-                {
-                    model: events,
-                    as: 'eventDetails', // Use the alias 'eventDetails' as specified in the association
-                    attributes: ['eventId', 'eventName'] // Include only the id and name attributes of the event
-                }
-            ]
-        });
+  console.log('Received data:', { data });
 
-        // If booking is not found by QR code text, check for a Pax booking using paxName
-        if (!booking) {
-            booking = await Booking.findOne({
-                where: { paxName: data }, // Searching using paxName
-                include: [
-                    {
-                        model: events,
-                        as: 'eventDetails',
-                        attributes: ['eventId', 'eventName']
-                    }
-                ]
-            });
-
-            if (!booking) {
-                return res.status(404).json({ error: 'Booking or Pax booking not found for the provided QR code or Pax name' });
-            }
-
-            booking.isPaxBooking = true; // Mark this as a Pax booking if applicable
-        }
-
-        // Update booking status to Checked-In
-        await Booking.update(
-            { qrCodeStatus: 'Checked-In', qrCodeChecked: true },
-            { where: { id: booking.id } }
-        );
-
-        // Return the booking with Pax name if it's a Pax booking
-        return res.json({
-            booking,
-            paxName: booking.isPaxBooking ? booking.paxName : null
-        });
-
-    } catch (error) {
-        console.error('Error during check-in:', error);
-        return res.status(500).json({ error: 'An error occurred during check-in' });
+  try {
+    // Validate the input data
+    if (!data) {
+      return res.status(400).json({ error: 'Data is required' });
     }
+
+    // Find the check-in record by QR code text or Pax name
+    let checkInRecord = await CheckIn.findOne({
+      where: {
+        [Op.or]: [
+          { qrCodeText: data },
+          { paxName: data }
+        ]
+      }
+    });
+
+    if (!checkInRecord) {
+      return res.status(404).json({ error: 'Check-in record not found' });
+    }
+
+    // Check if the QR code or Pax name has already been checked in
+    if (checkInRecord.qrCodeStatus === 'Checked-In') {
+      return res.status(400).json({ error: 'Record has already been checked in' });
+    }
+
+    // Update the check-in record status
+    await CheckIn.update(
+      { qrCodeStatus: 'Checked-In', qrCodeChecked: true },
+      { where: { id: checkInRecord.id } }
+    );
+
+    // Optionally, update related account leaf points if needed
+    if (checkInRecord.leafPoints) {
+      const account = await Account.findOne({ where: { name: checkInRecord.Name } });
+      if (account) {
+        await Account.update(
+          { leaf_points: (account.leaf_points || 0) + (checkInRecord.leafPoints || 0) },
+          { where: { name: checkInRecord.Name } }
+        );
+      } else {
+        console.warn('Account not found for accountName:', checkInRecord.Name);
+      }
+    }
+
+    return res.json({ message: 'Check-in successful' });
+
+  } catch (err) {
+    console.error('Error handling check-in:', err);
+    res.status(500).json({ error: 'An error occurred while handling the check-in' });
+  }
 });
 
 

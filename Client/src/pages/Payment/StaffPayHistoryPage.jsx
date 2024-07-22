@@ -15,7 +15,7 @@ const Backend = () => {
   useEffect(() => {
     const fetchPayments = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/pay/payments');
+        const response = await axios.get('http://localhost:3001/pay/');
         if (Array.isArray(response.data)) {
           setPayments(response.data);
         } else {
@@ -111,9 +111,7 @@ const Backend = () => {
     <Box sx={{ display: 'flex' }}>
       <Sidebar />
       <Box sx={{ flex: 1, padding: 4 }}>
-        <Typography variant="h4" gutterBottom>
-          Payment History
-        </Typography>
+     <h2 style={{marginTop:'10px'}}>Customer Payment Records</h2>
         {status && (
           <Typography color={status.error ? 'error' : 'success'}>
             {status.message}
