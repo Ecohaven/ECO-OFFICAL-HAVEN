@@ -10,6 +10,7 @@ import Box from '@mui/material/Box';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import Button from '@mui/material/Button';
 import AccountContext from '../../contexts/AccountContext';
 
 function RedemptionShop() {
@@ -165,7 +166,32 @@ function RedemptionShop() {
                   }}
                 />
                 <p><b>{product.leaves}</b> 🍃</p>
-                <Link to={`/redeemform/${product.id}`} state={{ product }} className='redeembutton'>Redeem</Link>
+                <Button
+                  component={Link}
+                  to={`/redeemform/${product.id}`}
+                  state={{ product }}
+                  className='redeembutton'
+                  disabled={account?.leaf_points < product.leaves}
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    backgroundColor: '#14772B',
+                    color: '#fff',
+                    '&:hover': {
+                      backgroundColor: '#105c24',
+                    },
+                    '&:disabled': {
+                      backgroundColor: '#ccc',
+                      color: '#888',
+                    },
+                    borderRadius: '8px',
+                    padding: '10px 20px',
+                    textTransform: 'none',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  Redeem
+                </Button>
               </Paper>
             </Grid>
           ))}

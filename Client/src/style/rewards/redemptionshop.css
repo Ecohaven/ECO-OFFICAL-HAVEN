@@ -57,28 +57,6 @@
     font-size: 30px;
 }
 
-/* button */
-.redeembutton {
-    margin-left: 5px;
-    background-color: #14772B;
-    padding: 14px 20px;
-    font-size: 15px;
-    border-radius: 15px;
-    border: none;
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.redeembutton a {
-    color: white;
-    text-decoration: none;
-}
-
-.redeembutton:hover {
-    background-color: #45a049;
-}
-
 /* Responsive design for mobile devices */
 @media (max-width: 768px) {
     .headbanner h1 {
@@ -115,12 +93,6 @@
 
     .product-item p {
         font-size: 3vw;
-    }
-
-    .redeembutton {
-        font-size: 3.5vw;
-        padding: 8px 16px;
-        font-size: 15px;
     }
 
 }

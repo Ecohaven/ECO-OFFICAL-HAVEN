@@ -97,6 +97,8 @@ function RewardForm() {
         }
     }, [isSubmitted, navigate]);
 
+    const remainingLeaves = account.leaf_points - product.leaves;
+
     return (
         <div className='rewardform'>
             {/* banner */}
@@ -122,6 +124,10 @@ function RewardForm() {
                             <h2>{product.itemName}</h2>
                             <img src={`http://localhost:3001/eco/product-images/${product.itemimg}`} alt={product.itemName} className='product-image' />
                             <p><b>{product.leaves}</b> 🍃</p>
+                            <div className='leaves-info'>
+                                <p>Total Leaves: {account.leaf_points} 🍃</p>
+                                <p>Leaves After Redemption: {remainingLeaves} 🍃</p>
+                            </div>
                         </>
                     )}
                 </div>
