@@ -5,7 +5,7 @@ const { Account } = require('../models');
 const yup = require("yup");
 const { sign } = require('jsonwebtoken');
 require('dotenv').config();
-const { validateToken } = require('../middlewares/auth');
+const { validateToken, checkRole } = require('../middlewares/auth');
 const fs = require('fs');
 const path = require('path');
 
@@ -157,7 +157,7 @@ router.post("/logout", validateToken, async (req, res) => { // Logout
     }
 });
 
-router.get("/:username", async (req, res) => {
+router.get("/:username", validateToken, checkRole(['User']), async (req, res) => {
     let username = req.params.username;
     console.log(username); // Debugging
 
@@ -189,7 +189,7 @@ router.get("/:username", async (req, res) => {
 });
 
 // update account
-router.put("/:username", async (req, res) => {
+router.put("/:username", validateToken, checkRole(['User']), async (req, res) => {
     let username = req.params.username;
     // Validate request body
     let validationSchema = yup.object({
@@ -233,7 +233,7 @@ router.put("/:username", async (req, res) => {
 });
 
 // update password
-router.put("/:username/password", async (req, res) => {
+router.put("/:username/password", validateToken, checkRole(['User']), async (req, res) => {
     let username = req.params.username;
 
     // Check if the logged-in user is accessing their own account
@@ -297,7 +297,7 @@ async function deleteProfilePic(userId) {
     }
 }
 // delete account
-router.delete("/:username", async (req, res) => {
+router.delete("/:username", validateToken, checkRole(['User']), async (req, res) => {
     let username = req.params.username;
 
     // Check if the logged-in user is accessing their own account

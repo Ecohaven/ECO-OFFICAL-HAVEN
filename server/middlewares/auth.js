@@ -16,4 +16,18 @@ const validateToken = (req, res, next) => {
     }
 }
 
-module.exports = { validateToken };
+const checkRole = (roles) => {
+    return (req, res, next) => {
+        if (!req.user) {
+            console.log("No user found in request");
+            return res.sendStatus(401); // unauthorized if no user
+        }
+        if (!roles.includes(req.user.role)) {
+            console.log(`User role ${req.user.role} is not authorized`);
+            return res.sendStatus(401); // unauthorized if role does not match
+        }
+        return next(); // Next middleware
+    }
+}
+
+module.exports = { validateToken, checkRole };

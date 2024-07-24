@@ -7,16 +7,6 @@ import '../../style/loginandregister.css'
 import { Margin } from '@mui/icons-material';
 
 function Get_Started() {
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        // Check if user is already logged in
-        if (localStorage.getItem('accessToken')) {
-            navigate('/'); // Redirect to homepage if user is already logged in
-        }
-    }, [navigate]); // Depend on navigate to ensure useEffect runs properly
-
-
   return (
     <Box>
         <Grid container spacing={2} className='login-register-elements'>

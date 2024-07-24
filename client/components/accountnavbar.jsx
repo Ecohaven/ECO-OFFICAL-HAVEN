@@ -294,7 +294,7 @@ function AccountNavbar() {
                             }}/>
                           )}
                           <div style={{ marginLeft: '1rem', marginTop: '-3rem' }}>
-                            <h2 style={{ marginRight: '2rem' }}>{account.username}</h2>
+                            <Typography variant='h4' style={{ marginRight: '2rem', fontWeight: 'bold' }}>{account.username}</Typography>
                             <Link to={`/account`} id='manage_account_link' >
                               <Typography variant="h6" component="div" id='account_profile_link' onClick={handleClose} style={{ margin: 0, marginRight: '3rem', padding: 0 }}>
                                 Manage Account

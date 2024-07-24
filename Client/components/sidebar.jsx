@@ -86,7 +86,7 @@ const Sidebar = () => {
           </Link>
         </div>
         <List>
-          <ListItem button component={Link} to="/overview" selected={isActive('/overview')}>
+          <ListItem button component={Link} to="/staff/overview" selected={isActive('/overview')}>
             <ListItemIcon style={{ color: 'white' }}>
               <OverviewIcon />
             </ListItemIcon>
@@ -102,37 +102,37 @@ const Sidebar = () => {
           </ListItem>
           <Collapse in={openAccount} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              <ListItem button component={Link} to="/users" selected={isActive('/users')}>
+              <ListItem button component={Link} to="/staff/users" selected={isActive('/staff/users')}>
                 <ListItemText primary="Users" />
               </ListItem>
-              <ListItem button component={Link} to="/staff" selected={isActive('/staff')}>
+              <ListItem button component={Link} to="/staff/staff" selected={isActive('/staff/staff')}>
                 <ListItemText primary="Staff" />
               </ListItem>
             </List>
           </Collapse>
 
-          <ListItem button component={Link} to="/eventbackend" selected={isActive('/eventbackend')}>
+          <ListItem button component={Link} to="/staff/eventbackend" selected={isActive('/staff/eventbackend')}>
             <ListItemIcon style={{ color: 'white' }}>
               <EventIcon />
             </ListItemIcon>
             <ListItemText primary="Events" />
           </ListItem>
 
-          <ListItem button component={Link} to="/bookings" selected={isActive('/bookings')}>
+          <ListItem button component={Link} to="/staff/bookings" selected={isActive('/staff/bookings')}>
             <ListItemIcon style={{ color: 'white' }}>
               <BookingsIcon />
             </ListItemIcon>
             <ListItemText primary="Bookings" />
           </ListItem>
 
-          <ListItem button component={Link} to="/attendance" selected={isActive('/attendance')}>
+          <ListItem button component={Link} to="/staff/attendance" selected={isActive('/staff/attendance')}>
             <ListItemIcon style={{ color: 'white' }}>
               <AttendanceIcon />
             </ListItemIcon>
             <ListItemText primary="Attendance" />
           </ListItem>
 
-          <ListItem button component={Link} to="/points" selected={isActive('/points')}>
+          <ListItem button component={Link} to="/staff/points" selected={isActive('/staff/points')}>
             <ListItemIcon style={{ color: 'white' }}>
               <PointsIcon />
             </ListItemIcon>
@@ -148,37 +148,37 @@ const Sidebar = () => {
           </ListItem>
           <Collapse in={openReward} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              <ListItem button component={Link} to="/collectionproduct" selected={isActive('/collection')}>
+              <ListItem button component={Link} to="/staff/collectionproduct" selected={isActive('/staff/collection')}>
                 <ListItemText primary="Collection" />
               </ListItem>
-              <ListItem button component={Link} to="/rewardproduct" selected={isActive('/shop')}>
+              <ListItem button component={Link} to="/staff/rewardproduct" selected={isActive('/staff/shop')}>
                 <ListItemText primary="Shop" />
               </ListItem>
             </List>
           </Collapse>
 
-          <ListItem button component={Link} to="/historypayment" selected={isActive('/historypayment')}>
+          <ListItem button component={Link} to="/staff/historypayment" selected={isActive('/staff/historypayment')}>
             <ListItemIcon style={{ color: 'white' }}>
               <PaymentIcon />
             </ListItemIcon>
             <ListItemText primary="Payment" />
           </ListItem>
 
-          <ListItem button component={Link} to="/refund" selected={isActive('/refund')}>
+          <ListItem button component={Link} to="/staff/refund" selected={isActive('/staff/refund')}>
             <ListItemIcon style={{ color: 'white' }}>
               <RefundIcon />
             </ListItemIcon>
             <ListItemText primary="Refund" />
           </ListItem>
 
-          <ListItem button component={Link} to="/mailing-list" selected={isActive('/mailing-list')}>
+          <ListItem button component={Link} to="/staff/mailing-list" selected={isActive('/staff/mailing-list')}>
             <ListItemIcon style={{ color: 'white' }}>
               <MailingIcon />
             </ListItemIcon>
             <ListItemText primary="Mailing List" />
           </ListItem>
 
-          <ListItem button component={Link} to="/review" selected={isActive('/review')}>
+          <ListItem button component={Link} to="/staff/review" selected={isActive('/staff/review')}>
             <ListItemIcon style={{ color: 'white' }}>
               <ReviewIcon />
             </ListItemIcon>

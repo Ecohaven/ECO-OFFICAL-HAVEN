@@ -4,6 +4,10 @@ import { useLocation, Navigate } from 'react-router-dom';
 import http from '/src/http';
 
 import AccountContext from '/src/contexts/AccountContext';
+import WithAuthorization from '/src/hoc/withAuthorization';
+import GuestRoute from '/src/hoc/GuestRoute';
+import UserAndGuestRoute from './hoc/UserAndGuestRoute';
+import StaffAuthorization from '/src/hoc/staffAuthorization';
 
 {/* Components */}
 import AccountNavbar from '../components/accountnavbar';
@@ -55,6 +59,13 @@ import Refund from './pages/Payment/RefundPage';
 import Paymenthistory from './pages/Payment/StaffPayHistoryPage';
 import PaymentSucess from './pages/Payment/SuccessPage';
 
+{/* Staff pages part */}
+import StaffLogin from './pages/backend/StaffLogin';
+import Staffhome from './pages/backend/Staffhome';
+import Staff_Account_Profile from './pages/backend/Staff_Account_Profile';
+
+
+
 function App() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -62,131 +73,108 @@ function App() {
   const [account, setAccount] = useState(null);
 
   // Define the paths where AppBar and Footer should not be rendered
-  const noAppBarFooterPaths = ['/get_started', '/login', '/register', '/account_deleted','/collectionproduct', 
-'/rewardproduct','/attendance','/bookings','/eventbackend','/AddEvent','/historypayment'];
+  const noAppBarFooterPaths = ['/get_started', '/login', '/register', '/account_deleted'
+                              ,'/collectionproduct', '/rewardproduct','/attendance','/bookings','/eventbackend','/AddEvent','/historypayment'];
   const shouldShowAppBarFooter = !noAppBarFooterPaths.includes(location.pathname);
 
-  useEffect(() => { 
-    async function fetchUserDataByUsername(username) {
-      try {
-        const response = await http.get(`/account/${username}`); // Fetch data based on username
-        setAccount(response.data.user); // Update account state in context with fetched data - to display in url
-        console.log("Account data fetched:", response.data.user);
-      } catch (error) {
-        console.error("Error fetching account:", error);
-      }
-    }
+  // Define the paths where Sidebar should not be rendered (Staff pages)
+  const noSideBarPaths = ['/staff/staff_login'];
+  const shouldShowSideBar = !noSideBarPaths.includes(location.pathname);
 
-    async function validateToken() {
-      // Check if token exists
+  useEffect(() => { // Fetch user data when the app component mounts
+    const validateTokenAndFetchUserData = async () => {
       const token = localStorage.getItem('accessToken');
-      if (token) { 
+      const storedUsername = localStorage.getItem('username');
+
+      if (token && storedUsername) {
         try {
-          const response = await http.get('/account/auth'); // Validate token
-          const storedUsername = localStorage.getItem('username'); // Retrieve username from local storage
-          if (storedUsername) {
-            // Use storedUsername to initialize state
-            localStorage.setItem('username', storedUsername);
-            fetchUserDataByUsername(storedUsername);
-            // 
-          }
-          setAccount(response.data.user); // Update the account state in the context
-        } 
-        catch (error) {
-          if (error.response?.status === 401) {
-            handleLogout();
-          }
-          else if (error.response?.status === 403) {
-            console.error("Forbidden:", error);
-          }
-          else {
-            console.error("Error fetching account:", error);
-          }
+          const response = await http.get(`/account/${storedUsername}`);
+          setAccount(response.data.user);
+          console.log("Account data fetched and set:", response.data.user);
+        } catch (error) {
+          console.error("Error fetching account:", error);
+          handleLogout();
         }
       }
-      else {
-        handleLogout();
-      }
-    }
-    validateToken();
-  }, []);
+    };
 
-  const handleLogout = () => { 
-    if (!account) {
-      return;
-    }
-    else {
-      http.post('/account/logout').then(() => { // Send logout request to server
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('username');
-        localStorage.clear(); // Clear local storage
-        handleClose(); // Close popup
-        setAccount(null); // Update account state in context
-        navigate('/', { replace: true }); // Redirect to home page after logout 
-        });
+    validateTokenAndFetchUserData();
+  }, [setAccount]);
+
+  const handleLogout = async () => { // Handle logout
+    try {
+      await http.post('/account/logout'); // Send logout request to server
+    } catch (error) {
+      console.error("Error logging out:", error);
+    } finally {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('username');
+      localStorage.clear(); // Clear local storage
+      setAccount(null); // Update account state in context
+      navigate('/login', { replace: true }); // Redirect to home page after logout 
     }
   };
 
   const userRoutes = (  
     <Routes>
       {/* Routes available for authenticated users only */}
-      <Route path="/account/events" element={<Account_Profile_Events />} />
-      <Route path="/account/qr_codes" element={<Account_Profile_QR_Codes />} />
-      <Route path="/account/payments" element={<Account_Profile_Payments />} />
-      <Route path="/account/rewards" element={<Account_Profile_Rewards />} />
-      <Route path="/account" element={<Account_Profile />} />
+      <Route path="/account/events" element={<WithAuthorization element={Account_Profile_Events} allowedRoles={['User']} />} />
+      <Route path="/account/qr_codes" element={<WithAuthorization element={Account_Profile_QR_Codes} allowedRoles={['User']} />} />
+      <Route path="/account/payments" element={<WithAuthorization element={Account_Profile_Payments} allowedRoles={['User']} />} />
+      <Route path="/account/rewards" element={<WithAuthorization element={Account_Profile_Rewards} allowedRoles={['User']} />} />
+      <Route path="/account" element={<WithAuthorization element={Account_Profile} allowedRoles={['User']} />} />
       {/* ^End of authenticated users only^ */}
 
       {/* Routes available for guests only */}
-      <Route path="/get_started" element={<Get_Started />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/account_deleted" element={<Account_Deleted />} />
+      <Route path="/get_started" element={<GuestRoute element={Get_Started} />} />
+      <Route path="/login" element={<GuestRoute element={Login} />} />
+      <Route path="/register" element={<GuestRoute element={Register} />} />
+      <Route path="/account_deleted" element={<GuestRoute element={Account_Deleted} />} />
       {/* ^ End of guests only ^ */}
       
       {/* Routes available for users and guests  */}
-      <Route path="/about_us" element={<About_Us />} />
-      <Route path="/events" element={<Events />} />
-      <Route path="/book_now" element={<Book_Now />} />
-      <Route path="/rewards" element={<Rewards />} />
-      <Route path="/volunteer" element={<Volunteer />} />
-      <Route path="/" element={<Homepage />} />
+      <Route path="/about_us" element={<UserAndGuestRoute element={About_Us} />} />
+      <Route path="/events" element={<UserAndGuestRoute element={Events} />} />
+      <Route path="/book_now" element={<UserAndGuestRoute element={Book_Now} />} />
+      <Route path="/rewards" element={<UserAndGuestRoute element={Rewards} />} />
+      <Route path="/volunteer" element={<UserAndGuestRoute element={Volunteer} />} />
+      <Route path="/" element={<UserAndGuestRoute element={Homepage} />} />
       <Route path="*" element={<Navigate to="/" />} />
         {/* ^ End of users and guests ^*/}
 
       {/* Rewards part */}
       <Route path={"/redemptionshop"} element={<RedemptionShop/>} />
       <Route path="/redeemform/:id" element={<RedeemForm />} />
-      <Route path="/successcollect" element={<SuccessCollect />} />
+      <Route path="/successcollect" element={<WithAuthorization element={SuccessCollect} allowedRoles={['User']} />} />
 
-      <Route path={"/rewardproduct"} element={<RewardProduct/>} />
-      <Route path={"/collectionproduct"} element={<CollectionProduct/>} />
+      {/* <Route path={"/rewardproduct"} element={<RewardProduct/>} /> */}
+      {/* <Route path={"/collectionproduct"} element={<CollectionProduct/>} /> */}
 
       {/* ^ End of Rewards part ^*/}
 
 
-      {/* Events part */}
-       <Route path={"/eventbackend"} element={<EventsBackend/>} />
-       <Route path={"/AddEvent"} element={<AddEventBackend/>} />
+      {/* Events part */} {/* Backend */}
+       {/* <Route path={"/eventbackend"} element={<EventsBackend/>} />  */}
+       {/* <Route path={"/AddEvent"} element={<AddEventBackend/>} /> */}
       {/* ^ End of Events part ^*/}
 
       {/* Payments  part */}
-      <Route path={"/payment"} element={<Payment/>} />
-      <Route path={"/refund"} element={<Refund/>} />
-      <Route path={"/historypayment"} element={<Paymenthistory/>} />
-      <Route path={"/paymentsucess"} element={<PaymentSucess/>} />
+      <Route path={"/payment"} element={<WithAuthorization element={Payment} allowedRoles={['User']} />} />
+      <Route path={"/refund"} element={<WithAuthorization element={Refund} allowedRoles={['User']} />} />
+      {/* <Route path={"/historypayment"} element={<Paymenthistory/>} /> */}
+      <Route path={"/paymentsucess"} element={<WithAuthorization element={PaymentSucess} allowedRoles={['User']} />} />
 
       {/* ^ End of Payments part ^*/}
 
       {/* Bookings  part */}
-         <Route path={"/bookings"} element={<Bookings/>} />
-          <Route path={"/BookingForm"} element={<BookingForm/>} />
+         {/* <Route path={"/bookings"} element={<Bookings/>} /> */}
+         <Route path={"/BookingForm"} element={<BookingForm/>} />
 
       {/* ^ End of Bookings part ^*/}
 
 
        {/* Check-in part-backend */}
-        <Route path={"/attendance"} element={<Attendance/>} />
+        {/* <Route path={"/attendance"} element={<Attendance/>} /> */}
 
        {/* End of check-In part */}
 
@@ -194,8 +182,29 @@ function App() {
 
 
     </Routes>
-    
+  );
 
+  const staffRoutes = ( // Staff routes are protected by StaffAuthorization HOC
+    // Staff routes start with "/staff" e.g. "/staff/staff_login"
+    <Routes>
+      <Route path="/staff_login" element={<GuestRoute element={StaffLogin} />} />
+
+      <Route path={"/staffhome"} element={<StaffAuthorization element={Staffhome} allowedRoles={['Admin']} />} />
+      <Route path={"/account"} element={<StaffAuthorization element={Staff_Account_Profile} allowedRoles={['Admin']} />} />
+
+      <Route path={"/rewardproduct"} element={<StaffAuthorization element={RewardProduct} allowedRoles={['Admin']} />} />
+      <Route path={"/collectionproduct"} element={<StaffAuthorization element={CollectionProduct} allowedRoles={['Admin']} />} />
+
+      <Route path={"/eventbackend"} element={<StaffAuthorization element={EventsBackend} allowedRoles={['Admin']} />} />
+      <Route path={"/AddEvent"} element={<StaffAuthorization element={AddEventBackend} allowedRoles={['Admin']} />} />
+
+      <Route path={"/historypayment"} element={<StaffAuthorization element={Paymenthistory} allowedRoles={['Admin']} />} />
+
+      <Route path={"/bookings"} element={<StaffAuthorization element={Bookings} allowedRoles={['Admin']} />} />
+
+      <Route path={"/attendance"} element={<StaffAuthorization element={Attendance} allowedRoles={['Admin']} />} />
+
+    </Routes>
   );
 
   return (
@@ -212,6 +221,16 @@ function App() {
                     </footer>
                   }
                 </>
+            }
+          />
+
+          {/* Staff routes start with "/staff" */}
+          <Route path="/staff/*" 
+            element={
+              <>
+                {shouldShowSideBar && <Sidebar />}
+                {staffRoutes}
+              </>
             }
           />
         </Routes>

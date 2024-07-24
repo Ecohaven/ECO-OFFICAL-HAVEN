@@ -12,13 +12,6 @@ function Register() {
   const navigate = useNavigate();
   const { setAccount } = useContext(AccountContext);
 
-    useEffect(() => {
-        // Check if user is already logged in
-        if (localStorage.getItem('accessToken')) {
-            navigate('/'); // Redirect to homepage if user is already logged in
-        }
-    }, [navigate]); // Depend on navigate to ensure useEffect runs properly
-
   const formik = useFormik({
     initialValues: {
       name: '',

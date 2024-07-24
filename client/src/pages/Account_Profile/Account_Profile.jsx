@@ -3,8 +3,6 @@ import { BrowserRouter as useLocation, useNavigate, useParams } from 'react-rout
 import http from '/src/http';
 import { Box, Grid, TextField, Container, Button, Divider, Dialog, DialogTitle, DialogContent, DialogContentText, Typography } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import '../../style/account_profile.css';
@@ -34,22 +32,27 @@ function Account_Profile() {
   const [errorProfilePic, seterrorProfilePic] = useState(null); // Error state
   const [successProfilePic, setSuccessProfilePic] = useState(null); // Success state
 
-  // check if user is not logged in
+  // Fetch account data
   useEffect(() => {
-    if (!localStorage.getItem('accessToken')) {
-      navigate('/login');
+    async function fetchAccountData() {
+      const token = localStorage.getItem('accessToken');
+      const username = localStorage.getItem('username');
+      if (token && username) {
+        try {
+          const response = await http.get(`/account/${username}`);
+          setAccount(response.data.user);
+          setFormData(response.data.user);
+          console.log("Account data fetched:", account);
+        } catch (error) {
+          console.error("Error fetching account:", error);
+          navigate('/login'); // Navigate to login if there's an error fetching the account
+        }
+      } else {
+        navigate('/login');
+      }
     }
-    else {
-      http.get(`/account/${username}`)
-      .then((res) => {
-        setAccount(res.data.user);
-        setFormData(res.data.user);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    }
-  }, [navigate]);
+    fetchAccountData();
+  }, [accessToken, username, navigate, setAccount]);
 
   const editAccount = () => { // enable edit account form
     setSuccessAccountMessage(''); // Clear success message
@@ -365,7 +368,9 @@ function Account_Profile() {
                     )}
                     {successAccountMessage && (
                         <div style={{ color: 'green' }}>
+                          <Typography variant="body1" gutterBottom>
                           {successAccountMessage}
+                          </Typography>
                         </div>
                     )}
                   </Box>
@@ -428,7 +433,9 @@ function Account_Profile() {
                   )}
                   {successPasswordMessage && (
                     <div style={{ color: 'green' }}>
+                      <Typography variant="body1" gutterBottom>
                       {successPasswordMessage}
+                      </Typography>
                     </div>
                   )}
               </div>
@@ -489,13 +496,13 @@ function Account_Profile() {
                   opacity: 0.5
                 }}/>
               )}
-              <h2>{username}</h2>
-              <Button id='upload_profile_pic_button' variant='contained' component="label" sx={{ marginRight:'5px', paddingLeft: '6px' }}>
-                <EditIcon/>Edit
+              <Typography variant='h4' style={{ fontWeight: 'bold' }}>{username}</Typography>
+              <Button id='upload_profile_pic_button' variant='contained' component="label" sx={{ marginRight:'5px', fontSize: 'small' }}>
+                Edit Photo
                 <input hidden accept="image/*" multiple type="file" onChange={updateProfile} name="file"/>
               </Button>
-              <Button id='delete_profile_pic_button' variant='contained' color="error" onClick={deleteProfile} sx={{ paddingLeft: '6px' }}>
-                <DeleteIcon/>Delete
+              <Button id='delete_profile_pic_button' variant='contained' color="error" onClick={deleteProfile} sx={{ fontSize: 'small' }}>
+                Delete Photo
               </Button>
               {errorProfilePic && (
                 <Typography variant="body2" color="error" gutterBottom>

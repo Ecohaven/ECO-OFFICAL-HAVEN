@@ -35,6 +35,10 @@ db.sequelize.sync({alter: true}).then(() => {
 const accountRoute = require('./routes/account');
 app.use("/account", accountRoute);
 
+// Staff Account Routes
+const staffAccountRoute = require('./routes/staffaccount');
+app.use("/staff", staffAccountRoute);
+
 //Account file route 
 const fileRoute = require('./routes/file');
 app.use("/file", fileRoute);
