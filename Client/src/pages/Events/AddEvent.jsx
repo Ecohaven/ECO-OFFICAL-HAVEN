@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   TextField,
@@ -6,31 +6,15 @@ import {
   MenuItem,
   Grid,
   Typography,
+  Paper,
+  Card,
+  CardContent,
+  FormHelperText,
 } from '@mui/material';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Formik, Form, Field } from 'formik';
-import * as Yup from 'yup';
 import axios from 'axios';
-
-const validationSchema = Yup.object().shape({
-  eventName: Yup.string().required('Event Name is required'),
-  description: Yup.string().required('Description is required'),
-  category: Yup.string().required('Category is required'),
-  location: Yup.string().required('Location is required'),
-  startDate: Yup.date().required('Start Date is required'),
-  endDate: Yup.date()
-    .required('End Date is required')
-    .min(Yup.ref('startDate'), 'End Date must be after Start Date'),
-  time: Yup.string().required('Time is required'),
-  status: Yup.string().required('Status is required'),
-  amount: Yup.number().required('Amount is required'),
-  organiser: Yup.string().required('Organiser is required'),
-  leafPoints: Yup.number()
-    .required('Leaf Points is required')
-    .positive('Leaf Points must be a positive number'),
-  picture: Yup.mixed().required('Picture is required'),
-});
 
 const AddEventForm = () => {
   const [file, setFile] = useState(null);
@@ -58,20 +42,53 @@ const AddEventForm = () => {
     setAlertOpen(true);
   };
 
-  const handleAddEvent = async (values, { setSubmitting }) => {
+  const validateForm = (values) => {
+    const errors = {};
+    if (!values.eventName) errors.eventName = 'Event Name is required';
+    if (!values.description) errors.description = 'Description is required';
+    if (!values.category) errors.category = 'Category is required';
+    if (!values.location) errors.location = 'Location is required';
+    if (!values.startDate) errors.startDate = 'Start Date is required';
+    if (!values.endDate) {
+      errors.endDate = 'End Date is required';
+    } else if (values.endDate < values.startDate) {
+      errors.endDate = 'End Date must be after Start Date';
+    }
+    if (!values.time) errors.time = 'Time is required';
+    if (!values.organiser) errors.organiser = 'Organiser is required';
+    if (values.status === 'Paid' && !values.amount) {
+      errors.amount = 'Amount is required';
+    }
+    if (!values.leafPoints) {
+      errors.leafPoints = 'Leaf Points is required';
+    } else if (values.leafPoints <= 0) {
+      errors.leafPoints = 'Leaf Points must be a positive number';
+    }
+    if (!values.picture) errors.picture = 'Picture is required';
+    return errors;
+  };
+
+  const handleAddEvent = async (values, { setSubmitting, setErrors }) => {
     const formData = new FormData();
     formData.append('eventName', values.eventName);
     formData.append('description', values.description);
     formData.append('category', values.category);
     formData.append('location', values.location);
-    formData.append('startDate', values.startDate.toISOString());
-    formData.append('endDate', values.endDate.toISOString());
+    formData.append('startDate', values.startDate ? values.startDate.toISOString() : '');
+    formData.append('endDate', values.endDate ? values.endDate.toISOString() : '');
     formData.append('time', values.time);
     formData.append('status', values.status);
-    formData.append('amount', values.amount);
+    formData.append('amount', values.status === 'Free' ? 0 : values.amount);
     formData.append('organiser', values.organiser);
     formData.append('leafPoints', values.leafPoints);
     formData.append('picture', file);
+
+    const errors = validateForm(values);
+    if (Object.keys(errors).length > 0) {
+      setErrors(errors);
+      setSubmitting(false);
+      return;
+    }
 
     try {
       const response = await axios.post(
@@ -95,250 +112,359 @@ const AddEventForm = () => {
 
   return (
     <Box sx={containerStyle}>
-      <Typography variant="h4" sx={headingStyle}>
-        Add Event
-      </Typography>
+      <img src="../src/assets/images/backendBanner.jpg" alt="Event Banner" style={bannerStyle} />
       <Formik
         initialValues={{
           eventName: '',
           description: '',
           category: '',
           location: '',
-          startDate: null,
-          endDate: null,
+          startDate: '',
+          endDate: '',
           time: '',
-          status: 'Free',
+          status: '',
           amount: '',
           organiser: '',
           leafPoints: '',
           picture: '',
         }}
-        validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting }) => {
-          handleAddEvent(values, { setSubmitting });
+        onSubmit={(values, { setSubmitting, setErrors }) => {
+          handleAddEvent(values, { setSubmitting, setErrors });
         }}
       >
-        {({ isSubmitting, setFieldValue, values }) => (
-          <Form>
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
-                <Field
-                  as={TextField}
-                  label="Event Name"
-                  variant="outlined"
-                  name="eventName"
-                  fullWidth
-                  required
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Field
-                  as={TextField}
-                  label="Description"
-                  variant="outlined"
-                  multiline
-                  rows={4}
-                  name="description"
-                  fullWidth
-                  required
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Field
-                  as={TextField}
-                  select
-                  label="Category"
-                  variant="outlined"
-                  name="category"
-                  fullWidth
-                  required
-                >
-                  {['recycling', 'upcycling', 'workshop', 'garden-walk'].map(
-                    (option) => (
-                      <MenuItem key={option} value={option}>
-                        {option}
-                      </MenuItem>
-                    )
-                  )}
-                </Field>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Field
-                  as={TextField}
-                  label="Location"
-                  variant="outlined"
-                  name="location"
-                  fullWidth
-                  required
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <Field name="startDate">
-                    {({ field, form }) => (
-                      <DatePicker
-                        disablePast
-                        label="Start Date"
-                        inputFormat="YYYY-MM-DD"
-                        value={field.value}
-                        onChange={(newValue) =>
-                          form.setFieldValue(field.name, newValue)
-                        }
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant="outlined"
-                            fullWidth
-                            required
-                          />
+        {({ isSubmitting, setFieldValue, errors, touched, values }) => {
+          useEffect(() => {
+            if (values.status === 'Free') {
+              setFieldValue('amount', 0);
+            }
+          }, [values.status, setFieldValue]);
+
+          return (
+            <Form>
+              <Card sx={cardStyle}>
+                <CardContent>
+                  <Grid container spacing={3}>
+                    <Grid item xs={12} sm={4}>
+                      <Paper elevation={3} sx={paperStyle}>
+                        {preview && (
+                          <Box mt={2}>
+                            <img
+                              src={preview}
+                              alt="Event Preview"
+                              style={{
+                                width: '100%',
+                                height: 'auto',
+                                borderRadius: '8px',
+                                maxHeight: '600px',
+                              }}
+                            />
+                          </Box>
                         )}
-                      />
-                    )}
-                  </Field>
-                </LocalizationProvider>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <Field name="endDate">
-                    {({ field, form }) => (
-                      <DatePicker
-                        disablePast
-                        label="End Date"
-                        inputFormat="YYYY-MM-DD"
-                        value={field.value}
-                        onChange={(newValue) =>
-                          form.setFieldValue(field.name, newValue)
-                        }
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant="outlined"
-                            fullWidth
-                            required
+                        <Button
+                          variant="contained"
+                          component="label"
+                          fullWidth
+                          sx={{ marginTop: 2 }}
+                        >
+                          Upload Picture
+                          <input
+                            accept="image/*"
+                            type="file"
+                            name="picture"
+                            onChange={(e) => handleFileChange(e, setFieldValue)}
+                            hidden
                           />
+                        </Button>
+                        {errors.picture && touched.picture && (
+                          <FormHelperText error>{errors.picture}</FormHelperText>
                         )}
+                      </Paper>
+                    </Grid>
+                    <Grid item xs={12} sm={8}>
+                      <Field
+                        as={TextField}
+                        label="Event Name"
+                        variant="outlined"
+                        name="eventName"
+                        fullWidth
+                        required
+                        sx={{ marginBottom: 2 }}
+                        error={touched.eventName && Boolean(errors.eventName)}
+                        helperText={touched.eventName && errors.eventName}
                       />
-                    )}
-                  </Field>
-                </LocalizationProvider>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Field
-                  as={TextField}
-                  label="Time"
-                  variant="outlined"
-                  name="time"
-                  fullWidth
-                  placeholder="e.g., 10:00 AM - 12:00 PM"
-                  required
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Field
-                  as={TextField}
-                  select
-                  label="Status"
-                  variant="outlined"
-                  name="status"
-                  fullWidth
-                  required
-                >
-                  {['Free', 'Paid'].map((option) => (
-                    <MenuItem key={option} value={option}>
-                      {option}
-                    </MenuItem>
-                  ))}
-                </Field>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Field
-                  as={TextField}
-                  label="Amount"
-                  variant="outlined"
-                  type="number"
-                  name="amount"
-                  fullWidth
-                  placeholder="Enter amount"
-                  required
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Field
-                  as={TextField}
-                  label="Organiser"
-                  variant="outlined"
-                  name="organiser"
-                  fullWidth
-                  required
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Field
-                  as={TextField}
-                  label="Leaf Points"
-                  variant="outlined"
-                  type="number"
-                  name="leafPoints"
-                  fullWidth
-                  required
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <input
-                  accept="image/*"
-                  type="file"
-                  name="picture"
-                  onChange={(e) => handleFileChange(e, setFieldValue)}
-                  style={fileInputStyle}
-                />
-                {preview && (
-                  <Box mt={2}>
-                    <img
-                      src={preview}
-                      alt="Event Preview"
-                      style={{ maxWidth: '100%', height: 'auto' }}
-                    />
-                  </Box>
-                )}
-              </Grid>
-              <Grid item xs={12}>
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    disabled={isSubmitting}
-                  >
-                    Add Event
-                  </Button>
-                </Box>
-              </Grid>
-            </Grid>
-          </Form>
-        )}
+                      <Field
+                        as={TextField}
+                        label="Description"
+                        variant="outlined"
+                        multiline
+                        rows={4}
+                        name="description"
+                        fullWidth
+                        required
+                        sx={{ marginBottom: 2 }}
+                        error={touched.description && Boolean(errors.description)}
+                        helperText={touched.description && errors.description}
+                      />
+                      <Field
+                        as={TextField}
+                        select
+                        label="Category"
+                        variant="outlined"
+                        name="category"
+                        fullWidth
+                        required
+                        sx={{ marginBottom: 2 }}
+                        error={touched.category && Boolean(errors.category)}
+                        helperText={touched.category && errors.category}
+                      >
+                        {['recycling', 'upcycling', 'workshop', 'garden-walk'].map(
+                          (option) => (
+                            <MenuItem key={option} value={option}>
+                              {option}
+                            </MenuItem>
+                          )
+                        )}
+                      </Field>
+                      <Field
+                        as={TextField}
+                        label="Leaf Points"
+                        variant="outlined"
+                        type="number"
+                        name="leafPoints"
+                        fullWidth
+                        required
+                        sx={{ marginBottom: 2 }}
+                        error={touched.leafPoints && Boolean(errors.leafPoints)}
+                        helperText={touched.leafPoints && errors.leafPoints}
+                      />
+                      <Field
+                        as={TextField}
+                        label="Organiser"
+                        variant="outlined"
+                        name="organiser"
+                        fullWidth
+                        required
+                        sx={{ marginBottom: 2 }}
+                        error={touched.organiser && Boolean(errors.organiser)}
+                        helperText={touched.organiser && errors.organiser}
+                      />
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <Field name="startDate">
+                          {({ field, form }) => (
+                            <>
+                              <DatePicker
+                                disablePast
+                                label="Start Date"
+                                inputFormat="YYYY-MM-DD"
+                                value={field.value || null}
+                                onChange={(newValue) =>
+                                  form.setFieldValue(field.name, newValue)
+                                }
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    variant="outlined"
+                                    fullWidth
+                                    required
+                                    sx={{ marginBottom: 2, marginTop: 2 }}
+                                    error={touched.startDate && Boolean(errors.startDate)}
+                                    helperText={touched.startDate && errors.startDate}
+                                  />
+                                )}
+                              />
+                              {touched.startDate && errors.startDate && (
+                                <FormHelperText error>{errors.startDate}</FormHelperText>
+                              )}
+                            </>
+                          )}
+                        </Field>
+                      </LocalizationProvider>
+
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <Field name="endDate">
+                          {({ field, form }) => (
+                            <>
+                              <DatePicker
+                                disablePast
+                                label="End Date"
+                                inputFormat="YYYY-MM-DD"
+                                value={field.value || null}
+                                onChange={(newValue) =>
+                                  form.setFieldValue(field.name, newValue)
+                                }
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    variant="outlined"
+                                    fullWidth
+                                    required
+                                    sx={{ marginBottom: 2 }}
+                                    error={touched.endDate && Boolean(errors.endDate)}
+                                    helperText={touched.endDate && errors.endDate}
+                                  />
+                                )}
+                              />
+                              {touched.endDate && errors.endDate && (
+                                <FormHelperText error>{errors.endDate}</FormHelperText>
+                              )}
+                            </>
+                          )}
+                        </Field>
+                      </LocalizationProvider>
+
+                      <Field
+                        as={TextField}
+                        label="Time"
+                        variant="outlined"
+                        name="time"
+                        fullWidth
+                        required
+                        sx={{ marginBottom: 2 }}
+                        error={touched.time && Boolean(errors.time)}
+                        helperText={touched.time && errors.time}
+                      />
+
+                      <Field
+                        as={TextField}
+                        select
+                        label="Status"
+                        variant="outlined"
+                        name="status"
+                        fullWidth
+                        required
+                        sx={{ marginBottom: 2 }}
+                        error={touched.status && Boolean(errors.status)}
+                        helperText={touched.status && errors.status}
+                      >
+                        {['Free', 'Paid'].map((option) => (
+                          <MenuItem key={option} value={option}>
+                            {option}
+                          </MenuItem>
+                        ))}
+                      </Field>
+
+                      <Field
+                        as={TextField}
+                        label="Amount"
+                        variant="outlined"
+                        type="number"
+                        name="amount"
+                        fullWidth
+                        disabled={values.status === 'Free'}
+                        required={values.status === 'Paid'}
+                        sx={{ marginBottom: 2 }}
+                        error={touched.amount && Boolean(errors.amount)}
+                        helperText={touched.amount && errors.amount}
+                      />
+
+                      <Field
+                        as={TextField}
+                        label="Location"
+                        variant="outlined"
+                        name="location"
+                        fullWidth
+                        required
+                        sx={{ marginBottom: 2 }}
+                        error={touched.location && Boolean(errors.location)}
+                        helperText={touched.location && errors.location}
+                      />
+
+                      <Button
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        fullWidth
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting ? 'Submitting...' : 'Add Event'}
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </CardContent>
+              </Card>
+            </Form>
+          );
+        }}
       </Formik>
+      {alertOpen && (
+        <CustomAlert
+          type={alertType}
+          message={alertMessage}
+          onClose={handleCloseAlert}
+        />
+      )}
     </Box>
   );
 };
 
+export default AddEventForm;
+
+// Styles
 const containerStyle = {
-  maxWidth: '800px',
-  width: '100%',
-  margin: 'auto',
-  padding: '20px',
-  backgroundColor: '#fff',
-  borderRadius: '12px',
-  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+  padding: '2rem',
+  maxWidth: '100%',
+  margin: '0 auto',
+  backgroundColor: '#99ffcc',
+  minHeight: '100vh',
+};
+
+const bannerStyle = {
+  width: '1330px',
+  height: '300px',
+  maxHeight: '300px',
+  objectFit: 'cover',
+  borderRadius: '8px',
+marginBottom:'30px'
 };
 
 const headingStyle = {
-  marginBottom: '20px',
+  textAlign: 'center',
+  marginBottom: '3rem',
+  marginTop: '2rem',
+color:'black',
+fontWeight:'bold',
+fontSize:'40px'
+};
+
+const cardStyle = {
+  maxWidth: '100%',
+  margin: '0 auto',
+  borderRadius: '8px',
+};
+
+const paperStyle = {
+  padding: '1rem',
+  borderRadius: '8px',
   textAlign: 'center',
 };
 
-const fileInputStyle = {
-  display: 'block',
-  marginBottom: '10px',
+const alertContainerStyle = {
+  position: 'fixed',
+  top: '10%',
+  right: '5%',
+  zIndex: 9999,
+  width: '100%',
+  maxWidth: '400px',
 };
 
-export default AddEventForm;
+const CustomAlert = ({ type, message, onClose }) => {
+  const alertStyle = {
+    padding: '1rem',
+    borderRadius: '8px',
+    textAlign: 'center',
+    backgroundColor: type === 'success' ? '#4caf50' : '#f44336',
+    color: 'white',
+    marginBottom: '1rem',
+  };
+
+  return (
+    <Box sx={alertContainerStyle}>
+      <Paper elevation={3} sx={alertStyle}>
+        <Typography variant="body1">{message}</Typography>
+        <Button variant="contained" onClick={onClose} sx={{ marginTop: '0.5rem' }}>
+          Close
+        </Button>
+      </Paper>
+    </Box>
+  );
+};

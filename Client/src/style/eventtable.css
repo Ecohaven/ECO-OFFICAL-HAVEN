@@ -1,9 +1,10 @@
 .event-list-container {
     width: 75%;
     max-width: 1200px;
-    margin-left: 250px; /* Adjust as needed */
+    margin-left: 250px;
+    /* Adjust as needed */
     margin-top: -25px;
- /* margin: 70px auto 15px;  */
+    /* margin: 70px auto 15px;  */
     margin-bottom: 15px;
     padding: 20px;
 }
@@ -34,46 +35,52 @@ h2 {
     background-color: green;
     color: white;
 }
-.css-i9fmh8-MuiBackdrop-root-MuiModal-backdrop{
-background-color: transparent !important;
+
+.css-i9fmh8-MuiBackdrop-root-MuiModal-backdrop {
+    background-color: transparent !important;
 }
-.form-input{
-margin-bottom: '15px';
-width:'800px';
-outline: none;
+
+.form-input {
+    margin-bottom: '15px';
+    width: '800px';
+    outline: none;
 }
-input[type="text"]{
-border:none !important;
+
+input[type="text"] {
+    border: none !important;
 }
-.css-1jy569b-MuiFormLabel-root-MuiInputLabel-root  {
-color : black !important;
-font-weight: bold !important;
+
+.css-1jy569b-MuiFormLabel-root-MuiInputLabel-root {
+    color: black !important;
+    font-weight: bold !important;
 }
-.add-event-button{
-background-color: green !important;
-margin-top: 20px !important;
+
+.add-event-button {
+    background-color: green !important;
+    margin-top: 20px !important;
 
 }
+
 .edit-icon {
-  color: blue;
-  cursor: pointer;
-  margin-left: 2px;
-  transition: box-shadow 0.3s ease;
+    color: blue;
+    cursor: pointer;
+    margin-left: 2px;
+    transition: box-shadow 0.3s ease;
 }
 
 .edit-icon:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .delete-icon {
-  color: red;
-  cursor: pointer;
-  margin-left: 8px;
-  transition: box-shadow 0.3s ease;
+    color: red;
+    cursor: pointer;
+    margin-left: 8px;
+    transition: box-shadow 0.3s ease;
 }
 
 .delete-icon:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 
@@ -104,16 +111,46 @@ margin-top: 20px !important;
     text-align: center;
 }
 
-@media (min-width: 600px) {
-    .search-box {
-        text-align: right;
-    }
-.event-list-container {
-        margin-left: 250px; /* Keep left margin on wider screens */
-    }
+.css-i9fmh8-MuiBackdrop-root-MuiModal-backdrop {
+    background-color: rgba(0, 0, 0, 0.5) !important; /* Dark semi-transparent background */
 }
-    
 
+.modal-box, .zoom-modal-box {
+    background-color: white; /* Ensure the popup background is white */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+
+.form-field {
+    margin-bottom: 20px; /* Adds 100px gap between each field */
+}
+
+.date-fields-container {
+    display: flex;
+    gap: 16px; /* Adjust the spacing between fields as needed */
+}
+
+.date-fields-container .MuiTextField-root {
+    flex: 1; /* Ensures both fields take up equal space */
+}
+
+.leaf-status-container {
+    display: flex;
+    gap: 16px; /* Adjust as needed */
+}
+
+.leaf-status-container .MuiTextField-root {
+    flex: 1; /* Ensures both fields take up equal space */
+}
+
+.actions-container {
+    display: flex;
+    gap: 16px; /* Adjust as needed */
+    align-items: center; /* Align items vertically center */
+}
+
+/* stop here too ehehheehhe */
 
 .alert-container {
     position: fixed;
@@ -121,24 +158,46 @@ margin-top: 20px !important;
     left: 50%;
     transform: translateX(-50%);
     z-index: 999;
-    width: calc(100% - 40px); /* Adjust for mobile width */
+    width: calc(100% - 40px);
+    /* Adjust for mobile width */
 }
 
-@media (max-width: 600px) {
-    .events-list-container {
-        width: 100%; /* Full width on mobile */
-        margin-left: 0; /* No left margin on mobile */
-        margin-right: -5px; /* Adjust for mobile overflow */
-        padding: 10px; /* Reduce padding for smaller screens */
+/* For screens wider than 1000px */
+@media (max-width: 1000px) {
+    .event-list-container {
+        width: 120%;
+        /* Full width on larger screens */
+        margin-left: 0;
+        /* No left margin on larger screens */
+        padding: 10px;
+        /* Adjust padding as needed */
     }
 }
 
+/* For screens narrower than 500px */
+@media (max-width: 500px) {
+    .event-list-container {
+        width: 140%;
+        /* Adjust width for smaller screens */
+        margin-left: 0;
+        /* No left margin on smaller screens */
+        margin-right: -5px;
+        /* Adjust for overflow */
+        padding: 10px;
+        /* Reduce padding for smaller screens */
+    }
 
+    .add-event-button {
+        display: block;
+        width: 100%;
+        margin-top: 20px;
+        text-align: center; /* Center the button */
+    }
+}
 
 .h2 {
     text-align: left;
     font-size: 3rem;
-    margin-bottom: 20px; /* Reduce margin for smaller screens */
+    margin-bottom: 20px;
+    /* Reduce margin for smaller screens */
 }
-
-

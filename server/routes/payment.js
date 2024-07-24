@@ -24,7 +24,7 @@ router.post('/', async (req, res) => {
     return res.status(400).json({ error: 'Missing required fields', missingFields });
   }
 
-  const { amount, email, phoneNumber, homeAddress, postalCode, paymentMethod, cardholderName, cardNumber, expiryDate, cvv,eventName } = req.body;
+  const { amount, email, phoneNumber, homeAddress, postalCode, paymentMethod, cardholderName, cardNumber, expiryDate, cvv, eventName } = req.body;
 
   try {
     // Simulate payment processing
@@ -34,8 +34,9 @@ router.post('/', async (req, res) => {
       return res.status(500).json({ error: paymentResult.message });
     }
 
+    // Create the payment record in the database
     const newPayment = await db.Payment.create({
-    eventName,
+      eventName,
       amount,
       email,
       phoneNumber,
@@ -50,12 +51,32 @@ router.post('/', async (req, res) => {
       status: 'Paid'
     });
 
-    res.status(201).json({ message: 'Payment created successfully', payment: newPayment });
+    // Return the payment ID and other relevant details
+    res.status(201).json({ 
+      message: 'Payment created successfully', 
+      payment: {
+        id: newPayment.id, // Include the payment ID in the response
+        eventName,
+        amount,
+        email,
+        phoneNumber,
+        homeAddress,
+        postalCode,
+        paymentMethod,
+        cardholderName,
+        cardNumber,
+        expiryDate,
+        cvv,
+        currency: paymentResult.currency,
+        status: 'Paid'
+      }
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to process payment' });
   }
 });
+
 
 // GET all payments
 router.get('/', async (req, res) => {

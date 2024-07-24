@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import axios from 'axios';
 import * as Yup from 'yup';
@@ -10,7 +10,18 @@ const PaymentForm = () => {
   const location = useLocation();
 
   // Extract data from location state
-  const { formData, amount = '', email = '', phoneNumber = '', eventName = '' } = location.state || {};
+  const { qrCodeText = '', amount = '', email = '', phoneNumber = '', eventName = '', bookingId = '', formData = '', pax = 0 } = location.state || {};
+
+  const [calculatedAmount, setCalculatedAmount] = useState(amount);
+
+  useEffect(() => {
+    // Update the amount based on pax
+    if (pax > 0) {
+      setCalculatedAmount(amount * (1 + pax));
+    } else {
+      setCalculatedAmount(amount);
+    }
+  }, [pax, amount]);
 
   const validationSchema = Yup.object().shape({
     amount: Yup.number()
@@ -52,8 +63,19 @@ const PaymentForm = () => {
       } else {
         setStatus({ message: 'Payment successful!', type: 'success' });
         resetForm();
-        // Redirect to a new page with payment details
-        navigate('/paymentsucess', { state: { paymentId: result.payment.id, ...values } });
+        navigate('/paymentsuccess', {
+          state: {
+            formData,
+            paymentId: result.payment.id,
+            amount: values.amount,
+            email: values.email,
+            phoneNumber: values.phoneNumber,
+            eventName: values.eventName,
+            bookingId: values.bookingId,
+            qrCodeText: values.qrCodeText,
+            qrCodeUrl: values.qrCodeUrl
+          }
+        });
       }
     } catch (error) {
       setStatus({ message: 'Failed to process payment', type: 'error' });
@@ -70,7 +92,7 @@ const PaymentForm = () => {
       <Formik
         initialValues={{
           eventName: eventName || '',
-          amount: amount || '',
+          amount: calculatedAmount || '',
           email: email || '',
           phoneNumber: phoneNumber || '',
           homeAddress: '',
@@ -112,6 +134,7 @@ const PaymentForm = () => {
                       label="Amount"
                       type="number"
                       fullWidth
+                      value={calculatedAmount}
                       error={meta.touched && Boolean(meta.error)}
                       helperText={<ErrorMessage name="amount" />}
                       disabled
@@ -255,7 +278,9 @@ const PaymentForm = () => {
               {status && status.message && (
                 <Grid item xs={12} sx={{ mt: 2 }}>
                   <Box sx={{ color: status.type === 'error' ? 'red' : 'green' }}>
-                    {status.message}
+                    <Typography variant="body1" align="center">
+                      {status.message}
+                    </Typography>
                   </Box>
                 </Grid>
               )}

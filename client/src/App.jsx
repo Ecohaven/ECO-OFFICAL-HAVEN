@@ -162,7 +162,7 @@ function App() {
       <Route path={"/payment"} element={<WithAuthorization element={Payment} allowedRoles={['User']} />} />
       <Route path={"/refund"} element={<WithAuthorization element={Refund} allowedRoles={['User']} />} />
       {/* <Route path={"/historypayment"} element={<Paymenthistory/>} /> */}
-      <Route path={"/paymentsucess"} element={<WithAuthorization element={PaymentSucess} allowedRoles={['User']} />} />
+      <Route path={"/paymentsuccess"} element={<WithAuthorization element={PaymentSucess} allowedRoles={['User']} />} />
 
       {/* ^ End of Payments part ^*/}
 

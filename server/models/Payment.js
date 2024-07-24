@@ -93,6 +93,15 @@ eventName: {
       type: DataTypes.STRING,
       allowNull: true
     },
+   qrCodeUrl: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+
+ qrCodeText: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
   });
 
   Payment.associate = function(models) {
