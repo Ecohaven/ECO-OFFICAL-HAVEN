@@ -86,12 +86,12 @@ const Sidebar = () => {
           </Link>
         </div>
         <List>
-          <ListItem button component={Link} to="/staff/overview" selected={isActive('/overview')}>
+          {/* <ListItem button component={Link} to="/staff/overview" selected={isActive('/overview')}>
             <ListItemIcon style={{ color: 'white' }}>
               <OverviewIcon />
             </ListItemIcon>
             <ListItemText primary="Overview" />
-          </ListItem>
+          </ListItem> */}
 
           <ListItem button onClick={handleAccountClick}>
             <ListItemIcon style={{ color: 'white' }}>
@@ -132,12 +132,7 @@ const Sidebar = () => {
             <ListItemText primary="Attendance" />
           </ListItem>
 
-          <ListItem button component={Link} to="/staff/points" selected={isActive('/staff/points')}>
-            <ListItemIcon style={{ color: 'white' }}>
-              <PointsIcon />
-            </ListItemIcon>
-            <ListItemText primary="Points" />
-          </ListItem>
+      
 
           <ListItem button onClick={handleRewardClick}>
             <ListItemIcon style={{ color: 'white' }}>

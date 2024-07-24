@@ -78,7 +78,7 @@ const RefundForm = () => {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Field
-                  name="paymentId"
+                  name="payment.id"
                   as={TextField}
                   label="Payment ID"
                   fullWidth

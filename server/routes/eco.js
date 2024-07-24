@@ -1,10 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const { ProductDetail } = require('../models'); // Adjust this import based on your project structure
+const { ProductDetail,Account } = require('../models'); // Adjust this import based on your project structure
 const { Op } = require('sequelize');
 const multer = require('multer');
 const path = require('path');
 const yup = require('yup');
+
+// Validation schema for the redeem request
+const redeemValidationSchema = yup.object().shape({
+  accountId: yup.number().required(),
+  productName: yup.string().required()
+});
 
 // multer configuration
 const storage = multer.diskStorage({
@@ -153,4 +159,44 @@ router.delete('/product-detail/:id', async (req, res) => {
   }
 });
 
+
+// POST route to redeem a product
+router.post('/redeem', async (req, res) => {
+  try {
+    // Validate the request body
+    const { accountId, productName } = req.body;
+    await redeemValidationSchema.validate({ accountId, productName }, { abortEarly: false });
+
+    // Fetch the product detail by productName
+    const product = await ProductDetail.findOne({ where: { itemName: productName } });
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    // Fetch the user's account
+    const account = await Account.findByPk(accountId);
+    if (!account) {
+      return res.status(404).json({ message: 'Account not found' });
+    }
+
+    // Check if the user has enough leaf points and if the product is in stock
+    const leavesRequired = product.leaves;
+    if (account.leaf_points < leavesRequired) {
+      return res.status(400).json({ message: 'Insufficient leaf points' });
+    }
+    if (product.stock < 1) {
+      return res.status(400).json({ message: 'Insufficient stock' });
+    }
+
+    // Deduct the required leaves from the user's account and reduce the product stock by 1
+    account.leaf_points -= leavesRequired;
+    product.stock -= 1;
+    await account.save();
+    await product.save();
+
+    res.status(200).json({ message: 'Product redeemed successfully' });
+  } catch (error) {
+    res.status(400).json({ message: 'Error redeeming product', error: error.message });
+  }
+});
 module.exports = router;

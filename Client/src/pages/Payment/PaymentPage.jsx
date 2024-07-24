@@ -52,8 +52,8 @@ const PaymentForm = () => {
       } else {
         setStatus({ message: 'Payment successful!', type: 'success' });
         resetForm();
-        // Redirect to a new page where booking will be created
-        navigate('/paymentsucess', { state: { paymentData: values, response: result, formData } });
+        // Redirect to a new page with payment details
+        navigate('/paymentsucess', { state: { paymentId: result.payment.id, ...values } });
       }
     } catch (error) {
       setStatus({ message: 'Failed to process payment', type: 'error' });

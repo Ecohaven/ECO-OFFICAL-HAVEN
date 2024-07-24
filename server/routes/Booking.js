@@ -10,7 +10,6 @@ const { Op } = require("sequelize");
 const validationSchema = yup.object({
   email: yup.string().trim().email().required(),
   phoneNumber: yup.string().trim().required(),
-  numberOfPax: yup.number().required(),
 });
 
 // Function to generate custom ID

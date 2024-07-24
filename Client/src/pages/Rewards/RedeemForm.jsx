@@ -63,11 +63,9 @@ function RewardForm() {
     const handleSubmit = async (values, { setSubmitting }) => {
         try {
             // Post data to backend
-            const response = await axios.post('http://localhost:3001/collect', {
-                name: account.name,
-                phoneNumber: account.phone_no,
-                email: account.email,
-                product: product.itemName,
+            const response = await axios.post('http://localhost:3001/eco/redeem', {
+                accountId: account.id, // Send accountId instead of name, phone, and email
+                productName: product.itemName, // Send productName
             });
     
             // Retrieve collectionId from response
