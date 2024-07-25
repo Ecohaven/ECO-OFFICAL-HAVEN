@@ -27,6 +27,7 @@ const BookingList = () => {
             const bookingsResponse = await axios.get('http://localhost:3001/api/bookings');
             const totalResponse = await axios.get('http://localhost:3001/api/booking-summary/totalbookings');
             const newBookingsTodayResponse = await axios.get('http://localhost:3001/api/booking-summary/new-bookings-today');
+            const totalRevenueResponse = await axios.get('http://localhost:3001/api/booking-summary/totalRevenue');
 
             const updatedBookings = bookingsResponse.data.map(booking => ({
                 ...booking,
@@ -38,7 +39,7 @@ const BookingList = () => {
             setSummaryData({
                 newBookingsToday: newBookingsTodayResponse.data.newBookingsToday,
                 totalBookings: totalResponse.data.totalBookings,
-                totalRevenue: totalResponse.data.totalRevenue
+                totalRevenue: totalRevenueResponse.data.totalRevenue
             });
         } catch (error) {
             console.error('Error fetching data:', error);

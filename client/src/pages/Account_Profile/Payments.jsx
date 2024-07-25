@@ -7,7 +7,6 @@ import { tableCellClasses } from '@mui/material/TableCell';
 import AccountContext from '../../contexts/AccountContext';
 import '../../style/rewards/rewardsprofile.css';
 
-
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: '#14772B',
@@ -29,16 +28,16 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 function Account_Profile_Payments() {
-  const [events, setEvents] = useState([]);
+  const [payments, setPayments] = useState([]);
   const { account } = useContext(AccountContext); // Use context to get the account details
 
   useEffect(() => {
-    if (account && account.name) {
-      fetchBookedEvents(account.name);
+    if (account && account.email) {
+      fetchPayments(account.email);
     }
   }, [account]);
 
-  const fetchBookedEvents = async (accountName) => {
+  const fetchPayments = async (email) => {
     try {
       const token = localStorage.getItem('accessToken');
 
@@ -47,19 +46,23 @@ function Account_Profile_Payments() {
         return;
       }
 
-      const response = await axios.get(`http://localhost:3001/api/account/${accountName}/events`, {
+      // Construct query parameters
+      const query = new URLSearchParams();
+      if (email) query.append('email', email);
+
+      const response = await axios.get(`http://localhost:3001/pay/by-contact?${query.toString()}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
 
       if (Array.isArray(response.data)) {
-        setEvents(response.data);
+        setPayments(response.data);
       } else {
         console.error('Expected an array from the API response');
       }
     } catch (error) {
-      console.error('Error fetching booked events:', error);
+      console.error('Error fetching payments:', error);
     }
   };
 
@@ -71,34 +74,28 @@ function Account_Profile_Payments() {
         </Grid>
         <Grid item xs={12} md={9}>
           <div className="table-container" style={{ marginBottom: '80px' }}>
-            {/* Payments*/}
+            {/* Payments */}
             <h3 className='header'>Payments</h3>
             <hr />
             <TableContainer component={Paper}>
               <Table sx={{ minWidth: 700, marginBottom: '30px', height: 'auto' }} aria-label="customized table">
                 <TableHead>
                   <TableRow>
-                    <StyledTableCell align="center">No.</StyledTableCell>
-                    <StyledTableCell align="center">Picture</StyledTableCell>
+                    <StyledTableCell align="center">Payment ID</StyledTableCell>
                     <StyledTableCell align="center">Event Name</StyledTableCell>
-                    <StyledTableCell align="center">Organiser</StyledTableCell>
-                    <StyledTableCell align="center">Leaf Points</StyledTableCell>
-                    <StyledTableCell align="right">Amount</StyledTableCell>
+                    <StyledTableCell align="center">Amount</StyledTableCell>
+                    <StyledTableCell align="center">Email Address</StyledTableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {events.map((event, index) => (
-                    <StyledTableRow key={event.eventId}>
+                  {payments.map((payment) => (
+                    <StyledTableRow key={payment.id}>
                       <StyledTableCell component="th" scope="row">
-                        {index + 1}
+                        {payment.id}
                       </StyledTableCell>
-  <StyledTableCell align="center">
-                        <img src={`http://localhost:3001/api/event-picture/${event.eventId}`} alt={event.eventName} style={{ width: '100px', height: 'auto' }} />
-                      </StyledTableCell>
-                      <StyledTableCell align="center">{event.eventName}</StyledTableCell>
-                      <StyledTableCell align="center">{event.organiser}</StyledTableCell>
-                      <StyledTableCell align="center">{event.leafPoints}</StyledTableCell>
-                      <StyledTableCell align="center">{event.amount}</StyledTableCell>
+                      <StyledTableCell align="center">{payment.eventName}</StyledTableCell>
+                      <StyledTableCell align="center">{payment.amount}</StyledTableCell>
+                      <StyledTableCell align="center">{payment.email}</StyledTableCell>
                     </StyledTableRow>
                   ))}
                 </TableBody>

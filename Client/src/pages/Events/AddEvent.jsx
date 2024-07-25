@@ -101,7 +101,7 @@ const AddEventForm = () => {
         }
       );
       handleShowAlert('success', response.data.message);
-      window.location.href = '/eventbackend';
+      window.location.href = '/staff/eventbackend';
     } catch (error) {
       console.error('Error adding event:', error);
       handleShowAlert('error', 'Error adding event. Please try again.');

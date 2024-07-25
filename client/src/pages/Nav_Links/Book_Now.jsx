@@ -20,7 +20,10 @@ const BookNowPage = () => {
           ...event,
           id: event.eventId,
         }));
-        setEvents(eventsWithIds);
+
+        // Sort events by the latest startDate first
+        const sortedEvents = eventsWithIds.sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
+        setEvents(sortedEvents);
       } else {
         console.error('Expected an array from the API response');
       }
@@ -30,7 +33,14 @@ const BookNowPage = () => {
   };
 
   const handleBookNow = (event) => {
+    if (isEventExpired(event.startDate)) return;
     navigate('/BookingForm', { state: { event } });
+  };
+
+  const isEventExpired = (startDate) => {
+    const today = new Date().setHours(0, 0, 0, 0);
+    const eventDate = new Date(startDate).setHours(0, 0, 0, 0);
+    return eventDate < today;
   };
 
   const formatDateRange = (startDate, endDate) => {
@@ -80,7 +90,7 @@ const BookNowPage = () => {
                 transition: 'background-color 0.3s, transform 0.3s, box-shadow 0.3s',
               }}
             >
-              <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: 2, textAlign: 'center',color:'black' }}>
+              <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: 2, textAlign: 'center', color: 'black' }}>
                 {event.eventName}
               </Typography>
               <img
@@ -105,13 +115,16 @@ const BookNowPage = () => {
                   variant="contained"
                   color="primary"
                   sx={{
-                    backgroundColor: 'green',
+                    backgroundColor: isEventExpired(event.startDate) ? 'transparent' : 'green',
+                    color: isEventExpired(event.startDate) ? 'gray' : 'white',
                     fontWeight: 'bold',
+                    cursor: isEventExpired(event.startDate) ? 'not-allowed' : 'pointer',
                     '&:hover': {
-                      backgroundColor: 'darkgreen',
+                      backgroundColor: isEventExpired(event.startDate) ? 'transparent' : 'darkgreen',
                     },
                   }}
                   onClick={() => handleBookNow(event)}
+                  disabled={isEventExpired(event.startDate)}
                 >
                   Book Now
                 </Button>

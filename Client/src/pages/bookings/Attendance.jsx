@@ -94,7 +94,7 @@ const CheckInPage = () => {
                 setModalType('success');
                 setModalOpen(false); // Close the modal after successful check-in
                 fetchCheckIns(selectedEventName); // Fetch check-ins after successful check-in
-                navigate(`/attendance?eventName=${encodeURIComponent(selectedEventName)}`);
+                navigate(`/staff/attendance?eventName=${encodeURIComponent(selectedEventName)}`);
             } else {
                 setError('Unexpected response from server');
             }
@@ -163,7 +163,7 @@ const CheckInPage = () => {
         const newEventName = event.target.value;
         setSelectedEventName(newEventName);
         fetchCheckIns(newEventName);
-        navigate(`/attendance?eventName=${encodeURIComponent(newEventName)}`);
+        navigate(`/staff/attendance?eventName=${encodeURIComponent(newEventName)}`);
     };
 
     return (

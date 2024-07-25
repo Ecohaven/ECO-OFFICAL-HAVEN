@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../models');
+const { Account,Payment } = require('../models');
 const { processPayment } = require('./mockpayment');
 
 // Utility function to check for missing fields
@@ -97,20 +98,48 @@ router.get('/', async (req, res) => {
 });
 
 
-// GET payment by ID
-router.get('/:id', async (req, res) => { // Ensure this endpoint is correct
-  const { id } = req.params;
+
+// GET request to retrieve payments by email or phone number
+router.get('/by-contact', async (req, res) => {
+  const { email, phoneNumber } = req.query; // Use query parameters for email and phoneNumber
+
+  if (!email && !phoneNumber) {
+    return res.status(400).json({ error: 'Email or phone number is required' });
+  }
+
   try {
-    const payment = await db.Payment.findByPk(id);
-    if (!payment) {
-      return res.status(404).json({ error: 'Payment not found' });
+    // Define query conditions based on provided parameters
+    const queryConditions = {};
+    if (email) {
+      queryConditions.email = email;
     }
-    res.status(200).json(payment);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to retrieve payment' });
+    if (phoneNumber) {
+      queryConditions.phoneNumber = phoneNumber;
+    }
+
+    // Fetch payments based on query conditions
+    const payments = await db.Payment.findAll({
+      where: queryConditions,
+      attributes: [
+        'id', 'eventName', 'amount', 'email', 'phoneNumber', 
+        'homeAddress', 'postalCode', 'paymentMethod', 'cardholderName', 
+        'cardNumber', 'expiryDate', 'cvv', 'currency', 'status'
+      ] // Include all relevant fields
+    });
+
+    if (payments.length === 0) {
+      return res.status(404).json({ error: 'No payments found for the given contact information' });
+    }
+
+    res.status(200).json(payments);
+  } catch (error) {
+    console.error('Error retrieving payments:', error);
+    res.status(500).json({ error: 'Failed to retrieve payments', message: error.message });
   }
 });
+
+
+
 
 // GET payments by payment method
 router.get('/method/:method', async (req, res) => { // Ensure this endpoint is correct

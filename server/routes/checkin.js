@@ -42,6 +42,14 @@ router.post('/checkin/text', async (req, res) => {
       { where: { id: checkInRecord.id } }
     );
 
+    // Update booking status to Attended
+    if (checkInRecord.bookingId) {
+      await Booking.update(
+        { status: 'Attended' },
+        { where: { id: checkInRecord.bookingId } }
+      );
+    }
+
     // Optionally, update related account leaf points if needed
     if (checkInRecord.leafPoints) {
       const account = await Account.findOne({ where: { name: checkInRecord.Name } });
@@ -132,7 +140,8 @@ router.get('/check-eventname', async (req, res) => {
     }
 });
 
-// Combined check in of pax and qrcodetext,using CAMERA SCANNING 
+
+// Combined check-in of pax and qrcodetext, using CAMERA SCANNING
 router.post('/checkin', async (req, res) => {
   const { data } = req.body;
 
@@ -171,6 +180,12 @@ router.post('/checkin', async (req, res) => {
         console.warn('Account not found for accountName:', checkInRecord.Name);
       }
 
+      // Update booking status based on QR code check-in
+      await Booking.update(
+        { status: 'Checked-In' },
+        { where: { bookingId: checkInRecord.bookingId } } // Adjust based on schema
+      );
+
       return res.json({ message: 'Check-in by QR Code successful' });
     }
 
@@ -184,6 +199,12 @@ router.post('/checkin', async (req, res) => {
       );
 
       // No account update for paxName
+      // Update booking status based on paxName check-in
+      await Booking.update(
+        { status: 'Checked-In' },
+        { where: { bookingId: checkInRecord.bookingId } } // Adjust based on schema
+      );
+
       return res.json({ message: 'Check-in by Pax Name successful' });
     }
 
@@ -195,7 +216,6 @@ router.post('/checkin', async (req, res) => {
     res.status(500).json({ error: 'An error occurred while handling the check-in' });
   }
 });
-
 
 
 

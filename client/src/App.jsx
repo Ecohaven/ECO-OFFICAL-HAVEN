@@ -47,6 +47,10 @@ import CollectionProduct from './pages/Rewards/CollectionProduct';
 import EventsBackend from './pages/Events/events(backend)';
 import AddEventBackend from './pages/Events/AddEvent';
 
+
+{/* Dashboard Part  */}
+import dashboard from './pages/Dashboard/dashboard';
+
 {/* Bookings Part  */}
 import Attendance from './pages/bookings/Attendance';
 import Bookings from './pages/bookings/bookings';
@@ -78,7 +82,7 @@ function App() {
   const shouldShowAppBarFooter = !noAppBarFooterPaths.includes(location.pathname);
 
   // Define the paths where Sidebar should not be rendered (Staff pages)
-  const noSideBarPaths = ['/staff/staff_login'];
+  const noSideBarPaths = ['/staff/staff_login', '/staff/AddEvent'];
   const shouldShowSideBar = !noSideBarPaths.includes(location.pathname);
 
   useEffect(() => { // Fetch user data when the app component mounts
@@ -153,11 +157,6 @@ function App() {
       {/* ^ End of Rewards part ^*/}
 
 
-      {/* Events part */} {/* Backend */}
-       {/* <Route path={"/eventbackend"} element={<EventsBackend/>} />  */}
-       {/* <Route path={"/AddEvent"} element={<AddEventBackend/>} /> */}
-      {/* ^ End of Events part ^*/}
-
       {/* Payments  part */}
       <Route path={"/payment"} element={<WithAuthorization element={Payment} allowedRoles={['User']} />} />
       <Route path={"/refund"} element={<WithAuthorization element={Refund} allowedRoles={['User']} />} />
@@ -191,6 +190,8 @@ function App() {
 
       <Route path={"/staffhome"} element={<StaffAuthorization element={Staffhome} allowedRoles={['Admin']} />} />
       <Route path={"/account"} element={<StaffAuthorization element={Staff_Account_Profile} allowedRoles={['Admin']} />} />
+
+      <Route path={"/dashboard"} element={<StaffAuthorization element={dashboard} allowedRoles={['Admin']} />} />
 
       <Route path={"/rewardproduct"} element={<StaffAuthorization element={RewardProduct} allowedRoles={['Admin']} />} />
       <Route path={"/collectionproduct"} element={<StaffAuthorization element={CollectionProduct} allowedRoles={['Admin']} />} />

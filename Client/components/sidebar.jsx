@@ -86,7 +86,7 @@ const Sidebar = () => {
           </Link>
         </div>
         <List>
-          <ListItem button component={Link} to="/staff/overview" selected={isActive('/overview')}>
+          <ListItem button component={Link} to="/staff/dashboard" selected={isActive('/dashboard')}>
             <ListItemIcon style={{ color: 'white' }}>
               <OverviewIcon />
             </ListItemIcon>

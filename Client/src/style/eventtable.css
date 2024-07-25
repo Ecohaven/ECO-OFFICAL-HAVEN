@@ -83,6 +83,29 @@ input[type="text"] {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+.zoom-modal-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50vw; /* 50% of viewport width */
+    height: 50vh; /* 50% of viewport height */
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    position: fixed; /* Fixed positioning to ensure it stays in place */
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Adjust position to truly center */
+    overflow: hidden;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+
+.zoom-modal-box img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+
 
 @media (min-width: 600px) {
     .card {

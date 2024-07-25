@@ -82,7 +82,7 @@ const EventDataTable = () => {
 
 const handleCheckIn = (eventName) => {
     // Redirect immediately
-    navigate(`/attendance?eventName=${encodeURIComponent(eventName)}`);
+    navigate(`/staff/attendance?eventName=${encodeURIComponent(eventName)}`);
 
     // Optional: Add any additional logic if needed
 };

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Booking } = require('../models');
+const { Booking,Payment } = require('../models');
 const yup = require('yup');
 const { Op } = require("sequelize");
 
@@ -36,15 +36,14 @@ router.get("/totalBookings", async (req, res) => {
     }
 });
 
-// //get total revenue 
-// router.get("/totalRevenue", async (req, res) => {
-//     try {
-//        const totalRevenue = await Booking.sum('totalAmount');
-//         res.json({totalRevenue});
-//     } catch (error) {
-//         console.error("Error fetching total revenue ", error);
-//         res.status(500).json({ error: "Internal server error" });
-//     }
-// });
-
+// Get total revenue
+router.get("/totalRevenue", async (req, res) => {
+    try {
+        const totalRevenue = await Payment.sum('amount');
+        res.json({ totalRevenue });
+    } catch (error) {
+        console.error("Error fetching total revenue", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
 module.exports = router;

@@ -72,6 +72,11 @@ app.use('/checkin',checkInRoutes);
 const SearchRoutes = require('./routes/search');
 app.use('/search', SearchRoutes);
 
+
+//Dashboard - Dashboard displays of informations:
+const dashboardRoutes = require('./routes/dashboard');
+app.use('/dash/', dashboardRoutes);
+
 // Sending mail API 
 const mailerRoutes = require('./routes/mailer');
 app.use('/send-email', mailerRoutes);
