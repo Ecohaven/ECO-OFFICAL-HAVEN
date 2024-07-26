@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Booking,Payment } = require('../models');
+const { Booking,Payment,Event } = require('../models');
 const yup = require('yup');
 const { Op } = require("sequelize");
 
@@ -24,6 +24,28 @@ router.get("/new-bookings-today", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+//for dashboard , tbc 
+router.get('/newestBooking', async (req, res) => {
+    try {
+        // Fetch the latest booking across all events
+        const newestBooking = await Booking.findOne({
+            order: [['bookingDate', 'DESC']] // Assuming you have a field named 'bookingDate'
+        });
+        
+        if (!newestBooking) {
+            return res.status(404).json({ error: "No bookings found." });
+        }
+        
+        res.json(newestBooking);
+    } catch (error) {
+        console.error("Error fetching the newest booking:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+
+
 
 //get total bookings
 router.get("/totalBookings", async (req, res) => {

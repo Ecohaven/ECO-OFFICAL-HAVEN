@@ -1,10 +1,9 @@
+/* Container for event list */
 .event-list-container {
-    width: 75%;
-    max-width: 1200px;
+    width: 80%;
+    max-width: 1300px;
     margin-left: 250px;
-    /* Adjust as needed */
     margin-top: -25px;
-    /* margin: 70px auto 15px;  */
     margin-bottom: 15px;
     padding: 20px;
 }
@@ -13,12 +12,11 @@ h2 {
     text-align: left;
     font-size: 3rem;
     margin-bottom: 20px;
-
 }
 
 .data-grid-container {
     height: 400px;
-    width: 100%;
+    width: 130%;
     overflow-x: auto;
 }
 
@@ -37,17 +35,19 @@ h2 {
 }
 
 .css-i9fmh8-MuiBackdrop-root-MuiModal-backdrop {
-    background-color: transparent !important;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    /* Dark semi-transparent background */
 }
 
 .form-input {
-    margin-bottom: '15px';
-    width: '800px';
+    margin-bottom: 15px;
+    width: 800px;
     outline: none;
 }
 
 input[type="text"] {
     border: none !important;
+    
 }
 
 .css-1jy569b-MuiFormLabel-root-MuiInputLabel-root {
@@ -55,17 +55,22 @@ input[type="text"] {
     font-weight: bold !important;
 }
 
-.add-event-button {
-    background-color: green !important;
-    margin-top: 20px !important;
+.addbtn {
+    background-color: blue !important;
+    margin-top: 20px;
+    margin-left: 290px !important;
+    width: 10% !important;
+}
 
+.edit-icon,
+.delete-icon {
+    cursor: pointer;
+    transition: box-shadow 0.3s ease;
 }
 
 .edit-icon {
     color: blue;
-    cursor: pointer;
     margin-left: 2px;
-    transition: box-shadow 0.3s ease;
 }
 
 .edit-icon:hover {
@@ -74,45 +79,177 @@ input[type="text"] {
 
 .delete-icon {
     color: red;
-    cursor: pointer;
     margin-left: 8px;
-    transition: box-shadow 0.3s ease;
 }
 
 .delete-icon:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+.zoom-modal-box,
+.modal-box {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+
 .zoom-modal-box {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 50vw; /* 50% of viewport width */
-    height: 50vh; /* 50% of viewport height */
-    background-color: white;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 90vw;  /* Adjust maximum width as needed */
+    max-height: 90vh; /* Adjust maximum height as needed */
     padding: 20px;
-    border-radius: 8px;
-    position: fixed; /* Fixed positioning to ensure it stays in place */
-    top: 50%; /* Center vertically */
-    left: 50%; /* Center horizontally */
-    transform: translate(-50%, -50%); /* Adjust position to truly center */
-    overflow: hidden;
+    background-color: white;
+    border-radius: 10px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    overflow: hidden; /* Ensure content does not overflow */
 }
 
 .zoom-modal-box img {
     max-width: 100%;
     max-height: 100%;
+    width: auto;  /* Maintain aspect ratio */
+    height: auto; /* Maintain aspect ratio */
+}
+/* Ensure proper spacing between elements in the modal */
+.modal-box {
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Style for the file upload button */
+.upload-button-container {
+    margin-bottom: 12px;
+  
+}
+
+/* Ensure the submit button is positioned below the upload button */
+.actions-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px; /* Adds spacing between the upload and submit buttons */
+}
+
+/* Style for error messages */
+.error-text {
+    color: red;
+    font-size: 0.875rem;
+    margin-top: 12px;
 }
 
 
+.event-filter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+}
 
+.event-filter .MuiTextField-root {
+    margin-right: 16px;
+}
+
+.event-filter .MuiButton-root {
+    margin-left: 10px;
+}
+
+.modal-box {
+    max-width: 600px;
+    margin: auto;
+}
+
+.modal-heading {
+    font-size: 32px;
+    margin-bottom: 16px;
+}
+
+.form-field {
+    margin-bottom: 16px;
+}
+
+.actions-container {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.form-field button {
+    margin-right: 16px;
+}
+
+.error-text {
+    color: red;
+    margin-top: 8px;
+}
+
+.modal-box p {
+    margin: 8px 0;
+}
+
+.modal-box button {
+    margin-top: 16px;
+    display: block;
+    width: 100%;
+}
+.zoomModalBox {
+    position: relative;
+}
+.editcloseBtn {
+    position: absolute;
+    top: 10px;
+    left: 170px;
+    background: transparent;
+    border: none;
+    font-size: 34px;
+    cursor: pointer;
+    color: red;
+    transition: color 0.3s, transform 0.3s;
+    z-index: 2; /* Ensure the close button is above the image */
+}
+.editcloseBtn:hover {
+    color: black;
+    transform: scale(1.2);
+}
+
+.closeBtn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    font-size: 34px;
+    cursor: pointer;
+    color: red;
+    transition: color 0.3s, transform 0.3s;
+    z-index: 2; /* Ensure the close button is above the image */
+}
+
+.closeBtn:hover {
+    color: black;
+    transform: scale(1.2);
+}
 @media (min-width: 600px) {
     .card {
         max-width: 300px;
     }
-
+.addbtn {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        width: 20%;
+        display: block;
+        margin-top: 20px;
+    }
 }
+
 
 .dialog-content {
     text-align: center;
@@ -134,47 +271,6 @@ input[type="text"] {
     text-align: center;
 }
 
-.css-i9fmh8-MuiBackdrop-root-MuiModal-backdrop {
-    background-color: rgba(0, 0, 0, 0.5) !important; /* Dark semi-transparent background */
-}
-
-.modal-box, .zoom-modal-box {
-    background-color: white; /* Ensure the popup background is white */
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-}
-
-.form-field {
-    margin-bottom: 20px; /* Adds 100px gap between each field */
-}
-
-.date-fields-container {
-    display: flex;
-    gap: 16px; /* Adjust the spacing between fields as needed */
-}
-
-.date-fields-container .MuiTextField-root {
-    flex: 1; /* Ensures both fields take up equal space */
-}
-
-.leaf-status-container {
-    display: flex;
-    gap: 16px; /* Adjust as needed */
-}
-
-.leaf-status-container .MuiTextField-root {
-    flex: 1; /* Ensures both fields take up equal space */
-}
-
-.actions-container {
-    display: flex;
-    gap: 16px; /* Adjust as needed */
-    align-items: center; /* Align items vertically center */
-}
-
-/* stop here too ehehheehhe */
-
 .alert-container {
     position: fixed;
     bottom: 20px;
@@ -182,45 +278,53 @@ input[type="text"] {
     transform: translateX(-50%);
     z-index: 999;
     width: calc(100% - 40px);
-    /* Adjust for mobile width */
 }
 
-/* For screens wider than 1000px */
+.date-fields-container,
+.leaf-status-container {
+    display: flex;
+    gap: 16px;
+}
+
+.date-fields-container .MuiTextField-root,
+.leaf-status-container .MuiTextField-root {
+    flex: 1;
+}
+
+.actions-container {
+    gap: 16px;
+    align-items: center;
+}
+
 @media (max-width: 1000px) {
     .event-list-container {
-        width: 120%;
-        /* Full width on larger screens */
+        width: 200%;
         margin-left: 0;
-        /* No left margin on larger screens */
         padding: 10px;
-        /* Adjust padding as needed */
     }
-}
-
-/* For screens narrower than 500px */
-@media (max-width: 500px) {
-    .event-list-container {
-        width: 140%;
-        /* Adjust width for smaller screens */
-        margin-left: 0;
-        /* No left margin on smaller screens */
-        margin-right: -5px;
-        /* Adjust for overflow */
-        padding: 10px;
-        /* Reduce padding for smaller screens */
-    }
-
-    .add-event-button {
+ .addbtn {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        width: 20%;
         display: block;
-        width: 100%;
         margin-top: 20px;
-        text-align: center; /* Center the button */
     }
 }
 
-.h2 {
-    text-align: left;
-    font-size: 3rem;
-    margin-bottom: 20px;
-    /* Reduce margin for smaller screens */
+/* Adjust the styles for mobile devices */
+@media (max-width: 500px) {
+    .event-filter {
+        flex-direction: column; /* Stack items vertically */
+        align-items: flex-start; /* Align items to the start */
+    }
+
+    .event-filter .MuiTextField-root {
+        margin-right: 0; /* Remove right margin */
+        margin-bottom: 8px; /* Add space below the search box */
+    }
+
+    .event-filter .MuiButton-root {
+        margin-left: 0; /* Remove left margin */
+        margin-top: 8px; /* Add space above the button */
+    }
 }

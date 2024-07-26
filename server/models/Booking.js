@@ -50,7 +50,7 @@ paxEmail: {
     },
     status: {
       type: DataTypes.STRING,
-      defaultValue: 'Active', // Corrected default value assignment
+      defaultValue: 'Active', 
       allowNull: true
     },
     leafPoints: {

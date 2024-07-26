@@ -17,54 +17,75 @@ router.post('/checkin/text', async (req, res) => {
       return res.status(400).json({ error: 'Data is required' });
     }
 
-    // Find the check-in record by QR code text or Pax name
-    let checkInRecord = await CheckIn.findOne({
-      where: {
-        [Op.or]: [
-          { qrCodeText: data },
-          { paxName: data }
-        ]
+    // Start a transaction
+    const transaction = await CheckIn.sequelize.transaction();
+
+    try {
+      // Find the check-in record by QR code text or Pax name
+      let checkInRecord = await CheckIn.findOne({
+        where: {
+          [Op.or]: [
+            { qrCodeText: data },
+            { paxName: data }
+          ]
+        },
+        transaction
+      });
+
+      if (!checkInRecord) {
+        await transaction.rollback();
+        return res.status(404).json({ error: 'Check-in record not found' });
       }
-    });
 
-    if (!checkInRecord) {
-      return res.status(404).json({ error: 'Check-in record not found' });
-    }
+      // Check if the QR code or Pax name has already been checked in
+      if (checkInRecord.qrCodeStatus === 'Checked-In') {
+        await transaction.rollback();
+        return res.status(400).json({ error: 'Record has already been checked in' });
+      }
 
-    // Check if the QR code or Pax name has already been checked in
-    if (checkInRecord.qrCodeStatus === 'Checked-In') {
-      return res.status(400).json({ error: 'Record has already been checked in' });
-    }
-
-    // Update the check-in record status
-    await CheckIn.update(
-      { qrCodeStatus: 'Checked-In', qrCodeChecked: true },
-      { where: { id: checkInRecord.id } }
-    );
-
-    // Update booking status to Attended
-    if (checkInRecord.bookingId) {
-      await Booking.update(
-        { status: 'Attended' },
-        { where: { id: checkInRecord.bookingId } }
+      // Update the check-in record status
+      await CheckIn.update(
+        { qrCodeStatus: 'Checked-In', qrCodeChecked: true },
+        { where: { id: checkInRecord.id }, transaction }
       );
-    }
 
-    // Optionally, update related account leaf points if needed
-    if (checkInRecord.leafPoints) {
-      const account = await Account.findOne({ where: { name: checkInRecord.Name } });
-      if (account) {
-        await Account.update(
-          { leaf_points: (account.leaf_points || 0) + (checkInRecord.leafPoints || 0) },
-          { where: { name: checkInRecord.Name } }
+      // Update booking status to Attended
+      if (checkInRecord.associatedBookingId) {
+        const bookingUpdateResult = await Booking.update(
+          { status: 'Attended' },
+          { where: { id: checkInRecord.associatedBookingId }, transaction }
         );
-      } else {
-        console.warn('Account not found for accountName:', checkInRecord.Name);
+
+        console.log('Booking update result:', bookingUpdateResult);
+        if (bookingUpdateResult[0] === 0) {
+          console.error('Booking update failed, no rows affected.');
+        }
       }
+
+      // Optionally, update related account leaf points if needed
+      if (checkInRecord.leafPoints) {
+        const account = await Account.findOne({ where: { name: checkInRecord.Name }, transaction });
+        if (account) {
+          await Account.update(
+            { leaf_points: (account.leaf_points || 0) + (checkInRecord.leafPoints || 0) },
+            { where: { name: checkInRecord.Name }, transaction }
+          );
+        } else {
+          console.warn('Account not found for accountName:', checkInRecord.Name);
+        }
+      }
+
+      // Commit the transaction
+      await transaction.commit();
+
+      return res.json({ message: 'Check-in successful' });
+
+    } catch (err) {
+      // Rollback the transaction in case of an error
+      await transaction.rollback();
+      console.error('Error handling check-in within transaction:', err);
+      res.status(500).json({ error: 'An error occurred while handling the check-in' });
     }
-
-    return res.json({ message: 'Check-in successful' });
-
   } catch (err) {
     console.error('Error handling check-in:', err);
     res.status(500).json({ error: 'An error occurred while handling the check-in' });
@@ -145,78 +166,84 @@ router.get('/check-eventname', async (req, res) => {
 router.post('/checkin', async (req, res) => {
   const { data } = req.body;
 
-  console.log('Received data:', { data }); // Add logging here
+  console.log('Received data:', { data });
+
+  if (!data) {
+    return res.status(400).json({ error: 'Data is required' });
+  }
+
+  const transaction = await CheckIn.sequelize.transaction();
 
   try {
-    // Check for valid data
-    if (!data) {
-      return res.status(400).json({ error: 'Data is required' });
+    // Find check-in record by QR code text
+    let checkInRecord = await CheckIn.findOne({
+      where: { qrCodeText: data },
+      transaction
+    });
+
+    if (!checkInRecord) {
+      // If not found by QR code, check by paxName
+      checkInRecord = await CheckIn.findOne({
+        where: { paxName: data },
+        transaction
+      });
     }
 
-    // Check if the QR code has already been scanned
-    let checkInRecord = await CheckIn.findOne({ where: { qrCodeText: data } });
-    
-    if (checkInRecord) {
-      // If the QR code has already been checked in, return an appropriate message
-      if (checkInRecord.qrCodeStatus === 'Checked-In') {
-        return res.status(400).json({ error: 'QR Code has already been checked in' });
-      }
+    if (!checkInRecord) {
+      // If neither match, return an error
+      await transaction.rollback();
+      return res.status(404).json({ error: 'Check-in record not found' });
+    }
 
-      // Update check-in record status
-      await CheckIn.update(
-        { qrCodeStatus: 'Checked-In', qrCodeChecked: true },
-        { where: { id: checkInRecord.id } }
-      );
+    if (checkInRecord.qrCodeStatus === 'Checked-In') {
+      await transaction.rollback();
+      return res.status(400).json({ error: 'QR Code or Pax Name has already been checked in' });
+    }
 
-      // Update the associated account with leaf points from the check-in record
-      const account = await Account.findOne({ where: { name: checkInRecord.Name } }); // Use accountName field
+    // Update check-in record status
+    await CheckIn.update(
+      { qrCodeStatus: 'Checked-In', qrCodeChecked: true },
+      { where: { id: checkInRecord.id }, transaction }
+    );
+
+    // Update the associated account with leaf points if available
+    if (checkInRecord.Name) {
+      const account = await Account.findOne({
+        where: { name: checkInRecord.Name },
+        transaction
+      });
+
       if (account) {
-        // Ensure leaf_points is updated correctly
         await Account.update(
           { leaf_points: (account.leaf_points || 0) + (checkInRecord.leafPoints || 0) },
-          { where: { name: checkInRecord.Name } } // Use accountName field
+          { where: { name: checkInRecord.Name }, transaction }
         );
       } else {
-        console.warn('Account not found for accountName:', checkInRecord.Name);
+        console.warn('Account not found for name:', checkInRecord.Name);
       }
-
-      // Update booking status based on QR code check-in
-      await Booking.update(
-        { status: 'Checked-In' },
-        { where: { bookingId: checkInRecord.bookingId } } // Adjust based on schema
-      );
-
-      return res.json({ message: 'Check-in by QR Code successful' });
     }
 
-    // If not found by qrCodeText, check by paxName
-    checkInRecord = await CheckIn.findOne({ where: { paxName: data } });
-    if (checkInRecord) {
-      // Update check-in record status
-      await CheckIn.update(
-        { qrCodeStatus: 'Checked-In', qrCodeChecked: true },
-        { where: { id: checkInRecord.id } }
-      );
-
-      // No account update for paxName
-      // Update booking status based on paxName check-in
+    // Update booking status based on QR code or paxName check-in
+    if (checkInRecord.bookingId) {
       await Booking.update(
         { status: 'Checked-In' },
-        { where: { bookingId: checkInRecord.bookingId } } // Adjust based on schema
+        { where: { id: checkInRecord.bookingId }, transaction }
       );
-
-      return res.json({ message: 'Check-in by Pax Name successful' });
+    } else {
+      console.warn('Booking ID not found for check-in record:', checkInRecord.id);
     }
 
-    // If neither match, return an error
-    return res.status(404).json({ error: 'Check-in record not found' });
+    // Commit the transaction
+    await transaction.commit();
 
+    return res.json({ message: 'Check-in successful' });
   } catch (err) {
+    // Rollback the transaction in case of an error
+    await transaction.rollback();
     console.error('Error handling check-in:', err);
-    res.status(500).json({ error: 'An error occurred while handling the check-in' });
+    return res.status(500).json({ error: 'An error occurred while handling the check-in' });
   }
 });
-
 
 
 

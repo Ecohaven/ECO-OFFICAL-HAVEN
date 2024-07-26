@@ -79,13 +79,16 @@ const EventDataTable = () => {
     }, [alertOpen]);
 
 
+    const handleCheckIn = (eventName) => {
+        try {
+            // Navigate to the attendance page with the event name as a query parameter
+            navigate(`/staff/attendance?eventName=${encodeURIComponent(eventName)}`);
+        } catch (error) {
+            console.error('Navigation error:', error);
+            handleShowAlert('error', 'Unable to navigate to check-in page. Please try again.');
+        }
+    };
 
-const handleCheckIn = (eventName) => {
-    // Redirect immediately
-    navigate(`/staff/attendance?eventName=${encodeURIComponent(eventName)}`);
-
-    // Optional: Add any additional logic if needed
-};
 
 
     const handleOpenEditEvent = (event) => {
@@ -183,7 +186,7 @@ const handleCheckIn = (eventName) => {
     };
 
     const handleAddEventRedirect = () => {
-        navigate('/staff/AddEvent'); 
+        navigate('/staff/AddEvent');
     };
 
     const handleUpdateEvent = async (e) => {
@@ -240,7 +243,6 @@ const handleCheckIn = (eventName) => {
     const handleCloseViewDetailsModal = () => {
         setViewDetailsModalOpen(false);
     };
-// stop here heheheeheh
     const columns = [
         {
             field: 'picture',
@@ -258,11 +260,25 @@ const handleCheckIn = (eventName) => {
             ),
         },
         { field: 'eventName', headerName: 'Event Name', width: 150 },
-        { field: 'location', headerName: 'Location', width: 150 },
         { field: 'startDate', headerName: 'Start Date', width: 120 },
         { field: 'endDate', headerName: 'End Date', width: 120 },
-        { field: 'time', headerName: 'Time', width: 100 },
+        { field: 'time', headerName: 'Time', width: 140 },
+ { field: 'location', headerName: 'Location', width: 90 },
         { field: 'status', headerName: 'Status', width: 80 },
+ {
+            field: 'checkIn',
+            headerName: 'Check In',
+            width: 280,
+            renderCell: (params) => (
+                <Button
+                    variant="contained"
+                    style={{ backgroundColor: 'green', color: 'white', cursor: 'pointer' }}
+                    onClick={() => handleCheckIn(params.row.eventName)}
+                >
+                    Check In {params.row.eventName}
+                </Button>
+            ),
+        },
         {
             field: 'edit',
             headerName: 'Edit',
@@ -287,34 +303,27 @@ const handleCheckIn = (eventName) => {
                 />
             ),
         },
-        {
-            field: 'checkIn',
-            headerName: 'Check In',
-            width: 200,
-            renderCell: (params) => (
-                <Button
-                    variant="contained"
-                    style={{ backgroundColor: 'green', color: 'white', cursor: 'pointer' }}
-                    onClick={() => handleCheckIn(params.row.eventName)}
-                >
-                    Check In
-                </Button>
-            ),
-        },
-        {
+  {
             field: 'viewDetails',
             headerName: 'Details',
             width: 100,
             renderCell: (params) => (
                 <Button
-                    variant="contained"
-                    style={{ backgroundColor: 'blue', color: 'white', cursor: 'pointer' }}
+                    variant="text" // Change the variant to text for an underlined button
+                    sx={{
+                        color: 'blue',
+                        textDecoration: 'underline', // Underline the text
+                        cursor: 'pointer',
+                    }}
                     onClick={() => handleViewDetails(params.row)}
                 >
                     View
                 </Button>
             ),
         },
+       
+      
+
     ];
 
     return (
@@ -329,14 +338,15 @@ const handleCheckIn = (eventName) => {
                         onChange={handleEventNameFilterChange}
                         variant="outlined"
                         size="small"
+                        style={{marginLeft:'12px'}}
                     />
-                    <Button variant="contained" onClick={handleFilterEvents}>
+                    <Button variant="contained" onClick={handleFilterEvents} >
                         Filter
                     </Button>
-                    <Button variant="contained" onClick={handleResetFilter}>
+                    <Button variant="contained" onClick={handleResetFilter} style={{backgroundColor:'red'}}>
                         Reset
                     </Button>
-                    <Button variant="contained" onClick={handleAddEventRedirect}>
+                    <Button variant="contained" onClick={handleAddEventRedirect} className='addbtn' style={{width:'20%'}}>
                         Add Event
                     </Button>
                 </div>
@@ -345,138 +355,146 @@ const handleCheckIn = (eventName) => {
                 </div>
             </div>
             <Modal open={openAddEventModal} onClose={handleCloseEditEvent}>
-    <Box className="modal-box">
-        <h2 className="modal-heading">{selectedEvent ? 'Edit Event' : 'Add Event'}</h2>
-        <form onSubmit={selectedEvent ? handleUpdateEvent : handleAddEventRedirect}>
-            <div className="form-field">
-                <TextField
-                    label="Event Name"
-                    name="eventName"
-                    value={formValues.eventName}
-                    onChange={handleInputChange}
-                    fullWidth
-                    required
-                />
-            </div>
-            <div className="form-field">
-                <TextField
-                    label="Description"
-                    name="description"
-                    value={formValues.description}
-                    onChange={handleInputChange}
-                    fullWidth
-                    required
-                />
-            </div>
-            <div className="form-field">
-                <TextField
-                    label="Location"
-                    name="location"
-                    value={formValues.location}
-                    onChange={handleInputChange}
-                    fullWidth
-                    required
-                />
-            </div>
-            <div className="date-fields-container">
-                <TextField
-                    label="Start Date"
-                    name="startDate"
-                    value={formValues.startDate}
-                    onChange={handleInputChange}
-                    fullWidth
-                    required
-                />
-                <TextField
-                    label="End Date"
-                    name="endDate"
-                    value={formValues.endDate}
-                    onChange={handleInputChange}
-                    fullWidth
-                    required
-                />
-            </div>
-            <div className="form-field">
-                <TextField
-                    label="Time"
-                    name="time"
-                    value={formValues.time}
-                    onChange={handleInputChange}
-                    fullWidth
-                    required
-                />
-            </div>
-            <div className="leaf-status-container">
-                <div className="form-field">
-                    <TextField
-                        label="Leaf Points"
-                        name="leafPoints"
-                        value={formValues.leafPoints}
-                        onChange={handleInputChange}
-                        fullWidth
-                    />
-                </div>
-                <div className="form-field">
-                    <TextField
-                        label="Status"
-                        name="status"
-                        value={formValues.status}
-                        onChange={handleInputChange}
-                        fullWidth
-                        required
-                        select
-                    >
-                        <MenuItem value="Free">Free</MenuItem>
-                        <MenuItem value="Paid">Paid</MenuItem>
-                    </TextField>
-                </div>
-            </div>
-            {formValues.status === 'Paid' && (
-                <div className="form-field">
-                    <TextField
-                        label="Amount"
-                        name="amount"
-                        value={formValues.amount}
-                        onChange={handleInputChange}
-                        fullWidth
-                        required
-                    />
-                </div>
-            )}
-            <div className="actions-container">
-                <div className="form-field">
-                    <Button variant="contained" component="label">
-                        Upload Picture
-                        <input type="file" hidden onChange={handleFileChange} />
-                    </Button>
-                    {file && <p>{file.name}</p>}
-                </div>
-                <div className="form-field">
-                    <Button variant="contained" type="submit" className="modal-submit-button">
-                        {selectedEvent ? 'Update Event' : 'Add Event'}
-                    </Button>
-                </div>
-            </div>
-            {errorAdding && <p className="error-text">{errorAdding}</p>}
-        </form>
-    </Box>
-</Modal>
-
-
-
-            <Modal open={openZoomModal} onClose={handleCloseZoomModal}>
-                <Box className="zoom-modal-box">
-                    <img src={zoomedImageUrl} alt="Zoomed Event" style={{ width: '100%', height: '100%' }} />
+                <Box className="modal-box">
+                    <h2 className="modal-heading">{selectedEvent ? 'Edit Event' : 'Add Event'}</h2>
+                    <form onSubmit={selectedEvent ? handleUpdateEvent : handleAddEventRedirect}>
+                        <div className="form-field">
+                            <TextField
+                                label="Event Name"
+                                name="eventName"
+                                value={formValues.eventName}
+                                onChange={handleInputChange}
+                                fullWidth
+                                required
+                            />
+                        </div>
+                        <div className="form-field">
+                            <TextField
+                                label="Description"
+                                name="description"
+                                value={formValues.description}
+                                onChange={handleInputChange}
+                                fullWidth
+                                required
+                            />
+                        </div>
+                        <div className="form-field">
+                            <TextField
+                                label="Location"
+                                name="location"
+                                value={formValues.location}
+                                onChange={handleInputChange}
+                                fullWidth
+                                required
+                            />
+                        </div>
+                        <div className="date-fields-container">
+                            <TextField
+                                label="Start Date"
+                                name="startDate"
+                                value={formValues.startDate}
+                                onChange={handleInputChange}
+                                fullWidth
+                                required
+                            />
+                            <TextField
+                                label="End Date"
+                                name="endDate"
+                                value={formValues.endDate}
+                                onChange={handleInputChange}
+                                fullWidth
+                                required
+                            />
+                        </div>
+                        <div className="form-field">
+                            <TextField
+                                label="Time"
+                                name="time"
+                                value={formValues.time}
+                                onChange={handleInputChange}
+                                fullWidth
+                                required
+                                style={{marginTop:'20px'}}
+                            />
+                        </div>
+                        <div className="leaf-status-container">
+                            <div className="form-field">
+                                <TextField
+                                    label="Leaf Points"
+                                    name="leafPoints"
+                                    value={formValues.leafPoints}
+                                    onChange={handleInputChange}
+                                    fullWidth
+                                />
+                            </div>
+                            <div className="form-field">
+                                <TextField
+                                    label="Status"
+                                    name="status"
+                                    value={formValues.status}
+                                    onChange={handleInputChange}
+                                    fullWidth
+                                    required
+                                    select
+                                >
+                                    <MenuItem value="Free">Free</MenuItem>
+                                    <MenuItem value="Paid">Paid</MenuItem>
+                                </TextField>
+                            </div>
+                        </div>
+                        {formValues.status === 'Paid' && (
+                            <div className="form-field">
+                                <TextField
+                                    label="Amount"
+                                    name="amount"
+                                    value={formValues.amount}
+                                    onChange={handleInputChange}
+                                    fullWidth
+                                    required
+                                />
+                            </div>
+                        )}
+                        <div className="actions-container">
+                            <div className="form-field">
+                                <button
+                                    className="editcloseBtn"
+                                    aria-label="Close"
+                                    onClick={handleCloseEditEvent}
+                                >
+                                    ×
+                                </button>
+                                <Button variant="contained" type="submit" className="modal-submit-button">
+                                    {selectedEvent ? 'Update Event' : 'Add Event'}
+                                </Button>
+                            </div>
+                        </div>
+                        {errorAdding && <p className="error-text">{errorAdding}</p>}
+                    </form>
                 </Box>
             </Modal>
+                <Modal open={openZoomModal} onClose={handleCloseZoomModal}>
+    <Box className="zoom-modal-box">
+        <button
+            className="closeBtn"
+            aria-label="Close"
+            onClick={handleCloseZoomModal} 
+        >
+            ×
+        </button>
+        <img
+            src={zoomedImageUrl}
+            alt="Zoomed Event"
+        />
+    </Box>
+</Modal>
             <Modal open={viewDetailsModalOpen} onClose={handleCloseViewDetailsModal}>
                 <Box className="modal-box">
-                    <h2 className="modal-heading">Event Details</h2>
+                    <h2 className="modal-heading" style={{fontSize:'32px'}}>Event Details</h2>
                     <p><strong>Event ID:</strong> {eventDetails.eventId}</p>
                     <p><strong>Description:</strong> {eventDetails.description}</p>
+                    <p><strong>Amount:</strong> {eventDetails.amount}</p>
                     <p><strong>Organiser:</strong> {eventDetails.organiser}</p>
                     <p><strong>Leaf Points:</strong> {eventDetails.leafPoints}</p>
-                    <p><strong>Amount:</strong> {eventDetails.amount}</p>
                     <Button variant="contained" onClick={handleCloseViewDetailsModal}>Close</Button>
                 </Box>
             </Modal>

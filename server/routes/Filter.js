@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { Booking, events,CheckIn } = require('../models'); // Ensure your model imports are correct
+const { Booking, Event, CheckIn } = require('../models'); // Ensure your model imports are correct
 const { Op } = require("sequelize");
 
 // Filter bookings
 // Example URL: http://localhost:3001/api/filter?event=eventID&date=2024-07-15&status=Active&eventName=EventName
 router.get('/filter', async (req, res) => {
-    const { event, date, status, eventName } = req.query;
+    const { event, date, status, numberOfPax } = req.query;
 
     let condition = {};
 
@@ -19,18 +19,17 @@ router.get('/filter', async (req, res) => {
     if (status) {
         condition.status = status;
     }
-    if (eventName) {
-        // Filter by exact eventName match
-        condition['$eventDetails.eventName$'] = eventName;
+    if (numberOfPax) {
+        condition.numberOfPax = parseInt(numberOfPax, 10); // Correct parsing base
     }
 
     try {
         const bookings = await Booking.findAll({
             where: condition,
             include: {
-                model: events, 
-                as: 'eventDetails', //  Match the alias defined in the association
-                attributes: ['eventName'] 
+                model: Event, // Ensure this matches the model name
+                as: 'eventDetails', // This should match the alias used in your model associations
+                attributes: ['eventName'] // Include eventName if needed in response
             }
         });
 
@@ -41,6 +40,26 @@ router.get('/filter', async (req, res) => {
         res.json(bookings);
     } catch (error) {
         console.error('Error fetching bookings:', error);
+        res.status(500).send('Server error');
+    }
+});
+router.get('/filter/event-names', async (req, res) => {
+    try {
+        const events = await Event.findAll({
+            attributes: ['eventName'],
+            group: ['eventName'] // Ensure unique event names
+        });
+
+        if (events.length === 0) {
+            return res.status(404).json({ message: 'No events found' });
+        }
+
+        // Extract unique event names
+        const eventNames = events.map(event => event.eventName);
+
+        res.json(eventNames);
+    } catch (error) {
+        console.error('Error fetching event names:', error);
         res.status(500).send('Server error');
     }
 });

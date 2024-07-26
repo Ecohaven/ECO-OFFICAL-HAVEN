@@ -210,7 +210,7 @@ const BookingForm = () => {
                 <h2>Hi ${record.paxName},</h2>
                 <p>Your QR code for the event ${event.eventName} is included below:</p>
                 <img src="${record.paxQrCodeUrl}" alt="QR Code">
-                <p>Thank you for attending the event!</p>
+                <p>Please show this Qr-code on the actual day ,Thank you!</p>
               </body>
             </html>
           `
@@ -292,8 +292,8 @@ const BookingForm = () => {
       </Grid>
       {bookingSuccessful && (
         <Box mt={3}>
-          <Typography variant="h6">Booking Successful!</Typography>
-          <Typography variant="body1">Booking ID: {bookingId}</Typography>
+          <Typography variant="h6" style={{color:'black',fontWeight:'bold'}}>Booking Successful!</Typography>
+          <Typography variant="body1">Booking ID:<strong> {bookingId}</strong></Typography>
           {qrCodeText && (
             <Box>
               <Typography variant="body1">QR Code:</Typography>
@@ -302,10 +302,10 @@ const BookingForm = () => {
           )}
           {paxQrCodeRecords.length > 0 && (
             <Box mt={2}>
-              <Typography variant="body1">Pax QR Codes:</Typography>
+              <Typography variant="body1">Additional Guest QR Codes:</Typography>
               {paxQrCodeRecords.map((record, index) => (
                 <Box key={index} mb={1}>
-                  <Typography variant="body2">{record.paxName}</Typography>
+                  <Typography variant="body2"><strong>{record.paxName}</strong></Typography>
                   <img src={record.paxQrCodeUrl} alt={`QR Code for ${record.paxName}`} />
                 </Box>
               ))}

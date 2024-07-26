@@ -75,7 +75,7 @@ input[type="text"] {
 
 @media (max-width: 768px) {
     .checkins-list h2 {
-        margin-left: 100px;
+        margin-left: 20px;
         margin-top: 20px;
         font-size: 35px;
         text-align: center;

@@ -257,30 +257,21 @@ const AddEventForm = () => {
                                 label="Start Date"
                                 inputFormat="YYYY-MM-DD"
                                 value={field.value || null}
-                                onChange={(newValue) =>
-                                  form.setFieldValue(field.name, newValue)
-                                }
+                                onChange={(date) => form.setFieldValue(field.name, date)}
                                 renderInput={(params) => (
                                   <TextField
                                     {...params}
-                                    variant="outlined"
                                     fullWidth
                                     required
-                                    sx={{ marginBottom: 2, marginTop: 2 }}
-                                    error={touched.startDate && Boolean(errors.startDate)}
-                                    helperText={touched.startDate && errors.startDate}
+                                    error={form.touched.startDate && Boolean(form.errors.startDate)}
+                                    helperText={form.touched.startDate && form.errors.startDate}
+                                    sx={{ marginBottom: 2 }}
                                   />
                                 )}
                               />
-                              {touched.startDate && errors.startDate && (
-                                <FormHelperText error>{errors.startDate}</FormHelperText>
-                              )}
                             </>
                           )}
                         </Field>
-                      </LocalizationProvider>
-
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <Field name="endDate">
                           {({ field, form }) => (
                             <>
@@ -289,33 +280,27 @@ const AddEventForm = () => {
                                 label="End Date"
                                 inputFormat="YYYY-MM-DD"
                                 value={field.value || null}
-                                onChange={(newValue) =>
-                                  form.setFieldValue(field.name, newValue)
-                                }
+                                onChange={(date) => form.setFieldValue(field.name, date)}
                                 renderInput={(params) => (
                                   <TextField
                                     {...params}
-                                    variant="outlined"
                                     fullWidth
                                     required
+                                    error={form.touched.endDate && Boolean(form.errors.endDate)}
+                                    helperText={form.touched.endDate && form.errors.endDate}
                                     sx={{ marginBottom: 2 }}
-                                    error={touched.endDate && Boolean(errors.endDate)}
-                                    helperText={touched.endDate && errors.endDate}
                                   />
                                 )}
                               />
-                              {touched.endDate && errors.endDate && (
-                                <FormHelperText error>{errors.endDate}</FormHelperText>
-                              )}
                             </>
                           )}
                         </Field>
                       </LocalizationProvider>
-
                       <Field
                         as={TextField}
                         label="Time"
                         variant="outlined"
+                        type="time"
                         name="time"
                         fullWidth
                         required
@@ -323,7 +308,6 @@ const AddEventForm = () => {
                         error={touched.time && Boolean(errors.time)}
                         helperText={touched.time && errors.time}
                       />
-
                       <Field
                         as={TextField}
                         select
@@ -342,33 +326,20 @@ const AddEventForm = () => {
                           </MenuItem>
                         ))}
                       </Field>
-
-                      <Field
-                        as={TextField}
-                        label="Amount"
-                        variant="outlined"
-                        type="number"
-                        name="amount"
-                        fullWidth
-                        disabled={values.status === 'Free'}
-                        required={values.status === 'Paid'}
-                        sx={{ marginBottom: 2 }}
-                        error={touched.amount && Boolean(errors.amount)}
-                        helperText={touched.amount && errors.amount}
-                      />
-
-                      <Field
-                        as={TextField}
-                        label="Location"
-                        variant="outlined"
-                        name="location"
-                        fullWidth
-                        required
-                        sx={{ marginBottom: 2 }}
-                        error={touched.location && Boolean(errors.location)}
-                        helperText={touched.location && errors.location}
-                      />
-
+                      {values.status === 'Paid' && (
+                        <Field
+                          as={TextField}
+                          label="Amount"
+                          variant="outlined"
+                          type="number"
+                          name="amount"
+                          fullWidth
+                          required
+                          sx={{ marginBottom: 2 }}
+                          error={touched.amount && Boolean(errors.amount)}
+                          helperText={touched.amount && errors.amount}
+                        />
+                      )}
                       <Button
                         type="submit"
                         variant="contained"
@@ -382,89 +353,53 @@ const AddEventForm = () => {
                   </Grid>
                 </CardContent>
               </Card>
+              {/* Alert Component */}
+              {alertOpen && (
+                <Box
+                  sx={{
+                    position: 'fixed',
+                    bottom: 20,
+                    right: 20,
+                    zIndex: 1200,
+                  }}
+                >
+                  <Alert
+                    severity={alertType}
+                    onClose={handleCloseAlert}
+                  >
+                    {alertMessage}
+                  </Alert>
+                </Box>
+              )}
             </Form>
           );
         }}
       </Formik>
-      {alertOpen && (
-        <CustomAlert
-          type={alertType}
-          message={alertMessage}
-          onClose={handleCloseAlert}
-        />
-      )}
     </Box>
   );
 };
 
-export default AddEventForm;
 
-// Styles
 const containerStyle = {
-  padding: '2rem',
-  maxWidth: '100%',
-  margin: '0 auto',
-  backgroundColor: '#99ffcc',
-  minHeight: '100vh',
+  padding: '20px',
+  backgroundColor:'lightgreen'
 };
 
 const bannerStyle = {
-  width: '1330px',
-  height: '300px',
+  width: '100%',
+  height: 'auto',
   maxHeight: '300px',
   objectFit: 'cover',
-  borderRadius: '8px',
-marginBottom:'30px'
-};
-
-const headingStyle = {
-  textAlign: 'center',
-  marginBottom: '3rem',
-  marginTop: '2rem',
-color:'black',
-fontWeight:'bold',
-fontSize:'40px'
 };
 
 const cardStyle = {
-  maxWidth: '100%',
-  margin: '0 auto',
-  borderRadius: '8px',
+  padding: '20px',
+  marginTop: '20px',
 };
 
 const paperStyle = {
-  padding: '1rem',
-  borderRadius: '8px',
+  padding: '10px',
   textAlign: 'center',
 };
 
-const alertContainerStyle = {
-  position: 'fixed',
-  top: '10%',
-  right: '5%',
-  zIndex: 9999,
-  width: '100%',
-  maxWidth: '400px',
-};
-
-const CustomAlert = ({ type, message, onClose }) => {
-  const alertStyle = {
-    padding: '1rem',
-    borderRadius: '8px',
-    textAlign: 'center',
-    backgroundColor: type === 'success' ? '#4caf50' : '#f44336',
-    color: 'white',
-    marginBottom: '1rem',
-  };
-
-  return (
-    <Box sx={alertContainerStyle}>
-      <Paper elevation={3} sx={alertStyle}>
-        <Typography variant="body1">{message}</Typography>
-        <Button variant="contained" onClick={onClose} sx={{ marginTop: '0.5rem' }}>
-          Close
-        </Button>
-      </Paper>
-    </Box>
-  );
-};
+export default AddEventForm;

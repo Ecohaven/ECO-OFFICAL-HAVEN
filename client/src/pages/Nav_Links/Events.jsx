@@ -81,7 +81,7 @@ const EventDataTable = () => {
       <Typography variant="h4" style={{ textAlign: 'center', marginBottom: 20, marginTop: '10px', fontWeight: 'bold' }}>
         Events
       </Typography>
-      <Grid container spacing={3} justifyContent="center">
+      <Grid container spacing={3} justifyContent="left">
         {events.map((event) => {
           const expired = isEventExpired(event.endDate);
           return (
@@ -94,17 +94,17 @@ const EventDataTable = () => {
                   marginLeft: '20px',
                   border: '1px solid #ccc',
                   borderRadius: 5,
-                  cursor: expired ? 'not-allowed' : 'pointer',
-                  backgroundColor: expired ? 'rgba(0, 0, 0, 0.1)' : 'white',
-                  opacity: expired ? 0.5 : 1,
-                  '&:hover': !expired && {
-                    backgroundColor: 'lightgreen',
-                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-                    transform: 'translateY(-4px)',
+                  cursor: 'pointer',
+                  backgroundColor: expired ? 'rgba(0, 0, 0, 0.05)' : 'white',
+                  '&:hover': {
+                    backgroundColor: expired ? 'rgba(0, 0, 0, 0.05)' : 'lightgreen',
+                    boxShadow: expired ? 'none' : '0 4px 8px rgba(0, 0, 0, 0.1)',
+                    transform: expired ? 'none' : 'translateY(-4px)',
                   },
                   transition: 'background-color 0.3s, transform 0.3s, box-shadow 0.3s',
+                  opacity: expired ? 0.7 : 1,
                 }}
-                onClick={() => !expired && handleOpenEventModal(event)}
+                onClick={() => handleOpenEventModal(event)}
               >
                 <img
                   src={`http://localhost:3001/api/event-picture/${event.id}`}
@@ -115,7 +115,6 @@ const EventDataTable = () => {
                   {event.eventName}
                 </Typography>
                 <Typography variant="body1" color="black" sx={{ mb: 2, mt: 1 }}>
-                  {event.description}
                 </Typography>
                 <Typography variant="h7" color="black">
                   <strong>Date: {formatDatesRange(event.startDate, event.endDate)}</strong>
@@ -130,6 +129,11 @@ const EventDataTable = () => {
                 ) : (
                   <Typography variant="body1" color="black">
                     <strong>Amount: </strong> ${event.amount}
+                  </Typography>
+                )}
+                {expired && (
+                  <Typography variant="body2" color="red" sx={{ mt: 2 }}>
+                    Event has passed. No bookings allowed.You can click and view information if you would like to.
                   </Typography>
                 )}
               </Box>
@@ -180,7 +184,7 @@ const EventDataTable = () => {
                   {selectedEvent.eventName}
                 </Typography>
                 <Typography variant="body1" color={'black'} gutterBottom>
-                  {selectedEvent.description}
+                 Description : {selectedEvent.description}
                 </Typography>
                 <Typography variant="body1" color={'black'}>
                   <strong>Location:</strong> {selectedEvent.location}
