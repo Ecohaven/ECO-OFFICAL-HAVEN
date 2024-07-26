@@ -78,10 +78,13 @@ const EventDataTable = () => {
 
   return (
     <>
-      <Typography variant="h4" style={{ textAlign: 'center', marginBottom: 20, marginTop: '10px', fontWeight: 'bold' }}>
-        Events
-      </Typography>
-      <Grid container spacing={3} justifyContent="left">
+ <Box sx={{ p: 2 }}/>
+  {/* banner */}
+      <div className="headbanner">
+        <img src="../../src/assets/images/background_banner.png" alt="Banner"  className='banner'/>
+        <h1>Events</h1>
+      </div>
+      <Grid container spacing={3} justifyContent="center">
         {events.map((event) => {
           const expired = isEventExpired(event.endDate);
           return (
@@ -91,8 +94,9 @@ const EventDataTable = () => {
                   p: 2,
                   width: '100%',
                   maxWidth: 400,
-                  marginLeft: '20px',
-                  border: '1px solid #ccc',
+                  marginLeft: '25px',
+                  marginBottom:'20px',
+                  border: '5px solid green',
                   borderRadius: 5,
                   cursor: 'pointer',
                   backgroundColor: expired ? 'rgba(0, 0, 0, 0.05)' : 'white',

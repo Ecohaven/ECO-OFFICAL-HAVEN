@@ -118,7 +118,7 @@ const CheckInPage = () => {
                     if (response.data.qrCodeStatus === 'Checked-In') {
                         setModalMessage('This QR Code has already been checked in.');
                     } else {
-                        setModalMessage('Check-in successful');
+                        setModalMessage('Check in successful ');
                         setModalType('success');
                         handleOpenModal('success'); 
                     }

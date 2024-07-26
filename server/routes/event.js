@@ -235,6 +235,7 @@ router.get('/events/:id', async (req, res) => {
 });
 
 
+
 // DELETE event by id
 router.delete('/events/:eventId', async (req, res) => {
     const { eventId } = req.params;
@@ -247,29 +248,24 @@ router.delete('/events/:eventId', async (req, res) => {
             return res.status(404).json({ error: 'Event not found' });
         }
 
-        // Update the event name to indicate it's deleted
-        await eventToDelete.update({ eventName: 'Deleted Event' });
-
-        // Update bookings associated with the event to set eventId to null
-        await Booking.update(
+        // Update associated bookings
+        const [updated] = await Booking.update(
             { 
                 eventId: null,
                 eventName: 'Deleted Event',
-                status:'Cancelled'
+                status: 'Cancelled'
             },
             { where: { eventId } }
         );
 
+        if (updated === 0) {
+            console.warn('No bookings found for this event or update failed');
+        }
+
         // Delete the event
         await eventToDelete.destroy();
 
-        // Optionally, ensure the event is no longer in the database
-        const deletedEvent = await events.findByPk(eventId);
-        if (deletedEvent) {
-            return res.status(500).json({ error: 'Failed to delete event from database' });
-        }
-
-        res.status(200).json({ message: 'Event deleted successfully', deletedEvent });
+        res.status(200).json({ message: 'Event deleted successfully' });
     } catch (err) {
         console.error('Error deleting event:', err);
         res.status(500).json({ error: 'Failed to delete event', details: err.message });

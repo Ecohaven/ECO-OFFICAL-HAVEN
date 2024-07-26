@@ -1,40 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Grid, TextField, MenuItem, InputLabel, FormControl, Select } from '@mui/material';
-import axios from 'axios';
+import React, { useState } from "react";
+import { Button, Grid, TextField, MenuItem, InputLabel, FormControl, Select, Typography, CircularProgress } from '@mui/material';
 
-const FilterDropdown = ({ handleFilter, handleReset }) => {
+const FilterDropdown = ({ handleFilter, handleReset, dataAvailable }) => {
     const [date, setDate] = useState('');
     const [status, setStatus] = useState('');
     const [numberOfPax, setNumberOfPax] = useState('');
-    const [selectedEventName, setSelectedEventName] = useState('');
     const [loading, setLoading] = useState(false);
-    const [eventNames, setEventNames] = useState([]);
-
-    // Fetch event names from the API
-    useEffect(() => {
-        const fetchEventNames = async () => {
-            try {
-                const response = await axios.get('http://localhost:3001/api/filter/event-names/');
-                setEventNames(response.data); // Assuming response.data contains the list of event names
-            } catch (error) {
-                console.error('Error fetching event names:', error);
-            }
-        };
-
-        fetchEventNames();
-    }, []);
+    const [filtersApplied, setFiltersApplied] = useState(false);
+    const [dataLoaded, setDataLoaded] = useState(true); // To track if data is loaded
 
     const applyFilters = async () => {
         setLoading(true);
+        setFiltersApplied(true);
+        setDataLoaded(false); // Set to false while data is being fetched
         try {
             const params = {
                 date: date || '',
                 status: status || '',
-                numberOfPax: numberOfPax || '',
-                eventName: selectedEventName || ''
+                numberOfPax: numberOfPax || ''
             };
-
-            await handleFilter(params);
+            const result = await handleFilter(params);
+            // Assume handleFilter returns data or some status indicating availability
+            setDataLoaded(result.dataAvailable); // Set based on actual result
         } catch (error) {
             console.error('Error filtering bookings:', error);
         } finally {
@@ -46,18 +33,15 @@ const FilterDropdown = ({ handleFilter, handleReset }) => {
         setDate('');
         setStatus('');
         setNumberOfPax('');
-        setSelectedEventName('');
         handleReset();
-    };
-
-    const handleDropdownChange = (event) => {
-        setSelectedEventName(event.target.value);
+        setFiltersApplied(false);
+        setDataLoaded(true); // Reset data loaded state
     };
 
     return (
-        <div style={{ padding: '16px', borderRadius: '8px', backgroundColor: 'white', boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', color: 'black' }}>
-            <Grid container spacing={2}>
-                <Grid item xs={12} sm={6} md={3}>
+        <div style={{ padding: '16px', borderRadius: '8px', marginTop: '20px' }}>
+            <Grid container spacing={2} alignItems="center">
+                <Grid item xs={12} sm={4} md={3}>
                     <TextField
                         type="date"
                         label="Date"
@@ -67,15 +51,29 @@ const FilterDropdown = ({ handleFilter, handleReset }) => {
                         sx={{ maxWidth: 250 }}
                         InputLabelProps={{ shrink: true }}
                         variant="outlined"
+                        InputProps={{
+                            sx: {
+                                border: '1px solid #ccc',
+                                padding: '0',
+                                height: '56px',
+                            }
+                        }}
                     />
                 </Grid>
-                <Grid item xs={12} sm={6} md={3}>
+                <Grid item xs={12} sm={4} md={3}>
                     <FormControl fullWidth sx={{ maxWidth: 250 }}>
                         <InputLabel>Status</InputLabel>
                         <Select
                             value={status}
                             onChange={(e) => setStatus(e.target.value)}
                             variant="outlined"
+                            sx={{
+                                fontSize: '1rem',
+                                padding: '8px',
+                                border: '1px solid #ccc',
+                                boxShadow: 'none',
+                                height: '56px',
+                            }}
                         >
                             <MenuItem value="">All</MenuItem>
                             <MenuItem value="Active">Active</MenuItem>
@@ -84,13 +82,20 @@ const FilterDropdown = ({ handleFilter, handleReset }) => {
                         </Select>
                     </FormControl>
                 </Grid>
-                <Grid item xs={12} sm={6} md={3}>
+                <Grid item xs={12} sm={4} md={3}>
                     <FormControl fullWidth sx={{ maxWidth: 250 }}>
                         <InputLabel>Number of Pax</InputLabel>
                         <Select
                             value={numberOfPax}
                             onChange={(e) => setNumberOfPax(e.target.value)}
                             variant="outlined"
+                            sx={{
+                                fontSize: '1rem',
+                                padding: '8px',
+                                border: '1px solid #ccc',
+                                boxShadow: 'none',
+                                height: '56px',
+                            }}
                         >
                             <MenuItem value="">Select</MenuItem>
                             {[1, 2, 3, 4, 5].map(num => (
@@ -101,60 +106,46 @@ const FilterDropdown = ({ handleFilter, handleReset }) => {
                         </Select>
                     </FormControl>
                 </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                    <FormControl fullWidth sx={{ maxWidth: 250 }}>
-                        <InputLabel id="eventNameFilter-label">Event Name</InputLabel>
-                        <Select
-                            labelId="eventNameFilter-label"
-                            id="eventNameFilter"
-                            value={selectedEventName}
-                            onChange={handleDropdownChange}
-                            label="Event Name"
-                        >
-                            <MenuItem value="">All</MenuItem>
-                            {eventNames.map((eventName, index) => (
-                                <MenuItem key={index} value={eventName}>
-                                    {eventName}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
+                <Grid item xs={12} md={3} style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+                    <Button
+                        onClick={applyFilters}
+                        variant="contained"
+                        sx={{
+                            backgroundColor: '#007bff',
+                            color: 'white',
+                            borderRadius: '4px',
+                            padding: '8px 16px',
+                            fontSize: '0.875rem',
+                            '&:hover': {
+                                backgroundColor: '#0056b3',
+                            },
+                        }}
+                    >
+                        {loading ? <CircularProgress size={24} sx={{ color: 'white' }} /> : 'Apply Filter'}
+                    </Button>
+                    <Button
+                        onClick={resetFilters}
+                        variant="outlined"
+                        sx={{
+                            borderColor: '#ddd',
+                            color: '#333',
+                            borderRadius: '4px',
+                            padding: '8px 16px',
+                            fontSize: '0.875rem',
+                            '&:hover': {
+                                borderColor: '#bbb',
+                            },
+                        }}
+                    >
+                        Reset
+                    </Button>
                 </Grid>
             </Grid>
-            <div style={{ marginTop: '16px', display: 'flex', gap: '12px' }}>
-                <Button
-                    onClick={resetFilters}
-                    variant="outlined"
-                    sx={{
-                        borderColor: '#ddd',
-                        color: '#333',
-                        borderRadius: '4px',
-                        padding: '8px 16px',
-                        fontSize: '0.875rem',
-                        '&:hover': {
-                            borderColor: '#bbb',
-                        },
-                    }}
-                >
-                    Reset
-                </Button>
-                <Button
-                    onClick={applyFilters}
-                    variant="contained"
-                    sx={{
-                        backgroundColor: '#007bff',
-                        color: 'white',
-                        borderRadius: '4px',
-                        padding: '8px 16px',
-                        fontSize: '0.875rem',
-                        '&:hover': {
-                            backgroundColor: '#0056b3',
-                        },
-                    }}
-                >
-                    Apply Filter
-                </Button>
-            </div>
+            {filtersApplied && !dataLoaded && (
+                <Typography variant="body2" color="textSecondary" sx={{ marginTop: '16px' }}>
+                    No data is available for the selected filters.
+                </Typography>
+            )}
         </div>
     );
 };

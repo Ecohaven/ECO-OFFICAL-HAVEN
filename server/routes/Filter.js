@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Booking, Event, CheckIn } = require('../models'); // Ensure your model imports are correct
+const { Booking, events, CheckIn } = require('../models'); // Ensure your model imports are correct
 const { Op } = require("sequelize");
 
 // Filter bookings
@@ -12,6 +12,9 @@ router.get('/filter', async (req, res) => {
 
     if (event) {
         condition.eventId = event; 
+    }
+     if (eventName) {
+        condition.eventName = eventName; // Filter by exact eventName match
     }
     if (date) {
         condition.bookingDate = { [Op.gte]: new Date(date) }; // Filter by date using greater than or equal
@@ -27,7 +30,7 @@ router.get('/filter', async (req, res) => {
         const bookings = await Booking.findAll({
             where: condition,
             include: {
-                model: Event, // Ensure this matches the model name
+                model: events, // Ensure this matches the model name
                 as: 'eventDetails', // This should match the alias used in your model associations
                 attributes: ['eventName'] // Include eventName if needed in response
             }
@@ -43,26 +46,8 @@ router.get('/filter', async (req, res) => {
         res.status(500).send('Server error');
     }
 });
-router.get('/filter/event-names', async (req, res) => {
-    try {
-        const events = await Event.findAll({
-            attributes: ['eventName'],
-            group: ['eventName'] // Ensure unique event names
-        });
 
-        if (events.length === 0) {
-            return res.status(404).json({ message: 'No events found' });
-        }
 
-        // Extract unique event names
-        const eventNames = events.map(event => event.eventName);
-
-        res.json(eventNames);
-    } catch (error) {
-        console.error('Error fetching event names:', error);
-        res.status(500).send('Server error');
-    }
-});
 
 // Example URL: http://localhost:3001/api/filter-records?eventName=EventName&date=2024-07-15&eventId=123
 // for check in

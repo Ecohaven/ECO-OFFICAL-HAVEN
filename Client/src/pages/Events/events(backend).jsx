@@ -207,6 +207,20 @@ const EventDataTable = () => {
             handleShowAlert('error', 'Error updating event. Please try again.');
         }
     };
+  const handleOpenDeleteConfirmation = (event) => {
+        setDeleteConfirmation(event);
+    };
+
+    const handleCloseDeleteConfirmation = () => {
+        setDeleteConfirmation(null);
+    };
+
+    const handleConfirmDelete = () => {
+        if (deleteConfirmation) {
+            handleDeleteEvent(deleteConfirmation.id);
+            handleCloseDeleteConfirmation();
+        }
+    };
 
     const handleEventNameFilterChange = (e) => {
         setEventNameFilter(e.target.value);
@@ -297,7 +311,7 @@ const EventDataTable = () => {
             width: 100,
             renderCell: (params) => (
                 <DeleteIcon
-                    onClick={() => setDeleteConfirmation(params.row)}
+                     onClick={() => handleOpenDeleteConfirmation(params.row)}
                     className="delete-icon"
                     style={{ color: 'red', cursor: 'pointer', marginLeft: '8px' }}
                 />
@@ -498,16 +512,23 @@ const EventDataTable = () => {
                     <Button variant="contained" onClick={handleCloseViewDetailsModal}>Close</Button>
                 </Box>
             </Modal>
-            {deleteConfirmation && (
-                <DeleteConfirmationModal
+           {/* Delete Confirmation Modal */}
+                <Modal
                     open={!!deleteConfirmation}
-                    onClose={() => setDeleteConfirmation(null)}
-                    onConfirm={() => {
-                        handleDeleteEvent(deleteConfirmation.id);
-                        setDeleteConfirmation(null);
-                    }}
-                />
-            )}
+                    onClose={handleCloseDeleteConfirmation}
+                >
+                    <Box className="modal-content">
+                        <h2>Delete Confirmation</h2>
+                        <p>Are you sure you want to delete this event?</p>
+                        <Button onClick={handleConfirmDelete} variant="contained" color="error">
+                            Confirm
+                        </Button>
+                        <Button onClick={handleCloseDeleteConfirmation} variant="contained" color="default">
+                            Cancel
+                        </Button>
+                    </Box>
+                </Modal>
+
             <Snackbar open={alertOpen} autoHideDuration={6000} onClose={handleCloseAlert}>
                 <Alert onClose={handleCloseAlert} severity={alertType}>
                     {alertMessage}

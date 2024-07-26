@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { DataGrid } from '@mui/x-data-grid';
-import { Button, Dialog, DialogActions, DialogContent, Tooltip, Card, CardContent, Typography, Grid, Snackbar, Alert } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, Tooltip, Card, CardContent, Typography, Grid, Snackbar, Alert, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import axios from "axios";
 import Sidebar from '../../../components/sidebar';
 import ExclamationIcon from '../../../src/assets/icons/exclamation-mark.png';
@@ -20,6 +20,7 @@ const BookingList = () => {
     const [error, setError] = useState('');
     const [filter, setFilter] = useState('');
     const [eventNames, setEventNames] = useState([]);
+    const [selectedEvent, setSelectedEvent] = useState('');
 
     const fetchBookings = async () => {
         try {
@@ -32,7 +33,7 @@ const BookingList = () => {
             const updatedBookings = bookingsResponse.data.map(booking => ({
                 ...booking,
                 status: booking.status || 'Active',
-                eventStatus: booking.eventStatus === 'Free' ? 'Free' : 'Paid' 
+                eventStatus: booking.eventStatus === 'Free' ? 'Free' : 'Paid'
             }));
 
             setBookings(updatedBookings);
@@ -160,7 +161,7 @@ const BookingList = () => {
         { field: 'numberOfPax', headerName: 'No.of Pax', width: 80 },
         { field: 'phoneNumber', headerName: 'Phone Number', width: 150 },
         { field: 'email', headerName: 'Email', width: 200 },
-        { field: 'leafPoints', headerName: 'leafpoints', width: 30 },
+        { field: 'leafPoints', headerName: 'Leaf Points', width: 30 },
         { field: 'amount', headerName: 'Amount', width: 30 },
         { field: 'qrCodeText', headerName: 'QRCode-Text', width: 150 },
         {
@@ -233,6 +234,38 @@ const BookingList = () => {
             </Grid>
 
             <FilterDropdown handleFilter={handleFilter} handleReset={handleReset} eventNames={eventNames} />
+
+            <Grid container spacing={2} alignItems="center" className="event-dropdown-container">
+                <Grid item xs={12} sm={6} md={4}>
+                    <FormControl fullWidth>
+                        <InputLabel id="event-select-label">Event</InputLabel>
+                        <Select
+                            labelId="event-select-label"
+                            value={selectedEvent}
+                            label="Event"
+                            onChange={(e) => setSelectedEvent(e.target.value)}
+                            sx={{
+                                borderColor: 'green',
+                                '& .MuiOutlinedInput-root': {
+                                    '& fieldset': {
+                                        borderColor: 'green',
+                                    },
+                                    '&:hover fieldset': {
+                                        borderColor: 'darkgreen',
+                                    },
+                                    '&.Mui-focused fieldset': {
+                                        borderColor: 'darkgreen',
+                                    },
+                                },
+                            }}
+                        >
+                            {eventNames.map((name, index) => (
+                                <MenuItem key={index} value={name}>{name}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Grid>
+            </Grid>
 
             <div className="data-grid-container">
                 <DataGrid
