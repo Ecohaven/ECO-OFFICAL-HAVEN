@@ -128,7 +128,7 @@ const EventDataTable = () => {
                 </Typography>
                 {event.status === 'Free' ? (
                   <Typography variant="body1" color="black">
-                    <strong>Admission: </strong> Free
+                    <strong>Admission: Free</strong> 
                   </Typography>
                 ) : (
                   <Typography variant="body1" color="black">

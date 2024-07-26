@@ -1,4 +1,3 @@
-// models/Payment.js
 module.exports = (sequelize, DataTypes) => {
   const Payment = sequelize.define('Payment', {
     id: {
@@ -68,7 +67,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     cvv: {
-      type: DataTypes.STRING, 
+      type: DataTypes.STRING,
       allowNull: false,
       validate: {
         isNumeric: true,
@@ -89,19 +88,27 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW
     },
-eventName: {
+    eventName: {
       type: DataTypes.STRING,
       allowNull: true
     },
-   qrCodeUrl: {
+    qrCodeUrl: {
       type: DataTypes.TEXT,
       allowNull: true
     },
-
- qrCodeText: {
+    qrCodeText: {
       type: DataTypes.STRING,
       allowNull: true
     },
+    // New fields
+    Name: {
+      type: DataTypes.STRING,
+      allowNull: true // Allow null if this information is optional
+    },
+    numberOfPax: {
+      type: DataTypes.INTEGER,
+      allowNull: true, // Allow null if this information is optional
+    }
   });
 
   Payment.associate = function(models) {

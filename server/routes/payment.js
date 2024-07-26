@@ -10,26 +10,34 @@ const checkMissingFields = (requiredFields, data) => {
   return missingFields;
 };
 
-// Route for processing payments
+/// Route for processing payments
 router.post('/', async (req, res) => {
   const requiredFields = [
     'amount', 'email', 'phoneNumber', 'homeAddress', 'postalCode', 
-    'paymentMethod', 'cardholderName', 'cardNumber', 'expiryDate', 'cvv','eventName'
+    'paymentMethod', 'cardholderName', 'cardNumber', 'expiryDate', 'cvv',
+    'eventName', 'Name', 
   ];
+
   const missingFields = checkMissingFields(requiredFields, req.body);
 
-  console.log('Received data:', req.body); // Log received data
-  console.log('Missing fields:', missingFields); // Log missing fields
+  // Log received data and missing fields
+  console.log('Received data:', req.body);
+  console.log('Missing fields:', missingFields);
 
   if (missingFields.length > 0) {
     return res.status(400).json({ error: 'Missing required fields', missingFields });
   }
 
-  const { amount, email, phoneNumber, homeAddress, postalCode, paymentMethod, cardholderName, cardNumber, expiryDate, cvv, eventName } = req.body;
+  const {
+    amount, email, phoneNumber, homeAddress, postalCode, paymentMethod,
+    cardholderName, cardNumber, expiryDate, cvv, eventName, Name, numberOfPax
+  } = req.body;
 
   try {
     // Simulate payment processing
-    const paymentResult = await processPayment(req.body);
+    const paymentResult = await processPayment({
+      amount, cardNumber, cardholderName, expiryDate, cvv
+    });
 
     if (!paymentResult.success) {
       return res.status(500).json({ error: paymentResult.message });
@@ -48,15 +56,17 @@ router.post('/', async (req, res) => {
       cardNumber,
       expiryDate,
       cvv,
-      currency: paymentResult.currency, 
-      status: 'Paid'
+      currency: paymentResult.currency,
+      status: 'Paid',
+      Name,
+      numberOfPax
     });
 
     // Return the payment ID and other relevant details
-    res.status(201).json({ 
-      message: 'Payment created successfully', 
+    res.status(201).json({
+      message: 'Payment created successfully',
       payment: {
-        id: newPayment.id, // Include the payment ID in the response
+        id: newPayment.id,
         eventName,
         amount,
         email,
@@ -69,14 +79,17 @@ router.post('/', async (req, res) => {
         expiryDate,
         cvv,
         currency: paymentResult.currency,
-        status: 'Paid'
+        status: 'Paid',
+        Name,
+        numberOfPax
       }
     });
   } catch (err) {
-    console.error(err);
+    console.error('Payment processing error:', err);
     res.status(500).json({ error: 'Failed to process payment' });
   }
 });
+
 
 
 // GET all payments

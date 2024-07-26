@@ -1,45 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import axios from 'axios';
 import * as Yup from 'yup';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Container, Typography, Grid, TextField, Button, Box } from '@mui/material';
+import { Container, Typography, Grid, TextField, Button } from '@mui/material';
 
 const PaymentForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
   // Extract data from location state
-  const { qrCodeText = '', amount = '', email = '', phoneNumber = '', eventName = '', bookingId = '', formData = '', pax = 0 } = location.state || {};
-
-  const [calculatedAmount, setCalculatedAmount] = useState(amount);
-
-  useEffect(() => {
-    // Update the amount based on pax
-    if (pax > 0) {
-      setCalculatedAmount(amount * (1 + pax));
-    } else {
-      setCalculatedAmount(amount);
-    }
-  }, [pax, amount]);
+  const {
+    qrCodeText = '',
+    amount = 0,
+    email = '',
+    phoneNumber = '',
+    eventName = '',
+    bookingId = '',
+    Name = '',
+    numberOfPax = 0,
+    paxList = [] // Changed from paxDetails to paxList
+  } = location.state || {};
 
   const validationSchema = Yup.object().shape({
-    amount: Yup.number()
-      .positive('Amount must be a positive number')
-      .required('Amount is required'),
-    email: Yup.string()
-      .email('Invalid email address')
-      .required('Email is required'),
-    phoneNumber: Yup.string()
-      .matches(/^\d{8}$/, 'Phone number must be exactly 8 digits')
-      .required('Phone number is required'),
-    homeAddress: Yup.string()
-      .required('Home address is required'),
+    homeAddress: Yup.string().required('Home address is required'),
     postalCode: Yup.string()
       .matches(/^\d{6}$/, 'Postal code must be exactly 6 digits')
       .required('Postal code is required'),
-    paymentMethod: Yup.string()
-      .required('Payment method is required'),
+    paymentMethod: Yup.string().required('Payment method is required'),
     cardholderName: Yup.string()
       .matches(/^[A-Za-z\s]+$/, 'Cardholder name must contain only letters')
       .required('Cardholder name is required'),
@@ -51,13 +39,16 @@ const PaymentForm = () => {
       .required('Expiry date is required'),
     cvv: Yup.string()
       .matches(/^\d{3}$/, 'CVV must be exactly 3 digits')
-      .required('CVV is required'),
+      .required('CVV is required')
   });
 
   const handleSubmit = async (values, { setSubmitting, setStatus, resetForm }) => {
     try {
-      const response = await axios.post('http://localhost:3001/pay', values);
+      const finalAmount = amount * (numberOfPax || 1); // Calculate final amount based on numberOfPax
+
+      const response = await axios.post('http://localhost:3001/pay', { ...values, amount: finalAmount });
       const result = response.data;
+
       if (result.error) {
         setStatus({ message: result.error, type: 'error' });
       } else {
@@ -65,15 +56,16 @@ const PaymentForm = () => {
         resetForm();
         navigate('/paymentsuccess', {
           state: {
-            formData,
+            formData: values,
             paymentId: result.payment.id,
-            amount: values.amount,
+            amount: finalAmount,
             email: values.email,
             phoneNumber: values.phoneNumber,
-            eventName: values.eventName,
-            bookingId: values.bookingId,
-            qrCodeText: values.qrCodeText,
-            qrCodeUrl: values.qrCodeUrl
+            eventName,
+            bookingId,
+            qrCodeText,
+            numberOfPax,
+            paxDetails // Pass paxList instead of paxDetails
           }
         });
       }
@@ -91,10 +83,10 @@ const PaymentForm = () => {
       </Typography>
       <Formik
         initialValues={{
-          eventName: eventName || '',
-          amount: calculatedAmount || '',
-          email: email || '',
-          phoneNumber: phoneNumber || '',
+          eventName,
+          amount,
+          email,
+          phoneNumber,
           homeAddress: '',
           postalCode: '',
           paymentMethod: 'Debit',
@@ -102,7 +94,8 @@ const PaymentForm = () => {
           cardNumber: '',
           expiryDate: '',
           cvv: '',
-          currency: 'SGD',
+          Name,
+          numberOfPax
         }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
@@ -118,7 +111,6 @@ const PaymentForm = () => {
                       label="Event Name"
                       type="text"
                       fullWidth
-                      style={{ color: 'black' }}
                       error={meta.touched && Boolean(meta.error)}
                       helperText={<ErrorMessage name="eventName" />}
                       disabled
@@ -134,7 +126,7 @@ const PaymentForm = () => {
                       label="Amount"
                       type="number"
                       fullWidth
-                      value={calculatedAmount}
+                      value={amount * (numberOfPax || 1)} // Display calculated amount
                       error={meta.touched && Boolean(meta.error)}
                       helperText={<ErrorMessage name="amount" />}
                       disabled
@@ -271,17 +263,49 @@ const PaymentForm = () => {
                 </Field>
               </Grid>
               <Grid item xs={12}>
-                <Button type="submit" variant="contained" color="primary" fullWidth disabled={isSubmitting} style={{ marginBottom: '20px' }}>
-                  Pay
+                <Field name="Name">
+                  {({ field, meta }) => (
+                    <TextField
+                      {...field}
+                      label="Name"
+                      type="text"
+                      fullWidth
+                      error={meta.touched && Boolean(meta.error)}
+                      helperText={<ErrorMessage name="Name" />}
+                      disabled
+                    />
+                  )}
+                </Field>
+              </Grid>
+              <Grid item xs={12}>
+                <Field name="numberOfPax">
+                  {({ field, meta }) => (
+                    <TextField
+                      {...field}
+                      label="Number of Pax"
+                      type="number"
+                      fullWidth
+                      error={meta.touched && Boolean(meta.error)}
+                      helperText={<ErrorMessage name="numberOfPax" />}
+                      disabled
+                    />
+                  )}
+                </Field>
+              </Grid>
+              <Grid item xs={12}>
+                <Button type="submit" variant="contained" color="primary" disabled={isSubmitting}>
+                  {isSubmitting ? 'Processing...' : 'Submit Payment'}
                 </Button>
               </Grid>
-              {status && status.message && (
-                <Grid item xs={12} sx={{ mt: 2 }}>
-                  <Box sx={{ color: status.type === 'error' ? 'red' : 'green' }}>
-                    <Typography variant="body1" align="center">
-                      {status.message}
-                    </Typography>
-                  </Box>
+              {status && (
+                <Grid item xs={12}>
+                  <Typography
+                    variant="body2"
+                    color={status.type === 'error' ? 'error.main' : 'success.main'}
+                    align="center"
+                  >
+                    {status.message}
+                  </Typography>
                 </Grid>
               )}
             </Grid>

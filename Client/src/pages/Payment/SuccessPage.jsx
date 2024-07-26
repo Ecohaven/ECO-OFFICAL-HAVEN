@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Container, Typography, Box, Card, CardContent, Grid } from '@mui/material';
-import QRCode from 'qrcode.react'; // Ensure you have this package installed
+import axios from 'axios';
 
 const PaymentSuccess = () => {
   const location = useLocation();
@@ -11,12 +11,61 @@ const PaymentSuccess = () => {
     paymentId = '',
     bookingId = '',
     qrCodeText = '',
-    qrCodeUrl = '',
     amount = '',
     eventName = '',
     email = '',
-    phoneNumber = ''
+    phoneNumber = '',
+    paxDetails = [] // Use paxDetails instead of paxList
   } = location.state || {};
+
+  const sendBookingEmail = async () => {
+    // Generate QR code image URL for the main QR code
+    const qrCodeImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrCodeText)}`;
+
+    // Construct QR codes for each pax
+    const paxListHtml = paxDetails.length > 0
+      ? `<h2>Additional Guests:</h2>` + paxDetails.map(pax => {
+          return `
+            <div>
+              <p><strong>Name:</strong> ${pax.name}</p>
+              <p><strong>Email:</strong> ${pax.email}</p>
+              <p><strong>QR Code for ${pax.name}:</strong></p>
+              <img src="${pax.paxQrCodeUrl}" alt="QR Code for ${pax.name}" style="border-radius: 8px; max-width: 100%; height: auto;" />
+            </div>
+          `;
+        }).join('')
+      : '';
+
+    // Construct the email body
+    const emailBody = `
+      <h1>Booking Confirmation</h1>
+      <p><strong>Payment ID:</strong> ${paymentId}</p>
+      <p><strong>Booking ID:</strong> ${bookingId || 'N/A'}</p>
+      <p><strong>Amount:</strong> $${amount}</p>
+      <p><strong>Event Name:</strong> ${eventName}</p>
+      <p><strong>Email:</strong> ${email}</p>
+      <p><strong>Phone Number:</strong> ${phoneNumber}</p>
+      <p><strong>QR Code Text:</strong> ${qrCodeText}</p>
+      <p><strong>QR Code:</strong></p>
+      <img src="${qrCodeImageUrl}" alt="QR Code" style="border-radius: 8px; max-width: 100%; height: auto;" />
+      ${paxListHtml} <!-- Include paxList HTML with individual QR codes here -->
+    `;
+
+    try {
+      await axios.post('http://localhost:3001/send-email', {
+        to: ['ecohaven787@gmail.com'], // Fixed recipient email
+        subject: 'Booking Confirmation',
+        html: emailBody // Send HTML email body
+      });
+      console.log('Booking email sent successfully.');
+    } catch (error) {
+      console.error('Error sending booking email:', error);
+    }
+  };
+
+  useEffect(() => {
+    sendBookingEmail();
+  }, []);
 
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
@@ -137,16 +186,35 @@ const PaymentSuccess = () => {
               >
                 QR Code:
               </Typography>
-              {qrCodeUrl ? (
-                <img 
-                  src={qrCodeUrl} 
-                  alt="QR Code" 
-                  style={{ maxWidth: '100%', height: 'auto', marginTop: '10px' }} 
-                />
-              ) : (
-                <QRCode value={qrCodeText} size={128} />
-              )}
+              <img src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrCodeText)}`} alt="QR Code" style={{ borderRadius: '8px', maxWidth: '100%', height: 'auto', marginTop: '10px' }} />
             </Grid>
+            {paxDetails.length > 0 && (
+              <Grid item xs={12}>
+                <Typography 
+                  variant="h6" 
+                  sx={{ color: 'black', mt: 2 }} // Ensure headers are black and add top margin
+                >
+                  Additional Guests:
+                </Typography>
+                {paxDetails.map((pax, index) => (
+                  <Box key={index} sx={{ mb: 2 }}>
+                    <Typography 
+                      variant="body1" 
+                      sx={{ fontWeight: 'bold', color: 'black' }}
+                    >
+                      Name: {pax.name}
+                    </Typography>
+                    <Typography 
+                      variant="body1" 
+                      sx={{ color: 'black' }}
+                    >
+                      Email: {pax.email}
+                    </Typography>
+                    <img src={paxQrCodeUrl} alt={`QR Code for ${pax.name}`} style={{ borderRadius: '8px', maxWidth: '100px', height: 'auto', marginTop: '10px' }} />
+                  </Box>
+                ))}
+              </Grid>
+            )}
           </Grid>
         </CardContent>
       </Card>
