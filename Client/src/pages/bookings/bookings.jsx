@@ -19,7 +19,6 @@ const BookingList = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [filter, setFilter] = useState('');
-    const [eventNames, setEventNames] = useState([]);
     const [selectedEvent, setSelectedEvent] = useState('');
 
     const fetchBookings = async () => {
@@ -37,7 +36,6 @@ const BookingList = () => {
             }));
 
             setBookings(updatedBookings);
-            setEventNames(eventsResponse.data.map(event => event.name)); // Update event names dropdown
             setSummaryData({
                 newBookingsToday: newBookingsTodayResponse.data.newBookingsToday,
                 totalBookings: totalResponse.data.totalBookings,
@@ -80,7 +78,7 @@ const BookingList = () => {
             });
     };
 
-    const handleFilter = async ({ date, status, numberOfPax, event }) => {
+    const handleFilter = async ({ date, status, numberOfPax,eventName }) => {
         setLoading(true);
         try {
             const response = await axios.get('http://localhost:3001/api/filter', {
@@ -88,7 +86,7 @@ const BookingList = () => {
                     date,
                     status,
                     numberOfPax,
-                    event
+                    eventName
                 }
             });
             setBookings(response.data);
@@ -233,40 +231,9 @@ const BookingList = () => {
                 </Grid>
             </Grid>
 
-            <FilterDropdown handleFilter={handleFilter} handleReset={handleReset} eventNames={eventNames} />
+            <FilterDropdown handleFilter={handleFilter} handleReset={handleReset}  />
 
-            <Grid container spacing={2} alignItems="center" className="event-dropdown-container">
-                <Grid item xs={12} sm={6} md={4}>
-                    <FormControl fullWidth>
-                        <InputLabel id="event-select-label">Event</InputLabel>
-                        <Select
-                            labelId="event-select-label"
-                            value={selectedEvent}
-                            label="Event"
-                            onChange={(e) => setSelectedEvent(e.target.value)}
-                            sx={{
-                                borderColor: 'green',
-                                '& .MuiOutlinedInput-root': {
-                                    '& fieldset': {
-                                        borderColor: 'green',
-                                    },
-                                    '&:hover fieldset': {
-                                        borderColor: 'darkgreen',
-                                    },
-                                    '&.Mui-focused fieldset': {
-                                        borderColor: 'darkgreen',
-                                    },
-                                },
-                            }}
-                        >
-                            {eventNames.map((name, index) => (
-                                <MenuItem key={index} value={name}>{name}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                </Grid>
-            </Grid>
-
+        
             <div className="data-grid-container">
                 <DataGrid
                     rows={bookings}

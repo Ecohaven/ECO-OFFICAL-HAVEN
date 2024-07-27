@@ -159,12 +159,6 @@ const Sidebar = () => {
             <ListItemText primary="Payment" />
           </ListItem>
 
-          <ListItem button component={Link} to="/staff/refund" selected={isActive('/staff/refund')}>
-            <ListItemIcon style={{ color: 'white' }}>
-              <RefundIcon />
-            </ListItemIcon>
-            <ListItemText primary="Refund" />
-          </ListItem>
 
           <ListItem button component={Link} to="/staff/mailing-list" selected={isActive('/staff/mailing-list')}>
             <ListItemIcon style={{ color: 'white' }}>

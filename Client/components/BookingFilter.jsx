@@ -5,6 +5,7 @@ const FilterDropdown = ({ handleFilter, handleReset, dataAvailable }) => {
     const [date, setDate] = useState('');
     const [status, setStatus] = useState('');
     const [numberOfPax, setNumberOfPax] = useState('');
+    const [eventName, setEventName] = useState(''); // Added state for event name
     const [loading, setLoading] = useState(false);
     const [filtersApplied, setFiltersApplied] = useState(false);
     const [dataLoaded, setDataLoaded] = useState(true); // To track if data is loaded
@@ -17,7 +18,8 @@ const FilterDropdown = ({ handleFilter, handleReset, dataAvailable }) => {
             const params = {
                 date: date || '',
                 status: status || '',
-                numberOfPax: numberOfPax || ''
+                numberOfPax: numberOfPax || '',
+                eventName: eventName || '' // Added eventName to params
             };
             const result = await handleFilter(params);
             // Assume handleFilter returns data or some status indicating availability
@@ -33,6 +35,7 @@ const FilterDropdown = ({ handleFilter, handleReset, dataAvailable }) => {
         setDate('');
         setStatus('');
         setNumberOfPax('');
+        setEventName(''); // Reset eventName
         handleReset();
         setFiltersApplied(false);
         setDataLoaded(true); // Reset data loaded state
@@ -105,6 +108,23 @@ const FilterDropdown = ({ handleFilter, handleReset, dataAvailable }) => {
                             ))}
                         </Select>
                     </FormControl>
+                </Grid>
+                <Grid item xs={12} sm={4} md={3}>
+                    <TextField
+                        label="Event Name"
+                        value={eventName}
+                        onChange={(e) => setEventName(e.target.value)}
+                        fullWidth
+                        sx={{ maxWidth: 250 }}
+                        variant="outlined"
+                        InputProps={{
+                            sx: {
+                                border: '1px solid #ccc',
+                                padding: '0',
+                                height: '56px',
+                            }
+                        }}
+                    />
                 </Grid>
                 <Grid item xs={12} md={3} style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
                     <Button

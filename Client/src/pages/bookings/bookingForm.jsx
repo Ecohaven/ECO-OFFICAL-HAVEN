@@ -244,6 +244,7 @@ const BookingForm = () => {
     }
   };
 
+
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ padding: 2.5, borderRadius: 2, boxShadow: 4, backgroundColor: 'white' }}>
       <Typography variant="h4" gutterBottom sx={{ color: 'black', textAlign: 'center',fontWeight:'bold' }}>Booking Form</Typography>
@@ -254,13 +255,13 @@ const BookingForm = () => {
       <Typography variant="h6" gutterBottom sx={{ textAlign: 'left', color: 'black' }}>Amount:  <strong>${event.amount}</strong></Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>
-          <FormLabel>Booking Date</FormLabel>
+          <FormLabel style={{color:'black'}}>Booking Date</FormLabel>
           {dateOptions.length > 0 ? (
             <Select
               value={bookingDate}
               onChange={(e) => setBookingDate(e.target.value)}
               fullWidth
-              sx={{ bgcolor: '#fff', borderRadius: 1, boxShadow: 1 }}
+              sx={{ bgcolor: '#fff', borderRadius: 1, boxShadow: 1}}
             >
               {dateOptions.map((date, index) => (
                 <MenuItem key={index} value={date.toISOString().split('T')[0]}>
@@ -280,7 +281,7 @@ const BookingForm = () => {
           )}
         </Grid>
         <Grid item xs={12} sm={6}>
-          <FormLabel>Additional Guests:</FormLabel>
+          <FormLabel style={{color:'black'}}>Additional Guests:</FormLabel>
           <Select
             value={numberOfPax}
             onChange={(e) => setNumberOfPax(e.target.value)}
@@ -303,6 +304,7 @@ const BookingForm = () => {
                 value={pax.name}
                 onChange={(e) => handlePaxDetailChange(index, 'name', e.target.value)}
                 fullWidth
+                required
                 sx={{ bgcolor: '#fff', borderRadius: 1, boxShadow: 1 }}
                 disabled={bookingSuccessful}
               />
@@ -314,6 +316,7 @@ const BookingForm = () => {
                 value={pax.email}
                 onChange={(e) => handlePaxDetailChange(index, 'email', e.target.value)}
                 fullWidth
+                required
                 sx={{ bgcolor: '#fff', borderRadius: 1, boxShadow: 1 }}
                 disabled={bookingSuccessful}
               />
@@ -325,6 +328,7 @@ const BookingForm = () => {
             control={<Checkbox checked={sendToPax} onChange={() => setSendToPax(!sendToPax)} disabled={bookingSuccessful} />}
             label="Send booking details to additional pax emails"
             sx={{ color: '#555' }}
+            disabled={numberOfPax === 0} // Disable if numberOfPax is 0
           />
         </Grid>
         <Grid item xs={12}>
@@ -333,7 +337,7 @@ const BookingForm = () => {
           </Button>
         </Grid>
       </Grid>
-   {bookingSuccessful && (
+{bookingSuccessful && (
   <Box mt={3} sx={{ border: '1px solid #ddd', padding: 4, borderRadius: 3, boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', bgcolor: '#f9f9f9' }}>
     <Typography variant="h4" sx={{ color: '#4CAF50', fontWeight: 'bold', textAlign: 'center', mb: 2 }}>
       🎉 Booking Successful!
@@ -343,7 +347,7 @@ const BookingForm = () => {
     </Typography>
     <Box sx={{ mb: 3, textAlign: 'center' }}>
       <Typography variant="body1" sx={{ fontSize: '1.2rem', fontWeight: 'bold' }}>
-        Booking ID: <span style={{ color: 'green',fontWeight:'bold' }}>{bookingId}</span>
+        Booking ID: <span style={{ color: 'green', fontWeight: 'bold' }}>{bookingId}</span>
       </Typography>
     </Box>
     {qrCodeText && (
@@ -367,6 +371,15 @@ const BookingForm = () => {
         </Grid>
       </Box>
     )}
+    <Box sx={{ textAlign: 'center', mt: 4 }}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => navigate('/home')}
+      >
+        Back to Home
+      </Button>
+    </Box>
   </Box>
 )}
 

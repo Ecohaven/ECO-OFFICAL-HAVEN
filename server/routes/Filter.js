@@ -6,24 +6,29 @@ const { Op } = require("sequelize");
 // Filter bookings
 // Example URL: http://localhost:3001/api/filter?event=eventID&date=2024-07-15&status=Active&eventName=EventName
 router.get('/filter', async (req, res) => {
-    const { event, date, status, numberOfPax } = req.query;
+    const { date, status, numberOfPax, eventName } = req.query;
 
+    // Construct condition object
     let condition = {};
 
-    if (event) {
-        condition.eventId = event; 
+    // Add eventName filter if provided
+    if (eventName) {
+        condition.eventName = { [Op.like]: `%${eventName}%` }; // Partial match, case-insensitive
     }
-     if (eventName) {
-        condition.eventName = eventName; // Filter by exact eventName match
-    }
+
+    // Add date filter if provided
     if (date) {
-        condition.bookingDate = { [Op.gte]: new Date(date) }; // Filter by date using greater than or equal
+        condition.bookingDate = { [Op.gte]: new Date(date) }; // Greater than or equal to provided date
     }
+
+    // Add status filter if provided
     if (status) {
         condition.status = status;
     }
+
+    // Add numberOfPax filter if provided
     if (numberOfPax) {
-        condition.numberOfPax = parseInt(numberOfPax, 10); // Correct parsing base
+        condition.numberOfPax = parseInt(numberOfPax, 5); // Ensure it is an integer
     }
 
     try {
@@ -46,7 +51,6 @@ router.get('/filter', async (req, res) => {
         res.status(500).send('Server error');
     }
 });
-
 
 
 // Example URL: http://localhost:3001/api/filter-records?eventName=EventName&date=2024-07-15&eventId=123

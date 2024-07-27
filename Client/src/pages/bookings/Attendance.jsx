@@ -9,6 +9,7 @@ import QrScanner from 'react-qr-scanner';
 import '../../style/attendance.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 
+
 const CheckInPage = () => {
     const [checkIns, setCheckIns] = useState([]);
     const [qrCodeText, setQrCodeText] = useState('');
@@ -45,95 +46,164 @@ const CheckInPage = () => {
         }
     };
 
-   const fetchCheckIns = async (eventName) => {
-    try {
-        const response = await axios.get('http://localhost:3001/checkin/check-eventName', {
-            params: { eventName }
-        });
-
-        const latestCheckIns = [];
-        const groupedCheckIns = {};
-
-
-        response.data.checkIns.forEach(checkIn => {
-            if (!groupedCheckIns[checkIn.bookingId]) {
-                groupedCheckIns[checkIn.bookingId] = [];
-            }
-            groupedCheckIns[checkIn.bookingId].push(checkIn);
-
-        });
-
-        // Flatten and sort the check-ins
-        Object.values(groupedCheckIns).forEach(group => {
-            group.sort((a, b) => {
-                // Prioritize Not Checked-In status
-                if (a.qrCodeStatus !== b.qrCodeStatus) {
-                    return a.qrCodeStatus === 'Not Checked' ? -1 : 1;
-                }
-                // Sort by Check-In Time within the same status
-                return new Date(b.checkInTime) - new Date(a.checkInTime);
+    const fetchCheckIns = async (eventName) => {
+        try {
+            const response = await axios.get('http://localhost:3001/checkin/check-eventName', {
+                params: { eventName }
             });
-            latestCheckIns.push(...group);
+
+            const latestCheckIns = [];
+            const groupedCheckIns = {};
+
+            response.data.checkIns.forEach(checkIn => {
+                if (!groupedCheckIns[checkIn.bookingId]) {
+                    groupedCheckIns[checkIn.bookingId] = [];
+                }
+                groupedCheckIns[checkIn.bookingId].push(checkIn);
+            });
+
+            // Flatten and sort the check-ins
+            Object.values(groupedCheckIns).forEach(group => {
+                group.sort((a, b) => {
+                    // Prioritize Not Checked-In status
+                    if (a.qrCodeStatus !== b.qrCodeStatus) {
+                        return a.qrCodeStatus === 'Not Checked' ? -1 : 1;
+                    }
+                    // Sort by Check-In Time within the same status
+                    return new Date(b.checkInTime) - new Date(a.checkInTime);
+                });
+                latestCheckIns.push(...group);
+            });
+
+            setCheckIns(latestCheckIns);
+            setAlertMessage(latestCheckIns.length === 0 ? 'No check-in records found.' : '');
+
+            const checkedInCount = latestCheckIns.filter(c => c.qrCodeStatus === 'Checked-In').length;
+            const notCheckedInCount = latestCheckIns.length - checkedInCount;
+            setTotalCheckedIn(checkedInCount);
+            setTotalNotCheckedIn(notCheckedInCount);
+
+        } catch (error) {
+            console.error('Error fetching check-in records:', error);
+            setAlertMessage('Failed to fetch check-in records.');
+        }
+    };
+
+const handleScan = async (data) => {
+    if (!data || !data.text) {
+        setError('Invalid QR Code data. Please try scanning again.');
+        return;
+    }
+
+    const qrCodeDataArray = data.text.split(','); // Assume QR codes are comma-separated
+
+    setError('');
+    setModalMessage(''); // Clear the modal message
+
+    try {
+        // Process each QR code in the array
+        const responses = await Promise.all(qrCodeDataArray.map(qrCodeData =>
+            axios.post('http://localhost:3001/checkin/checkin', { data: qrCodeData })
+        ));
+
+        const successMessages = [];
+        let hasCheckedIn = false;
+
+        responses.forEach(response => {
+            if (response.status === 200) {
+                const { qrCodeStatus } = response.data;
+                if (qrCodeStatus === 'Checked-In') {
+                    successMessages.push('One or more QR Codes have already been checked in.');
+                    hasCheckedIn = true;
+                } else {
+                    successMessages.push('Check-in successful');
+                }
+            } else {
+                successMessages.push('Unexpected response from server.');
+            }
         });
 
-        setCheckIns(latestCheckIns);
-        setAlertMessage(latestCheckIns.length === 0 ? 'No check-in records found.' : '');
-        
-        const checkedInCount = latestCheckIns.filter(c => c.qrCodeStatus === 'Checked-In').length;
-        const notCheckedInCount = latestCheckIns.length - checkedInCount;
-        setTotalCheckedIn(checkedInCount);
-        setTotalNotCheckedIn(notCheckedInCount);
+        if (successMessages.length > 0) {
+            setModalMessage(successMessages.join('\n'));
+            setModalType(hasCheckedIn ? 'warning' : 'success'); // Use warning if some QR codes are already checked in
+            handleOpenModal('success');
 
+            // Delay before closing the modal and resetting the scanner
+            const messageDisplayDuration = 1000; // Duration to display the message (e.g., 1000 ms = 1 second)
+            setTimeout(() => {
+                // Reset message and type before closing modal
+                setModalMessage('');
+                setModalType('');
+                handleCloseModal();
+
+                // Reopen the modal and reset message after a short delay
+                setTimeout(() => {
+                    handleOpenModal('scan'); // Open the scanner modal
+                }, 100);
+            }, messageDisplayDuration);
+        }
+
+        // Fetch updated check-ins data
+        fetchCheckIns(selectedEventName);
 
     } catch (error) {
-        console.error('Error fetching check-in records:', error);
-        setAlertMessage('Failed to fetch check-in records.');
+        console.error('Error during check-in:', error);
+
+        let errorMessage = 'An error occurred while processing the request.';
+
+        if (error.response) {
+            switch (error.response.status) {
+                case 404:
+                    errorMessage = 'Record not found. Please check the details.';
+                    break;
+                case 400:
+                    errorMessage = 'Invalid data provided. Please ensure all fields are correct.';
+                    break;
+                default:
+                    errorMessage = 'An unexpected error occurred. Please try again later.';
+                    break;
+            }
+        } else if (error.request) {
+            errorMessage = 'Network error. Please check your connection and try again.';
+        }
+
+        setError(errorMessage);
+        handleCloseModal(); // Close the modal in case of an error
     }
 };
 
-    const handleScan = async (data) => {
-        if (data && data.text) {
-            const qrCodeData = data.text;
 
-            setError('');
+    const handleCheckInByText = async (e) => {
+        e.preventDefault();
 
-            try {
-                const response = await axios.post('http://localhost:3001/checkin/checkin', { data: qrCodeData });
+        if (!qrCodeText) {
+            setError('QR Code Text is required');
+            return;
+        }
+        setError('');
 
-                if (response.status === 200) {
-                    const { qrCodeStatus } = response.data;
-                    if (qrCodeStatus === 'Checked-In') {
-                        setModalMessage('This QR Code has already been checked in.');
-                    } else {
-                        setModalMessage('Check in successful');
-                        setModalType('success');
-                        handleOpenModal('success'); 
-                    }
-                    fetchCheckIns(selectedEventName);
-                } else {
-                    setError('Unexpected response from server');
-                }
-            } catch (error) {
-                console.error('Error during check-in:', error);
+        // Data to send
+        const dataToSend = { data: qrCodeText };
 
-                if (error.response) {
-                    if (error.response.status === 404) {
-                        setError('Record not found. Please check the details.');
-                    } else if (error.response.status === 400) {
-                        setError('Invalid data provided. Please ensure all fields are correct.');
-                    } else {
-                        setError('An unexpected error occurred. Please try again later.');
-                    }
-                } else if (error.request) {
-                    setError('Network error. Please check your connection and try again.');
-                } else {
-                    setError('An error occurred while processing the request.');
-                }
+        try {
+            const response = await axios.post('http://localhost:3001/checkin/checkin/text', dataToSend);
+
+            if (response.status === 200) {
+                const { message } = response.data;
+                setModalMessage(message); // Show the success message from the response
+                setModalType('success');
+                setModalOpen(false); 
+                fetchCheckIns(selectedEventName); // Fetch check-ins after successful check-in
+                navigate(`/staff/attendance?eventName=${encodeURIComponent(selectedEventName)}`);
+            } else {
+                setError('Unexpected response from server');
             }
-        } else {
-            setError('Invalid QR Code data. Please try scanning again.');
+        } catch (error) {
+            console.error('Error during check-in:', error);
+            setError('Failed to check-in');
         }
     };
+
 
     const handleOpenModal = (type) => {
         setError('');
@@ -153,7 +223,6 @@ const CheckInPage = () => {
         navigate(`/staff/attendance?eventName=${encodeURIComponent(newEventName)}`);
     };
 
- 
     const filteredCheckIns = checkIns.filter(checkIn => {
         return (
             checkIn.bookingId?.toLowerCase().includes(searchTerm) ||
