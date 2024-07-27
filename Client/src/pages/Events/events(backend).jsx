@@ -207,7 +207,7 @@ const EventDataTable = () => {
             handleShowAlert('error', 'Error updating event. Please try again.');
         }
     };
-  const handleOpenDeleteConfirmation = (event) => {
+    const handleOpenDeleteConfirmation = (event) => {
         setDeleteConfirmation(event);
     };
 
@@ -277,9 +277,9 @@ const EventDataTable = () => {
         { field: 'startDate', headerName: 'Start Date', width: 120 },
         { field: 'endDate', headerName: 'End Date', width: 120 },
         { field: 'time', headerName: 'Time', width: 140 },
- { field: 'location', headerName: 'Location', width: 90 },
+        { field: 'location', headerName: 'Location', width: 90 },
         { field: 'status', headerName: 'Status', width: 80 },
- {
+        {
             field: 'checkIn',
             headerName: 'Check In',
             width: 280,
@@ -311,13 +311,13 @@ const EventDataTable = () => {
             width: 100,
             renderCell: (params) => (
                 <DeleteIcon
-                     onClick={() => handleOpenDeleteConfirmation(params.row)}
+                    onClick={() => handleOpenDeleteConfirmation(params.row)}
                     className="delete-icon"
                     style={{ color: 'red', cursor: 'pointer', marginLeft: '8px' }}
                 />
             ),
         },
-  {
+        {
             field: 'viewDetails',
             headerName: 'Details',
             width: 100,
@@ -335,8 +335,8 @@ const EventDataTable = () => {
                 </Button>
             ),
         },
-       
-      
+
+
 
     ];
 
@@ -352,15 +352,15 @@ const EventDataTable = () => {
                         onChange={handleEventNameFilterChange}
                         variant="outlined"
                         size="small"
-                        style={{marginLeft:'12px'}}
+                        style={{ marginLeft: '12px' }}
                     />
                     <Button variant="contained" onClick={handleFilterEvents} >
                         Filter
                     </Button>
-                    <Button variant="contained" onClick={handleResetFilter} style={{backgroundColor:'red'}}>
+                    <Button variant="contained" onClick={handleResetFilter} style={{ backgroundColor: 'red' }}>
                         Reset
                     </Button>
-                    <Button variant="contained" onClick={handleAddEventRedirect} className='addbtn' style={{width:'20%'}}>
+                    <Button variant="contained" onClick={handleAddEventRedirect} className='addbtn' style={{ width: '20%' }}>
                         Add Event
                     </Button>
                 </div>
@@ -428,7 +428,7 @@ const EventDataTable = () => {
                                 onChange={handleInputChange}
                                 fullWidth
                                 required
-                                style={{marginTop:'20px'}}
+                                style={{ marginTop: '20px' }}
                             />
                         </div>
                         <div className="leaf-status-container">
@@ -486,24 +486,24 @@ const EventDataTable = () => {
                     </form>
                 </Box>
             </Modal>
-                <Modal open={openZoomModal} onClose={handleCloseZoomModal}>
-    <Box className="zoom-modal-box">
-        <button
-            className="closeBtn"
-            aria-label="Close"
-            onClick={handleCloseZoomModal} 
-        >
-            ×
-        </button>
-        <img
-            src={zoomedImageUrl}
-            alt="Zoomed Event"
-        />
-    </Box>
-</Modal>
+            <Modal open={openZoomModal} onClose={handleCloseZoomModal}>
+                <Box className="zoom-modal-box">
+                    <button
+                        className="closeBtn"
+                        aria-label="Close"
+                        onClick={handleCloseZoomModal}
+                    >
+                        ×
+                    </button>
+                    <img
+                        src={zoomedImageUrl}
+                        alt="Zoomed Event"
+                    />
+                </Box>
+            </Modal>
             <Modal open={viewDetailsModalOpen} onClose={handleCloseViewDetailsModal}>
                 <Box className="modal-box">
-                    <h2 className="modal-heading" style={{fontSize:'32px'}}>Event Details</h2>
+                    <h2 className="modal-heading" style={{ fontSize: '32px' }}>Event Details</h2>
                     <p><strong>Event ID:</strong> {eventDetails.eventId}</p>
                     <p><strong>Description:</strong> {eventDetails.description}</p>
                     <p><strong>Amount:</strong> {eventDetails.amount}</p>
@@ -512,22 +512,14 @@ const EventDataTable = () => {
                     <Button variant="contained" onClick={handleCloseViewDetailsModal}>Close</Button>
                 </Box>
             </Modal>
-           {/* Delete Confirmation Modal */}
-                <Modal
-                    open={!!deleteConfirmation}
+            {/* Delete Confirmation Modal */}
+            {deleteConfirmation && (
+                <DeleteConfirmationModal
+                    open={Boolean(deleteConfirmation)}
                     onClose={handleCloseDeleteConfirmation}
-                >
-                    <Box className="modal-content">
-                        <h2>Delete Confirmation</h2>
-                        <p>Are you sure you want to delete this event?</p>
-                        <Button onClick={handleConfirmDelete} variant="contained" color="error">
-                            Confirm
-                        </Button>
-                        <Button onClick={handleCloseDeleteConfirmation} variant="contained" color="default">
-                            Cancel
-                        </Button>
-                    </Box>
-                </Modal>
+                    onDelete={handleConfirmDelete}
+                />
+            )}
 
             <Snackbar open={alertOpen} autoHideDuration={6000} onClose={handleCloseAlert}>
                 <Alert onClose={handleCloseAlert} severity={alertType}>

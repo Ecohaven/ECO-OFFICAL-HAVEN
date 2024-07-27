@@ -21,9 +21,28 @@
 }
 
 .rewardshopback .table-container {
-    margin-left: 250px !important; /* Adjust the margin-left as needed */
-  }
-  
-  .MuiDataGrid-root {
-    width: calc(100% - 250px); /* Adjust width based on sidebar width */
-  }
+    width: 95%;
+    margin-left: 250px !important;
+}
+
+.MuiDataGrid-root {
+    width: calc(100% - 250px);
+    /* Adjust width based on sidebar width */
+}
+
+@media (max-width: 960px) {
+    .search {
+        margin-left: -240px !important;
+    }
+
+    .rewardshopback .table-container {
+        width: 120% !important;
+        margin-left: 20px !important; /* Move the table to the left */
+    }
+}
+
+@media (max-width: 500px) {
+    .rewardshopback .table-container {
+        width: 140% !important;
+    }
+}

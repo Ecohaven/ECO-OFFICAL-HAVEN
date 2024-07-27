@@ -2,15 +2,16 @@
 .headbanner {
     position: relative;
     width: 100%;
+    height: 400px; /* Fixed height for the banner */
     text-align: center;
     margin-bottom: 50px;
+    overflow: hidden; /* Hides any overflowed parts of the image */
 }
 
 .headbanner img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    max-height: 250px;
+    height: 110%;
+    object-fit: cover; /* Ensures the image covers the entire container */
 }
 
 .headbanner h1 {
@@ -20,7 +21,15 @@
     transform: translate(-50%, -50%);
     font-size: 40px;
     font-weight: bold;
+    color: black; /* Ensure the text is readable on the banner */
     margin: 0;
+    padding: 0 10px; /* Optional: Adds some padding to prevent text from touching edges */
+}
+
+.headbanner h1 {
+    color: #14772B;
+    text-shadow: 2px 2px #91E1A3;
+    font-size: 50px;
 }
 
 /* greenreward */
@@ -125,13 +134,14 @@ h1 {
 /* products */
 .rewards .products {
     display: flex;
-    justify-content: center; /* Align items in the center horizontally */
+    justify-content: space-around;
     align-items: flex-start;
-    flex-wrap: nowrap; /* Ensures items stay in a single row */
-    overflow-x: hidden; /* Hides horizontal overflow */
+    flex-wrap: nowrap;
+    /* Ensures items stay in a single row */
     margin-left: 10px;
     margin-right: 10px;
-    width: 100%; /* Ensures the products span the full width */
+    width: 100%;
+    /* Ensures the products span the full width */
 }
 
 .rewards .product-item {
@@ -148,13 +158,6 @@ h1 {
     /* Remove margin from last item to avoid extra space */
 }
 
-.rewards .product-item h2 {
-    margin-top: 10px;
-    text-align: center;
-    font-size: 24px;
-    /* Adjust spacing as needed */
-}
-
 .rewards .product-item img {
     width: 200px;
     height: 200px;
@@ -163,16 +166,26 @@ h1 {
     margin: auto;
     border: 5px solid #14772B;
     border-radius: 15px;
+    margin-left: 100px;
 }
 
 .rewards .product-item p {
     margin-top: -30px;
+    margin-left: -100px;
+}
+
+.rewards .product-item h2 {
+    margin-left: -70px;
+}
+
+.rewards .product-item .leaves {
+    margin-left: -140px;
 }
 
 /* greenreward2 */
 .greenreward2 {
     background-color: #14772B;
-    padding-bottom: 10px;
+    padding-bottom: 30px;
 }
 
 .greenreward2 h1 {
@@ -229,13 +242,89 @@ h1 {
 }
 
 /* Responsive design for mobile devices */
-@media (max-width: 768px) {
+@media (max-width: 960px) {
 
     .greenreward h1,
     .stepsheader h1,
     .greenreward2 h1 {
         width: 90%;
-        font-size: 5vw;
+        font-size: 3vw;
+    }
+
+    .rewards h1 {
+        width: 90%;
+        font-size: 3vw;
+    }
+
+    .greenreward p,
+    .rewards p,
+    .greenreward2 p {
+        width: 90%;
+        font-size: 2vw;
+        margin-bottom: 20px;
+    }
+
+    .greenreward .signupbutton,
+    .greenreward2 .signupbutton {
+        font-size: 2vw;
+        padding: 10px 20px;
+        margin: 0 auto;
+        display: block;
+    }
+
+    .rewards .redeempagebutton {
+        font-size: 2vw;
+        padding: 10px 20px;
+        margin: 0 auto;
+        display: block;
+    }
+
+    .desc p {
+        margin-left: 10px;
+    }
+
+    .rewards .product-item {
+        flex: 1 1 calc(50% - 20px); /* Adjust width to fit 2 items per row with some spacing */
+        margin-right: 10px;
+        margin-bottom: 20px; /* Add margin-bottom for spacing */
+    }
+
+    .rewards h1 {
+        font-size: 2.5vw; /* Adjust font size for smaller screens */
+        width: 90%;
+    }
+
+    .rewards .product-item h2 {
+        font-size: 2.5vw; /* Adjust font size for smaller screens */
+        width: 285%;
+    }
+
+    .rewards .product-item:last-child {
+        margin-right: 50px;
+    }
+
+    .rewards p, .greenreward2 .qn {
+        font-size: 1.5vw; /* Adjust font size for smaller screens */
+        width: 90%;
+    }
+
+    .rewards .product-item img {
+        margin-left: 20px;
+    }
+
+    .rewards .product-item .leaves {
+        margin-left: 15px;
+    }
+
+}
+
+@media (max-width: 500px) {
+
+    .greenreward h1,
+    .stepsheader h1,
+    .greenreward2 h1 {
+        width: 90%;
+        font-size: 6vw;
     }
 
     .rewards h1 {
@@ -247,35 +336,43 @@ h1 {
     .rewards p,
     .greenreward2 p {
         width: 90%;
-        font-size: 2.5vw;
+        font-size: 3vw;
     }
 
     .greenreward .signupbutton,
-    .greenreward2 .signupbutton,
+    .greenreward2 .signupbutton {
+        font-size: 3vw;
+        padding: 10px 20px;
+        margin-left: 180px;
+    }
+
     .rewards .redeempagebutton {
         font-size: 3vw;
         padding: 10px 20px;
+        margin-left: 165px;
     }
 
-    .redeempagebutton {
-        font-size: 4vw;
-        padding: 10px 20px;
+    .desc p {
+        margin-left: 10px;
     }
 
-    .rewards .products {
-        flex-wrap: wrap;
-        justify-content: center;
+    .rewards .product-item h2 {
+        font-size: 4vw; /* Adjust font size for smaller screens */
+        width: 285%;
     }
 
-    .rewards .product-item {
-        margin: 10px;
-        flex: 1 1 90%;
-        max-width: 300px;
+    .rewards .product-item:last-child {
+        margin-right: -150px;
     }
 
-    .rewards .product-item img {
-        width: 100%;
-        width: 200px;
-        height: 200px;
+    .rewards p, .greenreward2 .qn {
+        font-size: 2vw; /* Adjust font size for smaller screens */
+        width: 90%;
     }
+
+    .rewards .product-item .leaves {
+        margin-left: -80px;
+        font-size: 3vw;
+    }
+    
 }

@@ -228,6 +228,7 @@ const CollectionProduct = () => {
         <h2>Collection Items</h2>
         <TextField
           variant="outlined"
+          className="search"
           placeholder="Search..."
           value={searchQuery}
           onChange={handleSearchChange}

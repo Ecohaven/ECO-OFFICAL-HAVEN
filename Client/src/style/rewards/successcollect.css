@@ -1,32 +1,14 @@
-/* banner */
-.headbanner {
-    position: relative;
-    width: 100%;
-    text-align: center;
-    margin-bottom: 50px;
-}
-
-.headbanner img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    max-height: 250px;
-}
-
-.headbanner h1 {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 40px;
-    font-weight: bold;
-    margin: 0;
-}
-
 /* id number */
 .idnumber {
     margin-top: -10px;
     color: #14772B;
+}
+
+/* summary*/
+.summarypage {
+    margin-top: -30px;
+    color: grey;
+    margin-bottom: -100px;
 }
 
 /* detail */
@@ -73,33 +55,72 @@
 }
 
 /* Responsive design for mobile devices */
-@media (max-width: 768px) {
-    .headbanner h1 {
-        font-size: 6vw;
-    }
-
+@media (max-width: 960px) {
     .collectionid h1,
     .idnumber {
-        font-size: 6vw;
-        width: 90%;
-    }
-
-    .collectiondetail h2 {
         font-size: 4vw;
-        width: 90%;
     }
 
-    .collectiondetail p {
-        font-size: vw;
-        width: 90%;
+    .detail-content h2 {
+        font-size: 2vw;
+        padding-left: 250px;
     }
 
-    .time {
+    .detail-content p {
+        font-size: 2vw;
         padding-left: 20px;
     }
 
+    .time {
+        padding-left: 30px;
+    }
+
+    .detail-content .extra {
+        font-size: 1.5vw;
+    }
+
     .backtohome {
-        font-size: 4vw;
+        font-size: 2vw;
+        margin-left: 385px;
+        padding: 10px 20px;
+    }
+}
+
+@media (max-width: 500px) {
+    .collectionid h1,
+    .idnumber {
+        font-size: 6vw;
+        margin-left: -100px;
+    }
+
+    .summarypage {
+       text-wrap: wrap;
+       width: 50%;
+       font-size: 3vw;
+       padding-left: 100px;
+    }
+    
+    .detail-content h2 {
+        font-size: 3vw;
+        padding-right: 110px;
+    }
+
+    .detail-content p {
+        font-size: 2.5vw;
+        padding-right: 120px;
+    }
+
+    .time {
+        padding-left: 30px;
+    }
+
+    .detail-content .extra {
+        font-size: 2vw;
+    }
+
+    .backtohome {
+        font-size: 3vw;
+        margin-left: 185px;
         padding: 10px 20px;
     }
 }

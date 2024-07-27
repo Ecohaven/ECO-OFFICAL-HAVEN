@@ -6,14 +6,14 @@ import AccountContext from '../../contexts/AccountContext';
 
 function Rewards() {
   const [latestProducts, setLatestProducts] = useState([]);
-  const { account } = useContext(AccountContext); // Get account info from context
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 500);
+  const { account } = useContext(AccountContext);
 
   useEffect(() => {
     const fetchLatestProducts = async () => {
       try {
         const response = await axios.get('http://localhost:3001/eco/product-detail');
         if (Array.isArray(response.data)) {
-          // Sort products by creation date (assuming there is a createdAt field)
           const sortedProducts = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
           setLatestProducts(sortedProducts.slice(0, 3));
         }
@@ -25,14 +25,19 @@ function Rewards() {
     fetchLatestProducts();
   }, []);
 
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 500);
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <div>
-      {/* Navbar */}
-      {/* <Navbar /> */}
 
       {/* banner */}
       <div className="headbanner">
-        <img src="../../src/assets/images/rewardbanner.png" alt="Banner" />
+        <img src="../../src/assets/images/rewardsbanner.png" alt="Banner" />
         <h1>Rewards</h1>
       </div>
 
@@ -71,15 +76,25 @@ function Rewards() {
         <h1>Discover your eco-friendly haven with us.</h1>
         <h1>Use Leaves to get attractive rewards and nurture the environment.</h1>
 
-        <div className='products'>
-          {latestProducts.map((product) => (
-            <div key={product.id} className='product-item'>
-              <h2>{product.itemName}</h2>
-              <img src={`http://localhost:3001/eco/product-images/${product.itemimg}`} alt={product.itemName} />
-              <p><b>{product.leaves}</b> Leaves</p>
-            </div>
-          ))}
-        </div>
+        <Grid container spacing={4} className='products'>
+          {isMobile ? (
+            latestProducts.slice(0, 1).map((product) => (
+              <Grid item key={product.id} xs={12} className='product-item'>
+                <h2>{product.itemName}</h2>
+                <img src={`http://localhost:3001/eco/product-images/${product.itemimg}`} alt={product.itemName} />
+                <p className='leaves'><b>{product.leaves}</b> Leaves</p>
+              </Grid>
+            ))
+          ) : (
+            latestProducts.map((product) => (
+              <Grid item key={product.id} xs={12} sm={6} md={4} className='product-item'>
+                <h2>{product.itemName}</h2>
+                <img src={`http://localhost:3001/eco/product-images/${product.itemimg}`} alt={product.itemName} />
+                <p className='leaves'><b>{product.leaves}</b> Leaves</p>
+              </Grid>
+            ))
+          )}
+        </Grid>
 
         {account ? (
           <button className='redeempagebutton'><a href='/redemptionshop'>Redemption Shop</a></button>
@@ -96,16 +111,6 @@ function Rewards() {
         <button className='signupbutton'><a href='/redemptionshop'>Sign up now!</a></button> {/* change link afterwards */}
         <p className='qn'>Any questions? Check out our <a href='/faq'>FAQ</a> here</p>
       </div>
-
-      {/* Footer */}
-      {/* <Footer /> */}
-
-      {/* backend test nav */}
-      {/* <ul>
-        <div>
-          <li><a href="/rewardproduct">Reward Item</a></li>
-        </div>
-      </ul> */}
     </div>
   );
 }

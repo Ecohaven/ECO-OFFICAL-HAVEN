@@ -435,6 +435,7 @@ const RewardTable = () => {
         {/* Search bar */}
         <TextField
           variant="outlined"
+          className="search"
           placeholder="Search..."
           value={searchQuery}
           onChange={handleSearchChange}

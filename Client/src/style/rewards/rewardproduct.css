@@ -8,16 +8,17 @@
   /* Adjust the percentage to make the table width smaller */
   margin-left: 250px !important;
   /* Align the table to the left */
-  margin-top: 80px !important;
+  margin-top: 30px !important;
   height: 400px !important;
 }
 
 .addnewproductbutton {
   position: absolute;
-  left: 250px;
+  left: 480px;
   background-color: #14772B !important;
   color: white !important;
-  margin-top: 10px !important;
+  margin-top: 20px !important;
+  margin-bottom: 20px !important;
 }
 
 .addbutton,
@@ -57,4 +58,30 @@
 
 .data-grid {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 960px) {
+  h2, .search {
+    margin-left: -240px !important;
+  }
+
+  .data-grid {
+    width: 95% !important;
+    margin-left: 20px !important;
+  }
+
+  .addnewproductbutton {
+    left: 380px;
+  }
+}
+
+@media (max-width: 500px) {
+  .data-grid {
+    width: 95% !important;
+    margin-left: 10px !important;
+  }
+
+  .addnewproductbutton {
+    left: 155px;
+  }
 }

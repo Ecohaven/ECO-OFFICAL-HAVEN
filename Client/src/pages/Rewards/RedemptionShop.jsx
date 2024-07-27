@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
 import '../../style/rewards/redemptionshop.css';
-// import Navbar from '../../components/Navbar';
-// import Footer from '../../components/footer';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
@@ -16,8 +14,8 @@ import AccountContext from '../../contexts/AccountContext';
 function RedemptionShop() {
   const [products, setProducts] = useState([]);
   const [sortedProducts, setSortedProducts] = useState([]);
-  const [sortOption, setSortOption] = useState('lowestToHighest'); // Set default sorting option
-  const { account } = useContext(AccountContext); // Use context to get the account details
+  const [sortOption, setSortOption] = useState('lowestToHighest');
+  const { account } = useContext(AccountContext);
 
   useEffect(() => {
     fetchProducts();
@@ -29,7 +27,7 @@ function RedemptionShop() {
       if (Array.isArray(response.data)) {
         const sortedProducts = response.data.sort((a, b) => a.leaves - b.leaves);
         setProducts(sortedProducts);
-        setSortedProducts(sortedProducts); // Initialize sorted products
+        setSortedProducts(sortedProducts);
       } else {
         console.error('Expected an array from the API response');
       }
@@ -50,7 +48,7 @@ function RedemptionShop() {
     } else if (value === 'ZtoA') {
       sortProducts('desc', 'itemName');
     } else if (value === 'newest') {
-      sortProducts('desc', 'createdAt'); // Assuming createdAt is the field indicating product addition date
+      sortProducts('desc', 'createdAt');
     }
   };
 
@@ -70,10 +68,10 @@ function RedemptionShop() {
 
   return (
     <div>
-      {/* <Navbar /> */}
 
+      {/* banner */}
       <div className="headbanner">
-        <img src="../../src/assets/images/rewardbanner.png" alt="Banner" />
+        <img src="../../src/assets/images/redemptionbanner.png" alt="Banner" />
         <h1>Redemption Shop</h1>
       </div>
 
@@ -95,12 +93,14 @@ function RedemptionShop() {
         </div>
       </div>
 
+      {/* divider */}
       <hr className="divider" />
 
+      {/* shop */}
       <div className='shop'>
         <h1>Shop:</h1>
 
-        {/* Filter Dropdown */}
+        {/* filter dropdown */}
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2, mr: 15 }}>
           <FormControl
             variant="outlined"
@@ -134,7 +134,7 @@ function RedemptionShop() {
           </FormControl>
         </Box>
 
-        {/* Product Grid */}
+        {/* products */}
         <Grid container spacing={2} justifyContent="center" className="products">
           {sortedProducts.map((product) => (
             <Grid item xs={12} sm={6} md={4} key={product.id}>
@@ -197,8 +197,6 @@ function RedemptionShop() {
           ))}
         </Grid>
       </div>
-
-      {/* <Footer /> */}
     </div>
   );
 }

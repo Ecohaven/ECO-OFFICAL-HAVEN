@@ -1,33 +1,9 @@
-/* banner */
-.headbanner {
-    position: relative;
-    width: 100%;
-    text-align: center;
-    margin-bottom: 50px;
-}
-
-.headbanner img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    max-height: 250px;
-}
-
-.headbanner h1 {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 40px;
-    font-weight: bold;
-    margin: 0;
+/* back */
+.back img{
+    margin-left: 20px;
 }
 
 /* balance */
-.total {
-    color: #14772B;
-}
-
 .balance p {
     text-align: center;
 }
@@ -57,8 +33,12 @@
     font-size: 30px;
 }
 
+.product-item p {
+    font-size: 20px;
+}
+
 /* Responsive design for mobile devices */
-@media (max-width: 768px) {
+@media (max-width: 960px) {
     .headbanner h1 {
         width: 90%;
         font-size: 6vw;
@@ -67,7 +47,7 @@
     .balance h1,
     .shop h1 {
         width: 90%;
-        font-size: 5vw;
+        font-size: 4vw;
     }
 
     .products {
@@ -77,18 +57,52 @@
 
     .product-item {
         margin: 10px;
-        flex: 1 1 90%;
         max-width: 300px;
     }
 
     .product-item img {
         width: 100%;
-        max-width: 150px;
+        max-width: 200px;
         height: auto;
     }
 
     .product-item h2 {
-        font-size: 3vw;
+        font-size: 2.5vw;
+        padding-left: 230px;
+    }
+
+    .product-item p {
+        font-size: 2vw;
+    }
+
+}
+
+@media (max-width: 500px) {
+    .balance h1,
+    .shop h1 {
+        width: 90%;
+        font-size: 6vw;
+    }
+
+    .products {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .product-item {
+        margin: 10px auto;
+        max-width: 300px;
+    }
+
+    .product-item img {
+        width: 100%;
+        max-width: 200px;
+        height: auto;
+    }
+
+    .product-item h2 {
+        font-size: 4vw;
+        padding-left: 230px;
     }
 
     .product-item p {

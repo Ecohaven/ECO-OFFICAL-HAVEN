@@ -36,10 +36,11 @@ function Rewards() {
 
   return (
     <Grid container direction="column" spacing={4}>
+      
       {/* banner */}
-      <Grid item className="headbanner">
-        <div className="banner-content">
-          <img src="../../src/assets/images/rewardbanner.png" alt="Banner" />
+      <Grid item>
+        <div className="headbanner">
+          <img src="../../src/assets/images/successbanner.png" alt="Banner" />
           <h1>Thank you!</h1>
         </div>
       </Grid>
@@ -47,8 +48,15 @@ function Rewards() {
       {/* collection id */}
       <Grid item className="collectionid">
         <div className="id-content">
-          <h1>Collection ID</h1>
+          <h1 style={{marginTop: "-30px"}}>Collection ID</h1>
           <h1 className="idnumber">{collectionId}</h1>
+        </div>
+      </Grid>
+
+       {/* collection id */}
+       <Grid item>
+        <div>
+          <p className='summarypage'>You can find all your collection details inside profile page, under 'Rewards'</p>
         </div>
       </Grid>
 
