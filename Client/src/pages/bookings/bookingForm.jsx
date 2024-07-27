@@ -139,21 +139,24 @@ const BookingForm = () => {
 
 
   if (event.status !== 'Free' && event.amount) {
-    navigate('/payment', {
-      state: {
-        Name: account.name,
-        eventName: event.eventName,
-        amount: event.amount,
-        email: account.email,
-        phoneNumber: account.phone_no,
-        numberOfPax: numberOfPax,
-        bookingId: id,
-        qrCodeText: qrCodeText,
-       paxName: paxDetails.map(pax => pax.name),
+   navigate('/payment', {
+  state: {
+    Name: account.name,
+    eventName: event.eventName,
+    amount: event.amount,
+    email: account.email,
+    location: event.location,
+        time: event.startTime,
+ bookingDate: effectiveBookingDate,
+    phoneNumber: account.phone_no,
+    numberOfPax: numberOfPax,
+    bookingId: id,
+    qrCodeText: qrCodeText,
+    paxName: paxDetails.map(pax => pax.name),
         paxEmail: paxDetails.map(pax => pax.email),
         paxQrCodeRecords
-      }
-    });
+  }
+});
         } else {
           await sendEmail(formData, id, qrCodeText, paxQrCodeRecords);
 
@@ -184,10 +187,10 @@ const BookingForm = () => {
                 <p><strong>Booking ID:</strong> ${bookingId}</p>
                 <p><strong>Event:</strong> ${formData.eventName}</p>
                 <p><strong>Email:</strong> ${account.email}</p>
-                <p><strong>Phone Number:</strong> ${account.phoneNumber}</p>
-                <p><strong>Date:</strong> ${new Date(formData.bookingDate).toLocaleDateString('en-GB')}</p>
-                <p><strong>Time:</strong> ${event.time ? new Date(formData.time).toLocaleTimeString('en-GB') : 'N/A'}</p>
-                <p><strong>Amount:</strong> ${formData.amount ? `$${formData.amount}` : 'N/A'}</p>
+                <p><strong>Phone Number:</strong> ${account.phone_no}</p>
+                <p><strong> Event Date:</strong> ${new Date(formData.bookingDate).toLocaleDateString('en-GB')}</p>
+                <p><strong>Event Time:</strong> ${event.time}</p>
+                <p><strong>Amount:</strong> ${event.amount}</p>
                 <p><strong>Location:</strong> ${event.location}</p>
                 ${qrCodeText ? `<div style="text-align: center; margin: 20px 0;">
                   <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrCodeText)}" alt="QR Code" style="border-radius: 8px;">

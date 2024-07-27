@@ -13,14 +13,6 @@ module.exports = (sequelize, DataTypes) => {
         notEmpty: true
       }
     },
-    phoneNumber: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        isNumeric: true,
-        len: [8, 8]
-      }
-    },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -30,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     refundMethod: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
       validate: {
         isIn: [['Debit', 'Credit']] // Assuming refund methods are Debit and Credit
       }

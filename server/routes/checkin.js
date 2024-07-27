@@ -162,7 +162,6 @@ router.get('/check-eventname', async (req, res) => {
 });
 
 
-// Combined check-in of pax and qrcodetext, using CAMERA SCANNING
 router.post('/checkin', async (req, res) => {
   const { data } = req.body;
 
@@ -182,9 +181,10 @@ router.post('/checkin', async (req, res) => {
     });
 
     if (!checkInRecord) {
-      // If not found by QR code, check by paxName
+      // If not found by QR code, find the latest check-in record by paxName
       checkInRecord = await CheckIn.findOne({
         where: { paxName: data },
+        order: [['createdAt', 'DESC']], // Ensure to order by the timestamp to get the latest record
         transaction
       });
     }
@@ -196,6 +196,7 @@ router.post('/checkin', async (req, res) => {
     }
 
     if (checkInRecord.qrCodeStatus === 'Checked-In') {
+      // If already checked-in, return an error
       await transaction.rollback();
       return res.status(400).json({ error: 'QR Code or Pax Name has already been checked in' });
     }
@@ -244,6 +245,7 @@ router.post('/checkin', async (req, res) => {
     return res.status(500).json({ error: 'An error occurred while handling the check-in' });
   }
 });
+
 
 
 

@@ -2,14 +2,27 @@ import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import axios from 'axios';
 import * as Yup from 'yup';
-import ModalComponent from '../../../components/RefundModal';
-import { useLocation } from 'react-router-dom';
-import { Container, Grid, TextField, Select, MenuItem, Button, Typography, FormHelperText } from '@mui/material';
-import '../../style/payment/paymentform.css'; // Adjust as needed
+import { useLocation, useNavigate } from 'react-router-dom';
+import {
+  Container,
+  Grid,
+  TextField,
+  Select,
+  MenuItem,
+  Button,
+  Typography,
+  FormHelperText,
+  FormControl,
+  InputLabel,
+  Box,
+  Modal,
+} from '@mui/material';
+import '../../style/payment/paymentform.css';
 
 const RefundForm = () => {
   const location = useLocation();
-  const { paymentId, name, email, event } = location.state || {}; // Retrieve values from state
+  const navigate = useNavigate();
+  const { paymentId, Name, email, eventName } = location.state || {};
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
@@ -24,17 +37,14 @@ const RefundForm = () => {
     email: Yup.string()
       .email('Invalid email address')
       .required('Email is required'),
-    paymentMethod: Yup.string()
-      .required('Payment Method is required'),
-    event: Yup.string()
-      .required('Event Name is required'),
-    reason: Yup.string()
-      .required('Refund Reason is required'),
+    refundMethod: Yup.string().required('Payment Method is required'),
+    event: Yup.string().required('Event Name is required'),
+    reason: Yup.string().required('Refund Reason is required'),
   });
 
   const handleSubmit = async (values, { setSubmitting, setStatus, resetForm }) => {
     try {
-      const response = await axios.post('http://localhost:3001/api/refunds', values);
+      const response = await axios.post('http://localhost:3001/refund/refundcreate', values);
       const result = response.data;
       if (result.error) {
         setStatus({ message: result.error });
@@ -57,17 +67,20 @@ const RefundForm = () => {
   };
 
   return (
-    <Container maxWidth="sm" sx={{ mt: 4, mb: 4 }}>
+    <Container
+      maxWidth="sm"
+      sx={{ mt: 4, mb: 4, p: 3, boxShadow: 3, borderRadius: 2, backgroundColor: 'background.paper' }}
+    >
       <Typography variant="h4" align="center" gutterBottom>
         Refund Request Form
       </Typography>
       <Formik
         initialValues={{
           paymentId: paymentId || '',
-          name: name || '',
+          name: Name || '',
           email: email || '',
-          paymentMethod: 'Debit', // Default value; adjust as necessary
-          event: event || '',
+          refundMethod: '',
+          event: eventName || '',
           reason: '',
         }}
         validationSchema={validationSchema}
@@ -75,16 +88,17 @@ const RefundForm = () => {
       >
         {({ status, isSubmitting }) => (
           <Form>
-            <Grid container spacing={2}>
+            <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Field
-                  name="payment.id"
+                  name="paymentId"
                   as={TextField}
                   label="Payment ID"
                   fullWidth
                   variant="outlined"
+                  disabled
                   helperText={<ErrorMessage name="paymentId" />}
-                  error={<ErrorMessage name="paymentId" />}
+                  error={Boolean(<ErrorMessage name="paymentId" />)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -94,8 +108,9 @@ const RefundForm = () => {
                   label="Name"
                   fullWidth
                   variant="outlined"
+                  disabled
                   helperText={<ErrorMessage name="name" />}
-                  error={<ErrorMessage name="name" />}
+                  error={Boolean(<ErrorMessage name="name" />)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -105,22 +120,27 @@ const RefundForm = () => {
                   label="Email"
                   fullWidth
                   variant="outlined"
+                  disabled
                   helperText={<ErrorMessage name="email" />}
-                  error={<ErrorMessage name="email" />}
+                  error={Boolean(<ErrorMessage name="email" />)}
                 />
               </Grid>
               <Grid item xs={12}>
-                <Field
-                  name="paymentMethod"
-                  as={Select}
-                  fullWidth
-                  variant="outlined"
-                  label="Payment Method"
-                >
-                  <MenuItem value="Debit">Debit</MenuItem>
-                  <MenuItem value="Credit">Credit</MenuItem>
-                </Field>
-                <FormHelperText error={<ErrorMessage name="paymentMethod" />} />
+                <FormControl fullWidth variant="outlined">
+                  <InputLabel id="refundMethod-label">Refund Method</InputLabel>
+                  <Field
+                    name="refundMethod"
+                    as={Select}
+                    labelId="refundMethod-label"
+                    label="Refund Method"
+                  >
+                    <MenuItem value="Debit">Debit</MenuItem>
+                    <MenuItem value="Credit">Credit</MenuItem>
+                  </Field>
+                  <FormHelperText error={Boolean(<ErrorMessage name="refundMethod" />)}>
+                    <ErrorMessage name="refundMethod" />
+                  </FormHelperText>
+                </FormControl>
               </Grid>
               <Grid item xs={12}>
                 <Field
@@ -129,8 +149,9 @@ const RefundForm = () => {
                   label="Requested Refund - Event Name"
                   fullWidth
                   variant="outlined"
+                  disabled
                   helperText={<ErrorMessage name="event" />}
-                  error={<ErrorMessage name="event" />}
+                  error={Boolean(<ErrorMessage name="event" />)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -141,7 +162,7 @@ const RefundForm = () => {
                   fullWidth
                   variant="outlined"
                   helperText={<ErrorMessage name="reason" />}
-                  error={<ErrorMessage name="reason" />}
+                  error={Boolean(<ErrorMessage name="reason" />)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -151,7 +172,10 @@ const RefundForm = () => {
               </Grid>
               {status && status.message && (
                 <Grid item xs={12}>
-                  <Typography variant="body1" color={status.message.includes('successfully') ? 'success.main' : 'error.main'}>
+                  <Typography
+                    variant="body1"
+                    style={{ color: 'black' }} // Set color to black explicitly
+                  >
                     {status.message}
                   </Typography>
                 </Grid>
@@ -164,9 +188,41 @@ const RefundForm = () => {
         isOpen={modalIsOpen}
         onRequestClose={() => setModalIsOpen(false)}
         message={modalMessage}
+        footer={
+          <Button variant="contained" color="primary" onClick={() => navigate('/')}>
+            Back to Home
+          </Button>
+        }
       />
     </Container>
   );
 };
+
+const ModalComponent = ({ isOpen, onRequestClose, message, footer }) => (
+  <Modal
+    open={isOpen}
+    onClose={onRequestClose}
+    aria-labelledby="modal-title"
+    aria-describedby="modal-description"
+  >
+    <Box
+      sx={{
+        p: 3,
+        backgroundColor: 'background.paper',
+        boxShadow: 24,
+        borderRadius: 2,
+        maxWidth: 500,
+        mx: 'auto',
+        mt: '20vh',
+        textAlign: 'center',
+      }}
+    >
+      <Typography id="modal-title" variant="h6" gutterBottom>
+        {message}
+      </Typography>
+      <Box mt={3}>{footer}</Box>
+    </Box>
+  </Modal>
+);
 
 export default RefundForm;

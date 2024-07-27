@@ -2,23 +2,48 @@ const express = require('express');
 const router = express.Router();
 const db = require('../models');
 
-router.post('/', async (req, res) => {
+router.post('/refundcreate', async (req, res) => {
   const {
-    name, email, paymentMethod, event, reason, paymentId
+    name, email, refundMethod, event, reason, paymentId
   } = req.body;
 
   console.log('Received refund request:', {
-    name, email, paymentMethod, event, reason, paymentId
+    name, email, refundMethod, event, reason, paymentId
   });
 
   try {
     const newRefund = await db.Refund.create({
-      name, email, paymentMethod, event, reason, paymentId
+      name, email, refundMethod, event, reason, paymentId
     });
     res.status(201).json({ message: 'Refund request created successfully', refund: newRefund });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to create refund request' });
+  }
+});
+
+// Approve a refund request
+router.post('/refund/approve/:refundId', async (req, res) => {
+  const { refundId } = req.params;
+
+  console.log('Approving refund request:', refundId);
+
+  try {
+    // Find the refund request by ID
+    const refund = await db.Refund.findByPk(refundId);
+
+    if (!refund) {
+      return res.status(404).json({ message: 'Refund not found' });
+    }
+
+    // Update the status to 'Approved'
+    refund.status = 'Approved';
+    await refund.save();
+
+    res.json({ message: 'Refund approved successfully', refund });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to approve refund request' });
   }
 });
 

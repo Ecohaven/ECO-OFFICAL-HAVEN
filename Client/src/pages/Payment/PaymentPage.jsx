@@ -3,7 +3,8 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import axios from 'axios';
 import * as Yup from 'yup';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Container, Typography, Grid, TextField, Button } from '@mui/material';
+import { Container, Typography, Grid, TextField, Button, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
+
 
 const PaymentForm = () => {
   const navigate = useNavigate();
@@ -12,14 +13,16 @@ const PaymentForm = () => {
   // Extract data from location state
   const {
     qrCodeText = '',
-    amount = 0,
+    amount = '',
     email = '',
     phoneNumber = '',
     eventName = '',
     bookingId = '',
     Name = '',
     numberOfPax = 0,
-    paxList = [] // Changed from paxDetails to paxList
+    paxName = [],
+    paxEmail = [],
+    paxQrCodeRecords = []
   } = location.state || {};
 
   const validationSchema = Yup.object().shape({
@@ -44,7 +47,7 @@ const PaymentForm = () => {
 
   const handleSubmit = async (values, { setSubmitting, setStatus, resetForm }) => {
     try {
-      const finalAmount = amount * (numberOfPax || 1); // Calculate final amount based on numberOfPax
+      const finalAmount = amount + amount * (numberOfPax || 1);
 
       const response = await axios.post('http://localhost:3001/pay', { ...values, amount: finalAmount });
       const result = response.data;
@@ -57,6 +60,7 @@ const PaymentForm = () => {
         navigate('/paymentsuccess', {
           state: {
             formData: values,
+            Name,
             paymentId: result.payment.id,
             amount: finalAmount,
             email: values.email,
@@ -65,7 +69,11 @@ const PaymentForm = () => {
             bookingId,
             qrCodeText,
             numberOfPax,
-            paxDetails // Pass paxList instead of paxDetails
+            paxDetails: paxName.map((name, index) => ({
+              name,
+              email: paxEmail[index]
+            })),
+            paxQrCodeRecords
           }
         });
       }
@@ -89,7 +97,7 @@ const PaymentForm = () => {
           phoneNumber,
           homeAddress: '',
           postalCode: '',
-          paymentMethod: 'Debit',
+          paymentMethod: '',
           cardholderName: '',
           cardNumber: '',
           expiryDate: '',
@@ -193,18 +201,24 @@ const PaymentForm = () => {
                 </Field>
               </Grid>
               <Grid item xs={12}>
-                <Field name="paymentMethod">
-                  {({ field, meta }) => (
-                    <TextField
-                      {...field}
-                      label="Payment Method"
-                      type="text"
-                      fullWidth
-                      error={meta.touched && Boolean(meta.error)}
-                      helperText={<ErrorMessage name="paymentMethod" />}
-                    />
-                  )}
-                </Field>
+                <FormControl fullWidth error={Boolean(status?.message)}>
+                  <InputLabel id="payment-method-label">Payment Method</InputLabel>
+                  <Field name="paymentMethod">
+                    {({ field, meta }) => (
+                      <Select
+                        {...field}
+                        labelId="payment-method-label"
+                        label="Payment Method"
+                        fullWidth
+                        error={meta.touched && Boolean(meta.error)}
+                      >
+                        <MenuItem value="Debit">Debit</MenuItem>
+                        <MenuItem value="Credit">Credit</MenuItem>
+                      </Select>
+                    )}
+                  </Field>
+                  <ErrorMessage name="paymentMethod" component="div" style={{ color: 'red' }} />
+                </FormControl>
               </Grid>
               <Grid item xs={12}>
                 <Field name="cardholderName">
@@ -292,22 +306,29 @@ const PaymentForm = () => {
                   )}
                 </Field>
               </Grid>
+              <Typography variant="h6" component="h2" style={{ marginTop: 16 }}>
+                Additional Pax Details
+              </Typography>
+              {paxName.map((name, index) => (
+                <Grid item xs={12} key={index}>
+                  <Typography variant="body1" component="div">
+                    <strong>Pax Name:</strong> {name}
+                  </Typography>
+                  <Typography variant="body1" component="div">
+                    <strong>Pax Email:</strong> {paxEmail[index]}
+                  </Typography>
+                </Grid>
+              ))}
               <Grid item xs={12}>
                 <Button type="submit" variant="contained" color="primary" disabled={isSubmitting}>
                   {isSubmitting ? 'Processing...' : 'Submit Payment'}
                 </Button>
-              </Grid>
-              {status && (
-                <Grid item xs={12}>
-                  <Typography
-                    variant="body2"
-                    color={status.type === 'error' ? 'error.main' : 'success.main'}
-                    align="center"
-                  >
+                {status && (
+                  <Typography variant="body1" color={status.type === 'error' ? 'error' : 'success'}>
                     {status.message}
                   </Typography>
-                </Grid>
-              )}
+                )}
+              </Grid>
             </Grid>
           </Form>
         )}

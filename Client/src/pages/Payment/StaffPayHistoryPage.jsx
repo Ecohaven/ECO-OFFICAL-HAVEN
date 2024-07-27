@@ -107,11 +107,42 @@ const Backend = () => {
     doc.save(`payment_${payment.id}.pdf`);
   };
 
+  const approveRefund = async (refundId) => {
+    try {
+      // Request to approve the refund
+      const response = await axios.post(`http://localhost:3001/refund/refund/approve/${refundId}`);
+      
+      if (response.data.success) {
+        // Notify the user of success
+        setStatus({ message: 'Refund approved successfully!', error: false });
+
+        // Update the local state immediately
+        setPayments(prevPayments => 
+          prevPayments.map(payment => ({
+            ...payment,
+            refunds: payment.refunds.map(refund =>
+              refund.id === refundId ? { ...refund, status: 'Approved' } : refund
+            )
+          }))
+        );
+
+        // Optionally, fetch the updated list of payments
+        // const updatedPayments = await axios.get('http://localhost:3001/pay/');
+        // setPayments(updatedPayments.data);
+
+      } else {
+        setStatus({ message: 'Failed to approve refund', error: true });
+      }
+    } catch (error) {
+      setStatus({ message: 'Failed to approve refund', error: true });
+    }
+  };
+
   return (
     <Box sx={{ display: 'flex' }}>
       <Sidebar />
       <Box sx={{ flex: 1, padding: 4 }}>
-     <h2 style={{marginTop:'10px'}}>Customer Payment Records</h2>
+        <h2 style={{ marginTop: '10px' }}>Customer Payment Records</h2>
         {status && (
           <Typography color={status.error ? 'error' : 'success'}>
             {status.message}
@@ -189,21 +220,36 @@ const Backend = () => {
                   </TableCell>
                   <TableCell>
                     {payment.refunds && payment.refunds.length > 0 ? (
-                      <ul>
-                        {payment.refunds.map(refund => (
-                          <li key={refund.id}>
-                            Status: {refund.status}, Reason: {refund.reason}
-                          </li>
-                        ))}
-                      </ul>
+                      payment.refunds.map((refund) => (
+                        <Box key={refund.id} sx={{ mb: 1 }}>
+                          {`Refund ID: ${refund.id}, Status: ${refund.status}`}
+                        </Box>
+                      ))
                     ) : (
                       'No refunds'
                     )}
                   </TableCell>
                   <TableCell>
-                    <Button variant="contained" color="success" onClick={() => generatePdf(payment)}>
-                      Download
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => generatePdf(payment)}
+                    >
+                      Download PDF
                     </Button>
+                    {payment.refunds && payment.refunds.length > 0 && payment.refunds.map(refund => (
+                      refund.status === 'Pending' && (
+                        <Button
+                          key={refund.id}
+                          variant="contained"
+                          color="success"
+                          onClick={() => approveRefund(refund.id)}
+                          sx={{ ml: 1 }}
+                        >
+                          Approve Refund
+                        </Button>
+                      )
+                    ))}
                   </TableCell>
                 </TableRow>
               ))}
