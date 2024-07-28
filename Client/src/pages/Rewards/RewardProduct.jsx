@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
@@ -264,23 +266,23 @@ const RewardTable = () => {
   const handleSearchChange = (event) => {
     const query = event.target.value.toLowerCase();
     setSearchQuery(query);
-  
+
     // Check if there are no results
     const filtered = rows.filter(
       (row) =>
         row.itemName.toLowerCase().includes(query) ||
-      row.code.toString().includes(query) ||  // Include numbers by converting to string
-      row.leaves.toString().includes(query) ||  // Include leaves (numbers) by converting to string
-      row.stock.toString().includes(query)  // Include stock (numbers) by converting to string
+        row.code.toString().includes(query) ||  // Include numbers by converting to string
+        row.leaves.toString().includes(query) ||  // Include leaves (numbers) by converting to string
+        row.stock.toString().includes(query)  // Include stock (numbers) by converting to string
     );
-  
+
     if (filtered.length === 0 && query.trim() !== '') {
       setSearchError(true);
     } else {
       setSearchError(false);
     }
   };
-  
+
 
   const filteredRows = rows.filter(row =>
     row.itemName.toLowerCase().includes(searchQuery) ||
@@ -488,11 +490,11 @@ const RewardTable = () => {
       </div>
 
       {searchError && (
-          <Alert severity="error" onClose={() => setSearchError(false)} sx={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '50%' }}>
-            <AlertTitle>Error</AlertTitle>
-            No results found for "{searchQuery}"
-          </Alert>
-        )}
+        <Alert severity="error" onClose={() => setSearchError(false)} sx={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '50%' }}>
+          <AlertTitle>Error</AlertTitle>
+          No results found for "{searchQuery}"
+        </Alert>
+      )}
 
       {/* alert for displaying messages */}
       {alertOpen && (
@@ -605,8 +607,25 @@ const RewardTable = () => {
 
       {/* zoom product image */}
       <Modal open={openZoomModal} onClose={handleCloseZoomModal}>
-        <Box sx={{ ...style, width: 'auto', maxWidth: '80%' }}>
-          <img src={zoomedImageUrl} alt="Zoomed Item" style={{ maxWidth: '100%', height: 'auto' }} />
+        <Box sx={{ ...style, width: '40%', maxWidth: '400px', position: 'relative' }}>
+          <IconButton
+            onClick={handleCloseZoomModal}
+            sx={{ position: 'absolute', top: 8, right: 8, zIndex: 1 }}
+          >
+            <CloseIcon style={{ color: 'red' }} />
+          </IconButton>
+          <Box sx={{ width: '100%', paddingTop: '100%', position: 'relative' }}>
+            <img src={zoomedImageUrl} alt="Zoomed Item"
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover'
+              }}
+            />
+          </Box>
         </Box>
       </Modal>
     </div>

@@ -1,17 +1,17 @@
+/* title */
 .header {
   text-align: left;
 }
 
-/* Move the table to the left */
+/* table */
 .data-grid {
   width: 70% !important;
-  /* Adjust the percentage to make the table width smaller */
   margin-left: 250px !important;
-  /* Align the table to the left */
   margin-top: 30px !important;
   height: 400px !important;
 }
 
+/* button */
 .addnewproductbutton {
   position: absolute;
   left: 480px;
@@ -51,11 +51,16 @@
   margin-left: 10px !important;
 }
 
+/* popup */
 .popup {
   color: #14772B !important;
   text-align: center;
+  font-size: 40px;
+  margin-bottom: 30px;
+  margin-top: 10px;
 }
 
+/* table shadow */
 .data-grid {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }

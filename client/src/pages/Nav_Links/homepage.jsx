@@ -112,11 +112,16 @@ const HomePage = () => {
 
       {/* Display events */}
       <Typography variant="h4" align="center" gutterBottom sx={{ fontWeight: 'bold', color: 'green', mb: 2 }}>
-        Latest Events
+        Events & Workshops
       </Typography>
-      <Grid container spacing={1} sx={{ p: 3 }}>
+
+      <Typography variant="p" align="center" gutterBottom sx={{ mb: 2 }}>
+        Here are the latest events & workshops happening in Singapore!
+      </Typography>
+
+      <Grid container spacing={1} sx={{ p: 3, mb: 8 }}>
         {events.map((event, index) => (
-          <Grid item key={event.id} xs={6} sm={6} md={6} lg={6}>
+          <Grid item key={event.id} xs={6} sm={6} md={6} lg={4}>
             <Box
               sx={{
                 p: 2,
@@ -173,6 +178,35 @@ const HomePage = () => {
                 </Button>
               </Box>
             </Box>
+          </Grid>
+        ))}
+      </Grid>
+
+      {/* Why Us */}
+      {/* <Typography variant="h4" align="center" gutterBottom sx={{ fontWeight: 'bold', color: 'green', mb: 2 }}>
+        Why Us
+      </Typography> */}
+
+      {/* Our partners */}
+      <Typography variant="h4" align="center" gutterBottom sx={{ fontWeight: 'bold', color: 'green', mb: 2 }}>
+        Our Partners
+      </Typography>
+
+      <Typography variant="p" align="center" gutterBottom sx={{ mb: 2 }}>
+        Special thanks to all!
+      </Typography>
+      <Grid container spacing={4} justifyContent="center">
+        {[
+          { img: '../../src/assets/images/cc_logo.png'},
+          { img: '../../src/assets/images/rc_logo.png'},
+          { img: '../../src/assets/images/rn_logo.png'}
+        ].map((step, index) => (
+          <Grid item key={index} xs={12} sm={6} md={3}>
+            <img src={step.img} alt={step.title} style={{ width: '200px', height: 'auto', display: 'block', margin: '0 auto', marginBottom: '50px', marginTop: '30px' }} />
+            <div className='desc'>
+              <p><b>{step.title}</b></p>
+              <p>{step.description}</p>
+            </div>
           </Grid>
         ))}
       </Grid>
