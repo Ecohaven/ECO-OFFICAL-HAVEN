@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const QRCodeLib = require('qrcode')
-const { Booking, CheckIn, Event, Payment } = require('../models');
+const { Booking, CheckIn, events, Payment } = require('../models');
 const yup = require('yup');
 const { Op } = require("sequelize");
+const moment = require('moment');
+
 
 // Define the validation schema for bookings
 //Booking date only needed for event 1 or 2 the rest booking date are allowed to be null -- tentative settings 
@@ -172,6 +174,53 @@ router.get("/account/:accountName/bookings", async (req, res) => {
     }
 
     res.json(bookings); // Return bookings as JSON response
+  } catch (error) {
+    console.error('Error fetching bookings by accountName:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
+// Route to fetch and notify account of upcoming events
+router.get("/account/:accountName/notify", async (req, res) => {
+  const { accountName } = req.params;
+
+  try {
+    // Find bookings associated with the accountName
+    const bookings = await Booking.findAll({
+      where: { Name: accountName }, 
+      attributes: ['id', 'eventName'], // Specify booking attributes to retrieve
+    });
+
+    if (!bookings || bookings.length === 0) {
+      return res.status(404).json({ error: 'No bookings found for this account' });
+    }
+
+    const now = moment();
+    const upcomingEvents = [];
+
+    // Iterate over bookings to fetch event details
+    for (const booking of bookings) {
+      const event = await events.findOne({
+        where: { eventName: booking.eventName },
+        attributes: ['startDate', 'endDate'],
+      });
+
+      if (event) {
+        const startDate = moment(event.startDate);
+        const daysUntilEvent = startDate.diff(now, 'days');
+        if (daysUntilEvent > 0 && daysUntilEvent <= 3) { // Events within the next 3 days
+          upcomingEvents.push({
+            id: booking.id,
+            eventName: booking.eventName,
+            startDate: event.startDate,
+            endDate: event.endDate,
+          });
+        }
+      }
+    }
+
+   res.json({ notifications: upcomingEvents.length > 0, upcomingEvents });
   } catch (error) {
     console.error('Error fetching bookings by accountName:', error);
     res.status(500).json({ error: 'Internal server error' });
