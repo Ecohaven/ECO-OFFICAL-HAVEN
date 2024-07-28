@@ -1,7 +1,4 @@
 import React from 'react';
-
-// import Navbar from '../../components/Navbar';
-// import Footer from '../../components/footer';
 import { Box, Typography, Container, Grid } from '@mui/material';
 
 import HeadingImage from '../../assets/images/aboutus.png';
@@ -11,8 +8,12 @@ import MissionImage from '../../assets/images/aboutus_mission.jpg';
 const AboutUs = () => {
     return (
         <div>
-            {/* Navbar */}
-            {/* <Navbar /> */}
+
+            {/* banner */}
+            <div className="headbanner">
+                <img src="../../src/assets/images/aboutusbanner.png" alt="Banner" />
+                <h1>About Us</h1>
+            </div>
 
             {/* heading */}
             <Container sx={{ mt: 5 }}>
@@ -24,7 +25,7 @@ const AboutUs = () => {
                                     About EcoHaven
                                 </Typography>
 
-                                <Typography variant="h4" component="h1" gutterBottom style={{ textAlign: 'left', color: '#14772B', fontWeight: 'bold'}}>
+                                <Typography variant="h4" component="h1" gutterBottom style={{ textAlign: 'left', color: '#14772B', fontWeight: 'bold' }}>
                                     Explore, Connect, Grow: <br></br> EcoHaven
                                 </Typography>
                                 <Typography variant="body1" paragraph style={{ textAlign: 'left' }}>
@@ -102,10 +103,7 @@ const AboutUs = () => {
                         </div>
                     </Grid>
                 </Grid>
-            </Container>      
-
-            {/* Footer */}
-            {/* <Footer /> */}
+            </Container>
         </div>
     );
 };
