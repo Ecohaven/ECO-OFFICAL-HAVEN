@@ -252,13 +252,13 @@ const BookingList = () => {
                 onClose={() => setOpenCancelDialog(false)}
             >
                 <DialogContent>
-                    <Typography variant="h6">
+                    <Typography variant="h6" style={{color:'black'}}>
                         Are you sure you want to cancel this booking?
                     </Typography>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpenCancelDialog(false)}>No</Button>
-                    <Button onClick={confirmCancelBooking}>Yes</Button>
+                    <Button onClick={() => setOpenCancelDialog(false)} style={{color:'white',backgroundColor:'red'}}>No</Button>
+                    <Button onClick={confirmCancelBooking}  style={{color:'white',backgroundColor:'green'}}>Yes</Button>
                 </DialogActions>
             </Dialog>
 

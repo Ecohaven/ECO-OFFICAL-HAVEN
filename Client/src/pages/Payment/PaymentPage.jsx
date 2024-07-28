@@ -17,6 +17,7 @@ const PaymentForm = () => {
     email = '',
     phoneNumber = '',
     eventName = '',
+    eventdate = '',
     bookingId = '',
     Name = '',
     numberOfPax = 0,
@@ -65,6 +66,7 @@ const PaymentForm = () => {
             amount: finalAmount,
             email: values.email,
             phoneNumber: values.phoneNumber,
+            eventdate,
             eventName,
             bookingId,
             qrCodeText,
@@ -89,6 +91,7 @@ const PaymentForm = () => {
       <Typography variant="h4" component="h1" style={{ textAlign: 'left' }} gutterBottom>
         Payment Form
       </Typography>
+<i>Amount * No. of Additional guest (if applicable)</i>
       <Formik
         initialValues={{
           eventName,
@@ -103,6 +106,7 @@ const PaymentForm = () => {
           expiryDate: '',
           cvv: '',
           Name,
+          eventdate,
           numberOfPax
         }}
         validationSchema={validationSchema}

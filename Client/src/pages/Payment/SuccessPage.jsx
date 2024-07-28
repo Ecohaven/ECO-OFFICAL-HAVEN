@@ -15,6 +15,7 @@ const PaymentSuccess = () => {
     email,
     phoneNumber,
     eventName,
+    eventdate,
     bookingId,
     qrCodeText,
     Name,
@@ -23,11 +24,49 @@ const PaymentSuccess = () => {
     paxQrCodeRecords = []
   } = location.state || {};
 
-  // Send email function
-  const sendEmail = async () => {
-    try {
-      await axios.post('http://localhost:3001/send-email', {
-        to: ['ecohaven787@gmail.com', ...paxDetails.map(pax => pax.email)],
+ // Send email function
+const sendEmail = async () => {
+  try {
+    // Send email to the main email address with full booking details
+    await axios.post('http://localhost:3001/send-email', {
+      to: ['ecohaven787@gmail.com'],
+      subject: `${eventName} Booking Successful`,
+      html: `
+        <html>
+          <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; background-color: #f4f4f9; margin: 0; padding: 0;">
+            <div style="max-width: 700px; margin: auto; padding: 20px; border-radius: 8px; background-color: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+              <h1 style="text-align: center; color: #4CAF50;">Eco<span style="color: #333;">Haven</span></h1>
+              <h2 style="text-align: center; color: #333;">Booking Details</h2>
+              <p><strong>Booking ID:</strong> ${bookingId}</p>
+              <p><strong>Event:</strong> ${eventName}</p>
+              <p><strong>Event Date:</strong> ${eventdate}</p>
+              <p><strong>Email:</strong> ${email}</p>
+              <p><strong>Phone Number:</strong> ${phoneNumber}</p>
+              <p><strong>Amount:</strong> ${amount ? `$${amount}` : 'N/A'}</p>
+              <p><strong>For location & date details, please log in to your account on our website to view.</strong></p>
+              ${qrCodeText ? `<div style="text-align: center; margin: 20px 0;">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrCodeText)}" alt="QR Code" style="border-radius: 8px;">
+              </div>` : ''}
+              ${paxQrCodeRecords.length > 0 ? `<div>
+                <h3 style="color: #333;">Your Additional Guest QR Codes</h3>
+                ${paxQrCodeRecords.map(record => `
+                  <div style="margin-bottom: 10px;">
+                    <p><strong>${record.paxName}</strong> - ${record.paxQrCodeText}</p>
+                    <img src="${record.paxQrCodeUrl}" alt="QR Code for ${record.paxName}" style="display: block; margin: auto; border-radius: 8px;">
+                  </div>
+                `).join('')}
+              </div>` : ''}
+              <p style="text-align: center; color: #666;">Please download or remember this QR code text for check-in.</p>
+            </div>
+          </body>
+        </html>
+      `
+    });
+
+    // Send email to pax emails with only event name and QR code
+    const paxEmailPromises = paxQrCodeRecords.map(record => {
+      return axios.post('http://localhost:3001/send-email', {
+        to: [record.paxEmail],
         subject: `${eventName} Booking Successful`,
         html: `
           <html>
@@ -35,23 +74,10 @@ const PaymentSuccess = () => {
               <div style="max-width: 700px; margin: auto; padding: 20px; border-radius: 8px; background-color: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
                 <h1 style="text-align: center; color: #4CAF50;">Eco<span style="color: #333;">Haven</span></h1>
                 <h2 style="text-align: center; color: #333;">Booking Details</h2>
-                <p><strong>Booking ID:</strong> ${bookingId}</p>
                 <p><strong>Event:</strong> ${eventName}</p>
-                <p><strong>Email:</strong> ${email}</p>
-                <p><strong>Phone Number:</strong> ${phoneNumber}</p>
-                <p><strong>Amount:</strong> ${amount ? `$${amount}` : 'N/A'}</p>
-                <p><strong>For location & date details,please login to your account on our website to view </strong> </p>
-                ${qrCodeText ? `<div style="text-align: center; margin: 20px 0;">
-                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrCodeText)}" alt="QR Code" style="border-radius: 8px;">
-                </div>` : ''}
-                ${paxQrCodeRecords.length > 0 ? `<div>
-                  <h3 style="color: #333;">Your Additional Guest QR Codes</h3>
-                  ${paxQrCodeRecords.map(record => `
-                    <div style="margin-bottom: 10px;">
-                      <p><strong>${record.paxName}</strong> - ${record.paxQrCodeText}</p>
-                      <img src="${record.paxQrCodeUrl}" alt="QR Code for ${record.paxName}" style="display: block; margin: auto; border-radius: 8px;">
-                    </div>
-                  `).join('')}
+                 <p><strong>Event Date:</strong> ${eventdate}</p>
+                ${record.paxQrCodeText ? `<div style="text-align: center; margin: 20px 0;">
+                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(record.paxQrCodeText)}" alt="QR Code" style="border-radius: 8px;">
                 </div>` : ''}
                 <p style="text-align: center; color: #666;">Please download or remember this QR code text for check-in.</p>
               </div>
@@ -59,20 +85,21 @@ const PaymentSuccess = () => {
           </html>
         `
       });
-    } catch (error) {
-      console.error('Failed to send email:', error);
-    }
-  };
+    });
+
+    await Promise.all(paxEmailPromises);
+
+    console.log('Emails sent successfully!');
+  } catch (error) {
+    console.error('Failed to send email:', error);
+  }
+};
+
 
   useEffect(() => {
     sendEmail();
   }, []);
 
-  const handleRefundClick = () => {
-    navigate('/refund', {
-      state: { paymentId, Name, email, eventName }
-    });
-  };
 
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
@@ -137,9 +164,7 @@ const PaymentSuccess = () => {
           <Button variant="contained" color="primary" sx={{ mr: 2 }} href="/">
             Back to Home
           </Button>
-          <Button variant="outlined" color="secondary" onClick={handleRefundClick}>
-            Request Refund
-          </Button>
+         
         </Box>
       </Paper>
     </Container>

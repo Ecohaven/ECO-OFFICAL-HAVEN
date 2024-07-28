@@ -11,22 +11,16 @@ router.get('/filter', async (req, res) => {
     // Construct condition object
     let condition = {};
 
-    // Add eventName filter if provided
+
     if (eventName) {
         condition.eventName = { [Op.like]: `%${eventName}%` }; // Partial match, case-insensitive
     }
 
-    // Add date filter if provided
-    if (date) {
-        condition.bookingDate = { [Op.gte]: new Date(date) }; // Greater than or equal to provided date
-    }
-
-    // Add status filter if provided
     if (status) {
         condition.status = status;
     }
 
-    // Add numberOfPax filter if provided
+
     if (numberOfPax) {
         condition.numberOfPax = parseInt(numberOfPax, 5); // Ensure it is an integer
     }
@@ -35,9 +29,9 @@ router.get('/filter', async (req, res) => {
         const bookings = await Booking.findAll({
             where: condition,
             include: {
-                model: events, // Ensure this matches the model name
-                as: 'eventDetails', // This should match the alias used in your model associations
-                attributes: ['eventName'] // Include eventName if needed in response
+                model: events, 
+                as: 'eventDetails', 
+                attributes: ['eventName'] 
             }
         });
 

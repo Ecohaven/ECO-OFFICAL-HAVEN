@@ -30,7 +30,7 @@ router.post('/', async (req, res) => {
 
   const {
     amount, email, phoneNumber, homeAddress, postalCode, paymentMethod,
-    cardholderName, cardNumber, expiryDate, cvv, eventName, Name, numberOfPax
+    cardholderName, cardNumber, expiryDate, cvv, eventName, Name, numberOfPax, eventdate,
   } = req.body;
 
   try {
@@ -46,6 +46,7 @@ router.post('/', async (req, res) => {
     // Create the payment record in the database
     const newPayment = await db.Payment.create({
       eventName,
+      eventdate,
       amount,
       email,
       phoneNumber,
@@ -68,6 +69,7 @@ router.post('/', async (req, res) => {
       payment: {
         id: newPayment.id,
         eventName,
+        eventdate,
         amount,
         email,
         phoneNumber,

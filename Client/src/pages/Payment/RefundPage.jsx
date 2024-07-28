@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import axios from 'axios';
 import * as Yup from 'yup';
@@ -18,11 +18,13 @@ import {
   Modal,
 } from '@mui/material';
 import '../../style/payment/paymentform.css';
+import AccountContext from '../../contexts/AccountContext';
 
 const RefundForm = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { paymentId, Name, email, eventName } = location.state || {};
+  const { account } = useContext(AccountContext);
+  const { paymentId, email, eventName } = location.state || {};
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
@@ -37,7 +39,7 @@ const RefundForm = () => {
     email: Yup.string()
       .email('Invalid email address')
       .required('Email is required'),
-    refundMethod: Yup.string().required('Payment Method is required'),
+    refundMethod: Yup.string().required('Refund Method is required'),
     event: Yup.string().required('Event Name is required'),
     reason: Yup.string().required('Refund Reason is required'),
   });
@@ -77,7 +79,7 @@ const RefundForm = () => {
       <Formik
         initialValues={{
           paymentId: paymentId || '',
-          name: Name || '',
+          name: account?.name || '',
           email: email || '',
           refundMethod: '',
           event: eventName || '',
@@ -217,7 +219,7 @@ const ModalComponent = ({ isOpen, onRequestClose, message, footer }) => (
         textAlign: 'center',
       }}
     >
-      <Typography id="modal-title" variant="h6" gutterBottom>
+      <Typography id="modal-title" variant="h6" gutterBottom style={{color:'black'}}>
         {message}
       </Typography>
       <Box mt={3}>{footer}</Box>

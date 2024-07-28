@@ -4,7 +4,7 @@ import { Container, Grid, Table, TableBody, TableCell, TableContainer, TableHead
 import { styled } from '@mui/material/styles';
 import Account_Nav from './Account_Nav';
 import { tableCellClasses } from '@mui/material/TableCell';
-import fileSaver from 'file-saver'; // Import file-saver
+import fileSaver from 'file-saver'; 
 import AccountContext from '../../contexts/AccountContext';
 import '../../style/rewards/rewardsprofile.css';
 
@@ -19,13 +19,17 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
 }));
 
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
+const StyledTableRow = styled(TableRow)(({ theme, status }) => ({
   '&:nth-of-type(odd)': {
-    backgroundColor: '#91E1A3',
+    backgroundColor: status === 'Cancelled' ? '#ff6666' : status === 'Attended' ? '#ADD8E6' : '#91E1A3',
+  },
+  '&:nth-of-type(even)': {
+    backgroundColor: status === 'Cancelled' ? '#ff6666' : status === 'Attended' ? '#B0E0E6' : theme.palette.action.hover,
   },
   '&:last-child td, &:last-child th': {
     border: 0,
   },
+  backgroundColor: status === 'Cancelled' ? '#ff6666' : status === 'Attended' ? '#ADD8E6' : 'inherit',
 }));
 
 function Account_Profile_Bookings() {
@@ -56,7 +60,7 @@ function Account_Profile_Bookings() {
 
       if (Array.isArray(response.data)) {
         const updatedRows = response.data.map((booking, index) => ({
-          id: index + 1,
+          id: booking.id, // Use booking.id to sort by booking ID
           bookingId: booking.id,
           eventName: booking.eventName,
           qrCodeText: booking.qrCodeText,
@@ -64,8 +68,12 @@ function Account_Profile_Bookings() {
           status: booking.status,
         }));
 
-        // Sort the updatedRows array so that 'Active' statuses appear before 'Checked'
-        updatedRows.sort((a, b) => (a.status === 'Active' ? -1 : a.status.localeCompare(b.status)));
+        // Sort the updatedRows array so that 'Cancelled' statuses appear after 'Active', 'Checked', and 'Attended' statuses
+        updatedRows.sort((a, b) => {
+          if (a.status === 'Cancelled' && b.status !== 'Cancelled') return 1;
+          if (a.status !== 'Cancelled' && b.status === 'Cancelled') return -1;
+          return b.id - a.id; // Sort by booking ID in descending order
+        });
 
         setBookingRows(updatedRows);
 
@@ -134,8 +142,8 @@ function Account_Profile_Bookings() {
           <div className="table-container" style={{ marginBottom: '80px' }}>
             {/* Bookings */}
             <h3 className='header'>Your Event bookings</h3>
-            <h4 style={{textAlign:'center'}}>Your Active bookings for events and history of past details for bookings </h4>
-            <hr></hr>
+            <h4 style={{ textAlign: 'center' }}>Your Active bookings for events and history of past details for bookings</h4>
+            <hr />
             <TableContainer component={Paper}>
               <Table sx={{ minWidth: 700, marginBottom: '30px', height: 'auto' }} aria-label="customized table">
                 <TableHead>
@@ -150,10 +158,10 @@ function Account_Profile_Bookings() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {bookingRows.map((row) => (
-                    <StyledTableRow key={row.id}>
+                  {bookingRows.map((row, index) => (
+                    <StyledTableRow key={row.id} status={row.status}>
                       <StyledTableCell component="th" scope="row">
-                        {row.id}
+                        {index + 1} {/* Use index + 1 for the row number */}
                       </StyledTableCell>
                       <StyledTableCell align="center">{row.bookingId}</StyledTableCell>
                       <StyledTableCell align="center">{row.eventName}</StyledTableCell>
@@ -164,17 +172,27 @@ function Account_Profile_Bookings() {
                             <img src={row.qrCodeUrl} alt="QR Code" style={{ width: '100px', height: '100px' }} />
                           </div>
                         )}
-                        {row.status === 'checked' && (
+                        {row.status === 'Checked' && (
                           <div style={{ opacity: 0.5 }}>
                             <img src={row.qrCodeUrl} alt="QR Code" style={{ width: '100px', height: '100px', backgroundColor: 'transparent' }} />
                           </div>
                         )}
                       </StyledTableCell>
                       <StyledTableCell align="center">{row.qrCodeText}</StyledTableCell>
-                      <StyledTableCell align="center">{row.status}</StyledTableCell>
+                      <StyledTableCell align="center">
+                        {/* Apply styles based on status */}
+                        <span
+                          style={{
+                            fontWeight: 'bold',
+                            color: row.status === 'Cancelled' ? 'white' : row.status === 'Attended' ? 'blue' : row.status === 'Active' ? 'green' : 'inherit',
+                          }}
+                        >
+                          {row.status}
+                        </span>
+                      </StyledTableCell>
                       <StyledTableCell align="center">
                         {/* Conditional rendering for Download button */}
-                        {row.status !== 'checked' && (
+                        {row.status !== 'Checked' && row.status !== 'Cancelled' && row.status !== 'Attended' && (
                           <Button variant="contained" onClick={() => handleDownloadQRCode(row.qrCodeUrl)}>
                             Download
                           </Button>

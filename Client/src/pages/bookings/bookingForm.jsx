@@ -45,14 +45,12 @@ const BookingForm = () => {
   }, [account, setAccount]);
 
   useEffect(() => {
-    const generateDateOptions = () => {
+   const generateDateOptions = () => {
       if (event.startDate && event.endDate) {
         const startDate = new Date(event.startDate);
         const endDate = new Date(event.endDate);
 
-        if (startDate.getTime() === endDate.getTime()) {
-          setBookingDate(startDate.toISOString().split('T')[0]);
-        } else {
+        if (startDate.getTime() !== endDate.getTime()) {
           const dates = [];
           let currentDate = new Date(startDate);
           while (currentDate <= endDate) {
@@ -77,7 +75,7 @@ const BookingForm = () => {
     updatePaxDetails();
   }, [numberOfPax]);
 
-  const effectiveBookingDate = bookingDate || (event.startDate ? new Date(event.startDate).toISOString().split('T')[0] : '');
+  const effectiveBookingDate = bookingDate || (event.startDate ? new Date(event.startDate).toISOString().split('T')[0] : '');     
 
   const generatePaxQrCodeRecords = (paxDetails) => {
     return paxDetails.map(({ name, email }) => {
@@ -105,6 +103,8 @@ const BookingForm = () => {
 
     if (bookingSuccessful) return;
 
+const currentDate = new Date().toISOString().split('T')[0];
+
     try {
       const paxQrCodeRecords = generatePaxQrCodeRecords(paxDetails);
       setPaxQrCodeRecords(paxQrCodeRecords);
@@ -114,7 +114,7 @@ const BookingForm = () => {
         eventName: event.eventName,
         leafPoints: event.leafPoints,
         amount: event.amount,
-        bookingDate: effectiveBookingDate,
+        bookingDate: currentDate,
         numberOfPax: Number(numberOfPax),
         Name: account.name,
         email: account.email,
@@ -143,11 +143,12 @@ const BookingForm = () => {
   state: {
     Name: account.name,
     eventName: event.eventName,
+    eventdate: event.startDate,
     amount: event.amount,
     email: account.email,
     location: event.location,
         time: event.startTime,
- bookingDate: effectiveBookingDate,
+ bookingDate: currentDate,
     phoneNumber: account.phone_no,
     numberOfPax: numberOfPax,
     bookingId: id,
@@ -188,7 +189,8 @@ const BookingForm = () => {
                 <p><strong>Event:</strong> ${formData.eventName}</p>
                 <p><strong>Email:</strong> ${account.email}</p>
                 <p><strong>Phone Number:</strong> ${account.phone_no}</p>
-                <p><strong> Event Date:</strong> ${new Date(formData.bookingDate).toLocaleDateString('en-GB')}</p>
+                <p><strong>Event Date:</strong> ${event.startDate}</p>
+                <p><strong>Booked Date:</strong> ${new Date(formData.bookingDate).toLocaleDateString('en-GB')}</p>
                 <p><strong>Event Time:</strong> ${event.time}</p>
                 <p><strong>Amount:</strong> ${event.amount}</p>
                 <p><strong>Location:</strong> ${event.location}</p>
@@ -255,30 +257,29 @@ const BookingForm = () => {
       <Typography variant="h6" gutterBottom sx={{ textAlign: 'left', color: 'black' }}>Amount:  <strong>${event.amount}</strong></Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>
-          <FormLabel style={{color:'black'}}>Booking Date</FormLabel>
-          {dateOptions.length > 0 ? (
-            <Select
-              value={bookingDate}
-              onChange={(e) => setBookingDate(e.target.value)}
-              fullWidth
-              sx={{ bgcolor: '#fff', borderRadius: 1, boxShadow: 1}}
-            >
-              {dateOptions.map((date, index) => (
-                <MenuItem key={index} value={date.toISOString().split('T')[0]}>
-                  {date.toLocaleDateString('en-GB')}
-                </MenuItem>
-              ))}
-            </Select>
+             <FormLabel style={{color:'black'}}>Event Date</FormLabel>
+        {dateOptions.length > 0 ? (
+          <Select
+            value={effectiveBookingDate}
+            onChange={(e) => setBookingDate(e.target.value)}
+            fullWidth
+            margin="normal"
+          >
+            {dateOptions.map((date, index) => (
+              <MenuItem key={index} value={date.toISOString().split('T')[0]}>
+                {date.toISOString().split('T')[0]}
+              </MenuItem>
+            ))}
+          </Select>
           ) : (
-            <TextField
-              type="date"
-              value={bookingDate}
-              onChange={(e) => setBookingDate(e.target.value)}
-              fullWidth
-              sx={{ bgcolor: '#fff', borderRadius: 1, boxShadow: 1 }}
-              disabled={bookingSuccessful}
-            />
-          )}
+           <TextField
+            value={new Date(event.startDate).toISOString().split('T')[0]}
+            fullWidth
+            InputProps={{
+              readOnly: true
+            }}
+          />
+        )}
         </Grid>
         <Grid item xs={12} sm={6}>
           <FormLabel style={{color:'black'}}>Additional Guests:</FormLabel>

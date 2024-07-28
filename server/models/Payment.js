@@ -80,7 +80,7 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 'SGD'
     },
     status: {
-      type: DataTypes.ENUM('Paid', 'Unpaid'),
+      type: DataTypes.ENUM('Paid', 'Refunded'),
       allowNull: false,
       defaultValue: 'Paid'
     },
@@ -90,6 +90,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     eventName: {
       type: DataTypes.STRING,
+      allowNull: true
+    },
+ eventdate: {
+      type: DataTypes.DATE,
       allowNull: true
     },
     qrCodeUrl: {

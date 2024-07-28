@@ -22,7 +22,6 @@ router.post('/refundcreate', async (req, res) => {
   }
 });
 
-// Approve a refund request
 router.post('/refund/approve/:refundId', async (req, res) => {
   const { refundId } = req.params;
 
@@ -36,16 +35,29 @@ router.post('/refund/approve/:refundId', async (req, res) => {
       return res.status(404).json({ message: 'Refund not found' });
     }
 
-    // Update the status to 'Approved'
+  
     refund.status = 'Approved';
     await refund.save();
 
-    res.json({ message: 'Refund approved successfully', refund });
+
+    const payment = await db.Payment.findByPk(refund.paymentId);
+
+    if (!payment) {
+      return res.status(404).json({ message: 'Payment not found' });
+    }
+
+
+    payment.status = 'Refunded';
+    await payment.save();
+
+    res.json({ success: true, message: 'Refund approved successfully and payment status updated', refund, payment });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to approve refund request' });
   }
 });
+
+
 
 router.get('/', async (req, res) => {
   try {

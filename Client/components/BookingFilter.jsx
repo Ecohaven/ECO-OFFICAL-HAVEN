@@ -1,68 +1,76 @@
 import React, { useState } from "react";
 import { Button, Grid, TextField, MenuItem, InputLabel, FormControl, Select, Typography, CircularProgress } from '@mui/material';
 
-const FilterDropdown = ({ handleFilter, handleReset, dataAvailable }) => {
-    const [date, setDate] = useState('');
+const FilterDropdown = ({ handleFilter, handleReset }) => {
     const [status, setStatus] = useState('');
     const [numberOfPax, setNumberOfPax] = useState('');
-    const [eventName, setEventName] = useState(''); // Added state for event name
+    const [eventName, setEventName] = useState('');
     const [loading, setLoading] = useState(false);
     const [filtersApplied, setFiltersApplied] = useState(false);
-    const [dataLoaded, setDataLoaded] = useState(true); // To track if data is loaded
+    const [selectFilterMessage, setSelectFilterMessage] = useState(false);
+    const [noDataMessages, setNoDataMessages] = useState([]);
 
     const applyFilters = async () => {
+        if (!status && !numberOfPax && !eventName) {
+            setSelectFilterMessage(true);
+            return;
+        }
+
         setLoading(true);
         setFiltersApplied(true);
-        setDataLoaded(false); // Set to false while data is being fetched
+        setSelectFilterMessage(false);
+        setNoDataMessages([]);
+
         try {
             const params = {
-                date: date || '',
                 status: status || '',
                 numberOfPax: numberOfPax || '',
-                eventName: eventName || '' // Added eventName to params
+                eventName: eventName || ''
             };
             const result = await handleFilter(params);
-            // Assume handleFilter returns data or some status indicating availability
-            setDataLoaded(result.dataAvailable); // Set based on actual result
+
+            const noDataMessages = [];
+
+            if (status && !result.some(item => item.status === status)) {
+                noDataMessages.push("No data available for the selected status.");
+            }
+            if (numberOfPax && !result.some(item => item.numberOfPax === numberOfPax)) {
+                noDataMessages.push("No data available for the selected number of pax.");
+            }
+            if (eventName && !result.some(item => item.eventName === eventName)) {
+                noDataMessages.push("No data available for the selected event name.");
+            }
+
+            setNoDataMessages(noDataMessages);
+
+            const isDataAvailable = result.some(item =>
+                (!status || item.status === status) &&
+                (!numberOfPax || item.numberOfPax === numberOfPax) &&
+                (!eventName || item.eventName === eventName)
+            );
+
+            setDataLoaded(isDataAvailable);
         } catch (error) {
             console.error('Error filtering bookings:', error);
+            setDataLoaded(false);
         } finally {
             setLoading(false);
         }
     };
 
     const resetFilters = () => {
-        setDate('');
         setStatus('');
         setNumberOfPax('');
-        setEventName(''); // Reset eventName
+        setEventName('');
         handleReset();
         setFiltersApplied(false);
-        setDataLoaded(true); // Reset data loaded state
+        setSelectFilterMessage(false);
+        setNoDataMessages([]);
     };
 
     return (
         <div style={{ padding: '16px', borderRadius: '8px', marginTop: '20px' }}>
             <Grid container spacing={2} alignItems="center">
-                <Grid item xs={12} sm={4} md={3}>
-                    <TextField
-                        type="date"
-                        label="Date"
-                        value={date}
-                        onChange={(e) => setDate(e.target.value)}
-                        fullWidth
-                        sx={{ maxWidth: 250 }}
-                        InputLabelProps={{ shrink: true }}
-                        variant="outlined"
-                        InputProps={{
-                            sx: {
-                                border: '1px solid #ccc',
-                                padding: '0',
-                                height: '56px',
-                            }
-                        }}
-                    />
-                </Grid>
                 <Grid item xs={12} sm={4} md={3}>
                     <FormControl fullWidth sx={{ maxWidth: 250 }}>
                         <InputLabel>Status</InputLabel>
@@ -161,10 +169,19 @@ const FilterDropdown = ({ handleFilter, handleReset, dataAvailable }) => {
                     </Button>
                 </Grid>
             </Grid>
-            {filtersApplied && !dataLoaded && (
-                <Typography variant="body2" color="textSecondary" sx={{ marginTop: '16px' }}>
-                    No data is available for the selected filters.
+            {selectFilterMessage && (
+                <Typography variant="body2" color="red" sx={{ marginTop: '16px' }}>
+                    Please select at least one filter to apply.
                 </Typography>
+            )}
+            {filtersApplied && noDataMessages.length > 0 && (
+                <div style={{ marginTop: '16px' }}>
+                    {noDataMessages.map((message, index) => (
+                        <Typography key={index} variant="body2" color="textSecondary">
+                            {message}
+                        </Typography>
+                    ))}
+                </div>
             )}
         </div>
     );

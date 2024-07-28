@@ -61,8 +61,26 @@ router.get("/totalBookings", async (req, res) => {
 // Get total revenue
 router.get("/totalRevenue", async (req, res) => {
     try {
-        const totalRevenue = await Payment.sum('amount');
-        res.json({ totalRevenue });
+        // Calculate the total revenue by summing the amounts of non-refunded payments
+        const totalRevenue = await Payment.sum('amount', {
+            where: {
+                status: {
+                    [Op.ne]: 'refunded'
+                }
+            }
+        });
+
+        // Calculate the total refunded amount
+        const totalRefunded = await Payment.sum('amount', {
+            where: {
+                status: 'refunded'
+            }
+        });
+
+        // Subtract the total refunded amount from the total revenue
+        const netRevenue = totalRevenue - totalRefunded;
+
+        res.json({ totalRevenue: netRevenue });
     } catch (error) {
         console.error("Error fetching total revenue", error);
         res.status(500).json({ error: "Internal server error" });
