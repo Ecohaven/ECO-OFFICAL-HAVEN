@@ -236,7 +236,9 @@ const handleScan = async (data) => {
         <div className="checkin-page" style={{ padding: '20px' }}>
             <div className="checkin-container">
                 <div className="checkins-list">
-                  <h2 className="h2" style={{textAlign:'left'}}>Check In (Attendance)</h2>
+                  <Typography variant="h4" style={{textAlign:'left',fontWeight:'bold'}}gutterBottom>
+                Check In (Attendance)
+            </Typography>
                     <div className="filter-controls" style={{ marginBottom: '20px' }}>
                         <FormControl variant="outlined" style={{ marginRight: '10px', width: '200px' }}>
                             <InputLabel id="eventNameFilter-label">Event Name</InputLabel>

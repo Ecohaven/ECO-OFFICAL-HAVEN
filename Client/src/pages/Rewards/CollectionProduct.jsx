@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import axios from 'axios';
 import TextField from '@mui/material/TextField';
-import { Alert, AlertTitle, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import { Alert, AlertTitle, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select,Typography } from '@mui/material';
 import Sidebar from '../../../components/sidebar';
 import EditIcon from '@mui/icons-material/Edit';
 import '../../style/rewards/collectionproduct.css'; // Importing CSS file for styling
@@ -225,7 +225,9 @@ const CollectionProduct = () => {
     <div className="rewardshopback">
       <Sidebar />
       <div className='header'>
-        <h2>Collection Items</h2>
+      <Typography variant="h4" style={{textAlign:'left',fontWeight:'bold',marginTop:'25px'}}gutterBottom>
+                Collection Items
+            </Typography>
         <TextField
           variant="outlined"
           className="search"

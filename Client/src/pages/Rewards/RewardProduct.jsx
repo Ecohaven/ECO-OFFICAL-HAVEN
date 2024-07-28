@@ -9,7 +9,7 @@ import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
-import { Alert, AlertTitle } from '@mui/material';
+import { Alert, AlertTitle,Typography } from '@mui/material';
 
 import '../../style/rewards/rewardproduct.css';
 import Sidebar from '../../../components/sidebar';
@@ -432,7 +432,9 @@ const RewardTable = () => {
       <Sidebar />
 
       <div className='header'>
-        <h2>Redemption Shop</h2>
+       <Typography variant="h4" style={{textAlign:'left',fontWeight:'bold',marginTop:'30px'}}gutterBottom>
+                Reward Product
+            </Typography>
 
         {/* Search bar */}
         <TextField

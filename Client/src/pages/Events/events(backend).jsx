@@ -8,10 +8,11 @@ import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
-import { Alert, Snackbar, MenuItem } from '@mui/material';
+import { Alert, Snackbar, MenuItem,Typography } from '@mui/material';
 import Sidebar from '../../../components/sidebar';
 import DeleteConfirmationModal from '../../../components/DeleteModal';
 import '../../style/eventtable.css';
+import EventCountList from '../../../components/EventCount';
 
 const EventDataTable = () => {
     const navigate = useNavigate();
@@ -344,7 +345,10 @@ const EventDataTable = () => {
         <div className="event-list-container">
             <Sidebar />
             <div className="event-table">
-                <h2 className="event-heading">Event List</h2>
+               <Typography variant="h4" style={{textAlign:'left',fontWeight:'bold',marginTop:'30px'}}gutterBottom>
+                Event List
+            </Typography>
+<EventCountList />
                 <div className="event-filter">
                     <TextField
                         label="Event Name"
@@ -364,6 +368,7 @@ const EventDataTable = () => {
                         Add Event
                     </Button>
                 </div>
+
                 <div className="event-data-grid-container">
                     <DataGrid rows={events} columns={columns} pageSize={10} />
                 </div>

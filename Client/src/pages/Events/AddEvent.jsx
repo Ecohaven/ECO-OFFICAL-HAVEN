@@ -10,6 +10,8 @@ import {
   Card,
   CardContent,
   FormHelperText,
+  Breadcrumbs,
+  Link
 } from '@mui/material';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -113,6 +115,12 @@ const AddEventForm = () => {
   return (
     <Box sx={containerStyle}>
       <img src="../src/assets/images/backendBanner.jpg" alt="Event Banner" style={bannerStyle} />
+<Breadcrumbs aria-label="breadcrumb" sx={{ marginBottom: '20px' }}>
+        <Link underline="hover" color="inherit" href="/staff/eventbackend">
+          EventBackend
+        </Link>
+<Typography color="textPrimary" fontWeight={'bold'}>Add Event</Typography>
+      </Breadcrumbs>
       <Formik
         initialValues={{
           eventName: '',

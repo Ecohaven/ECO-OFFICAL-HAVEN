@@ -142,7 +142,9 @@ const Backend = () => {
     <Box sx={{ display: 'flex' }}>
       <Sidebar />
       <Box sx={{ flex: 1, padding: 4 }}>
-        <h2 style={{ marginTop: '10px' }}>Customer Payment Records</h2>
+       <Typography variant="h4" style={{textAlign:'left',fontWeight:'bold'}}gutterBottom>
+                Customer Payment Records
+            </Typography>
         {status && (
           <Typography color={status.error ? 'error' : 'success'}>
             {status.message}

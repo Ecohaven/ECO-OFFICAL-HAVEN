@@ -179,7 +179,9 @@ const BookingList = () => {
 
     return (
         <div className="booking-list-container">
-            <h2 className="h2">Bookings</h2>
+           <Typography variant="h4" style={{textAlign:'left',fontWeight:'bold'}}gutterBottom>
+                Bookings
+            </Typography>
             <Sidebar />
             <Grid container spacing={2} alignItems="center">
                 <Grid item xs={12} sm={6} md={4}>

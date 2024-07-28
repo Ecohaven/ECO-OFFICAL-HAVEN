@@ -162,12 +162,12 @@ const Sidebar = () => {
             <ListItemText primary="Payment" />
           </ListItem>
 
-          <ListItem button component={Link} to="/staff/refund" selected={isActive('/staff/refund')}>
+          {/* <ListItem button component={Link} to="/staff/refund" selected={isActive('/staff/refund')}>
             <ListItemIcon style={{ color: 'white' }}>
               <RefundIcon />
             </ListItemIcon>
             <ListItemText primary="Refund" />
-          </ListItem>
+          </ListItem> */}
 
           <ListItem button component={Link} to="/staff/mailing-list" selected={isActive('/staff/mailing-list')} style={isActive('/staff/mailing-list') ? activeStyle : {}}>
             <ListItemIcon style={{ color: 'white' }}>

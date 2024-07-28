@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require('../models');
 const multer = require('multer');
 const path = require('path');
-const { events, Booking } = require('../models'); // Import your models
+const { events, Booking,sequelize } = require('../models'); // Import your models
 
 
 // Configure multer for file uploads
@@ -234,7 +234,28 @@ router.get('/events/:id', async (req, res) => {
     }
 });
 
+// Route to count bookings by event name
+router.get('/countByEvent', async (req, res) => {
+    try {
+        const bookingCounts = await Booking.findAll({
+            attributes: [
+                'eventName',
+                [sequelize.fn('COUNT', sequelize.col('eventName')), 'count']
+            ],
+            group: ['eventName']
+        });
 
+        const formattedCounts = bookingCounts.map(booking => ({
+            eventName: booking.eventName,
+            count: booking.get('count')
+        }));
+
+        res.json({ counts: formattedCounts });
+    } catch (error) {
+        console.error('Error counting bookings by event:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
 
 // DELETE event by id
 router.delete('/events/:eventId', async (req, res) => {
