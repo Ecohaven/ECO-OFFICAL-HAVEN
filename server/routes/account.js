@@ -48,6 +48,9 @@ router.post("/register", async (req, res) => {
         // Process valid data
         // Hash password
         data.password = await bcrypt.hash(data.password, 10);
+        // Update last login time
+        data.last_login = new Date();
+
         // Create Account
         let result = await Account.create(data);
         let userInfo = {
@@ -59,7 +62,8 @@ router.post("/register", async (req, res) => {
             profile_pic: result.profile_pic,
             status: "Active",
             role: "User",
-            leaf_points: 10
+            leaf_points: 10,
+            last_login: result.last_login
         };
         let accessToken = sign(userInfo, process.env.APP_SECRET,
             { expiresIn: process.env.TOKEN_EXPIRES_IN });
@@ -105,6 +109,10 @@ router.post("/login", async (req, res) => {
             return;
         }
 
+        // Update last login time
+        account.last_login = new Date();
+        await account.save();
+
         // Return user info
         let userInfo = {
             id: account.id,
@@ -115,7 +123,8 @@ router.post("/login", async (req, res) => {
             profile_pic: account.profile_pic,
             status: account.status,
             role: account.role,
-            leaf_points: account.leaf_points
+            leaf_points: account.leaf_points,
+            last_login: account.last_login
         };
         let accessToken = sign(userInfo, process.env.APP_SECRET, // Create token
             { expiresIn: process.env.TOKEN_EXPIRES_IN });

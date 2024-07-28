@@ -38,6 +38,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.ENUM('Active', 'Inactive'),
             allowNull: false,
             defaultValue: 'Active'
+        },
+        last_login: {
+            type: DataTypes.DATE,
+            allowNull: true
         }
     },
         {

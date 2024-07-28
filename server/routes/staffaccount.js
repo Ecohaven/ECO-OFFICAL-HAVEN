@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const { StaffAccount } = require('../models');
+const { Account } = require('../models');
 const yup = require("yup");
 const { sign } = require('jsonwebtoken');
 require('dotenv').config();
@@ -21,16 +22,10 @@ router.post('/create_new_account', async (req, res) => {
         email: yup.string().trim().email("Invalid email").required(),
         birthdate: yup.date("Invalid Birthdate").required("birthdate is a required field")
             .max(new Date(), "Birthdate cannot be in the future") // Check if birthdate is in the future
-            .test('age', 'Staff must be at least 18 years old', function (value) { // Check if age is at least 18
-                const today = new Date();
-                const birthDate = new Date(value);
-                const age = today.getFullYear() - birthDate.getFullYear();
-                const monthDifference = today.getMonth() - birthDate.getMonth();
-                const dayDifference = today.getDate() - birthDate.getDate();
-                if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
-                    return age - 1 >= 18;
-                }
-                return age >= 18;
+            .test('age', 'Age must be between 18 and 100', (value) => { // Check if age is between 18 and 100
+                let birthdate = new Date(value);
+                let age = new Date().getFullYear() - birthdate.getFullYear();
+                return age >= 18 && age < 100;
             }),
         role: yup.string().trim().required()
             .oneOf(allowedRoles, "Role must be one of the allowed values"),
@@ -44,7 +39,12 @@ router.post('/create_new_account', async (req, res) => {
         // Check if email exists in the database
         let staffAccount = await StaffAccount.findOne({ where: { email: data.email } });
         if (staffAccount) {
-            return res.status(400).json({ message: "Email already exists" });
+            return res.status(400).json({ message: "Email already exists." });
+        }
+        // Check if phone number exists in the database
+        let staffAccountWithPhoneNo = await StaffAccount.findOne({ where: { phone_no: data.phone_no } });
+        if (staffAccountWithPhoneNo) {
+            return res.status(400).json({ message: "Phone number already exists." });
         }
         // Process valid data
         // Hash password
@@ -58,6 +58,7 @@ router.post('/create_new_account', async (req, res) => {
             email: result.email,
             birthdate: result.birthdate,
             role: result.role,
+            last_login: null,
             password: result.password,
             status: 'Active'
         };
@@ -94,6 +95,10 @@ router.post('/login', async (req, res) => {
             return res.status(404).json({ message: errorMsg });
         }
 
+        // Update last login time
+        staffAccount.last_login = new Date();
+        await staffAccount.save();
+
         // Return user info
         let staffInfo = {
             id: staffAccount.id,
@@ -102,10 +107,11 @@ router.post('/login', async (req, res) => {
             phone_no: staffAccount.phone_no,
             birthdate: staffAccount.birthdate,
             role: staffAccount.role,
+            last_login: staffAccount.last_login,
             status: staffAccount.status
         };
         // Create token
-        let accessToken = sign(staffInfo, process.env.APP_SECRET, { expiresIn: '1h' });
+        let accessToken = sign(staffInfo, process.env.APP_SECRET, { expiresIn: '12h' });
         // Send response with token and user info
         res.json({ 
             accessToken: accessToken,
@@ -119,7 +125,7 @@ router.post('/login', async (req, res) => {
     }
 });
 
-router.get ('/auth', validateToken, checkRole(['Admin']), async (req, res) => { // Validate token
+router.get('/auth', validateToken, checkRole(['Admin']), async (req, res) => { // Validate token
     try {
         let staffInfo = {
             id: req.user.id,
@@ -145,15 +151,6 @@ router.post('/logout', validateToken, checkRole(['Admin']), async (req, res) => 
     }
 });
 
-router.get('/get_accounts', validateToken, checkRole(['Admin']),  async (req, res) => {
-    try {
-        let staffAccounts = await StaffAccount.findAll();
-        res.json({ accounts: staffAccounts });
-    } catch (err) {
-        res.status(400).json({ message: "Error fetching accounts" });
-    }
-});
-
 router.get('/get_account', validateToken, checkRole(['Admin']),  async (req, res) => {
     try {
         // Access account ID from the decoded token data
@@ -170,72 +167,176 @@ router.get('/get_account', validateToken, checkRole(['Admin']),  async (req, res
     }
 });
 
-router.put('/update_account/:id', validateToken, checkRole(['Admin']),  async (req, res) => {
+// get all staff accounts (accessible by staff with Admin role)
+router.get('/get_staff_accounts', validateToken, checkRole(['Admin']),  async (req, res) => {
+    try {
+        let staffAccounts = await StaffAccount.findAll();
+        res.json({ accounts: staffAccounts });
+    } catch (err) {
+        res.status(400).json({ message: "Error fetching accounts" });
+    }
+});
+
+// get staff account (accessible by staff with Admin role)
+router.get('/get_staff_account/:id', validateToken, checkRole(['Admin']), async (req, res) => {
+    try {
+        let staffAccount = await StaffAccount.findByPk(req.params.id);
+        if (!staffAccount) {
+            return res.status(404).json({ message: "Account not found" });
+        }
+        res.json({ account: staffAccount });
+    } catch (err) {
+        res.status(400).json({ message: "Error fetching account" });
+    }
+});
+
+// update staff account (accessible by staff with Admin role)
+router.put('/update_staff_account/:id', validateToken, checkRole(['Admin']),  async (req, res) => {
     let data = req.body;
     const allowedRoles = ['Admin']; // define allowed roles
 
     let validationSchema = yup.object({
         name: yup.string().trim().min(3).max(50).required()
-            .matches(/^[a-zA-Z ]+$/,
-            "name only allows letters and spaces"),
+            .matches(/^[a-zA-Z ]+$/, "name only allows letters and spaces"),
         phone_no: yup.string().trim().min(8, "phone number must be 8 digits long").max(8, "phone number must be 8 digits long").required("phone number is a required field")
             .matches(/^\d+$/, "phone number must only contain numbers"), // only allow numbers
-        email: yup.string().trim().email("Invalid email").required(),
-        birthdate: yup.date("Invalid Birthdate").required("birthdate is a required field")
+        email: yup.string().trim().lowercase().email().max(50).required(),
+        birthdate: yup.date("Invalid Birthdate").required()
             .max(new Date(), "Birthdate cannot be in the future") // Check if birthdate is in the future
-            .test('age', 'Staff must be at least 18 years old', function (value) { // Check if age is at least 18
-                const today = new Date();
-                const birthDate = new Date(value);
-                const age = today.getFullYear() - birthDate.getFullYear();
-                const monthDifference = today.getMonth() - birthDate.getMonth();
-                const dayDifference = today.getDate() - birthDate.getDate();
-                if (monthDifference < 0 || (monthDifference === 0 && dayDifference < 0)) {
-                    return age - 1 >= 18;
-                }
-                return age >= 18;
+            .test('age', 'Age must be between 18 and 100', (value) => { // Check if age is between 18 and 100
+                let birthdate = new Date(value);
+                let age = new Date().getFullYear() - birthdate.getFullYear();
+                return age >= 18 && age < 100;
             }),
         role: yup.string().trim().required()
-            .oneOf(allowedRoles, "Role must be one of the allowed values"),
-        password: yup.string().trim().min(8).max(50).required()
-            .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$/,
-            "password must have a mix of lower and uppercase letters and at least 1 number")
+            .oneOf(allowedRoles, "Role must be one of the allowed values")
     });
     try {
-        data = await validationSchema.validate(data, { abortEarly: false });
+        req.body = await validationSchema.validate(req.body, { abortEarly: false }); // Validate request body
+
+        // Process valid data
+        // Check if account exists
 
         let staffAccount = await StaffAccount.findByPk(req.params.id);
         if (!staffAccount) {
             return res.status(404).json({ message: "Account not found" });
         }
-        // Check if email exists in the database
-        let existingStaffAccount = await StaffAccount.findOne({ where: { email: data.email } });
-        if (existingStaffAccount && existingStaffAccount.id !== staffAccount.id) {
-            return res.status(400).json({ message: "Email already exists" });
+        // check if email exists
+        let staffAccountWithEmail = await StaffAccount.findOne({ where: { email: req.body.email } });
+        if (staffAccountWithEmail && staffAccountWithEmail.id !== staffAccount.id) {
+            return res.status(400).json({ message: "Email already exists." });
         }
-        // Process valid data
-        // Hash password
-        data.password = await bcrypt.hash(data.password, 10);
+        // check if phone number exists
+        let staffAccountWithPhoneNo = await StaffAccount.findOne({ where: { phone_no: req.body.phone_no } });
+        if (staffAccountWithPhoneNo && staffAccountWithPhoneNo.id !== staffAccount.id) {
+            return res.status(400).json({ message: "Phone number already exists." });
+        }
+
         // Update Account
-        let result = await staffAccount.update(data);
-        let updatedStaffAccount = {
-            id: result.id,
-            name: result.name,
-            phone_no: result.phone_no,
-            email: result.email,
-            birthdate: result.birthdate,
-            role: result.role,
-            password: result.password,
-            status: result.status
-        };
-        res.json({
-            account: updatedStaffAccount,
-            message: `Account ${result.email} was updated successfully.`
-        });
+        let data = req.body;
+        await StaffAccount.update(data, { where: { id: req.params.id } });
+        res.json({ message: `Account ${staffAccount.id} was updated successfully` });
     }
     catch (err) {
+        console.error(err); // Log the error to the server console
         res.status(400).json({ errors: err.errors });
     }
 });
 
+// delete staff account (accessible by staff with Admin role)
+router.delete('/delete_staff_account/:id', validateToken, checkRole(['Admin']), async (req, res) => {
+    try {
+        let staffAccount = await StaffAccount.findByPk(req.params.id);
+        if (!staffAccount) {
+            return res.status(404).json({ message: "Account not found" });
+        }
+        await staffAccount.destroy();
+        res.json({ message: `Account ${staffAccount.id} was deleted successfully` });
+    } catch (err) {
+        res.status(400).json({ message: "Error deleting account" });
+    }
+});
+
+
+// get all user accounts (accessible by staff with Admin role)
+router.get('/get_user_accounts', validateToken, checkRole(['Admin']), async (req, res) => {
+    try {
+        let accounts = await Account.findAll();
+        res.json({ accounts });
+    } catch (err) {
+        res.status(400).json({ message: "Error fetching accounts" });
+    }
+});
+
+// get user account (accessible by staff with Admin role)
+router.get('/get_user_account/:id', validateToken, checkRole(['Admin']), async (req, res) => {
+    try {
+        let account = await Account.findByPk(req.params.id);
+        if (!account) {
+            return res.status(404).json({ message: "Account not found" });
+        }
+        res.json({ account });
+    } catch (err) {
+        res.status(400).json({ message: "Error fetching account" });
+    }
+});
+
+// update user account (accessible by staff with Admin role)
+router.put('/update_user_account/:id', validateToken, checkRole(['Admin']),  async (req, res) => {
+    let data = req.body;
+    const allowedRoles = ['Admin']; // define allowed roles
+
+    let validationSchema = yup.object({
+        name: yup.string().trim().min(3).max(50).required()
+            .matches(/^[a-zA-Z ]+$/, "name only allows letters and spaces"),
+        username: yup.string().trim().min(3).max(50).required()
+            .matches(/^[a-zA-Z0-9]+$/, "username only allows letters and numbers"),
+        phone_no: yup.string().trim().min(8, "phone number must be 8 digits long").max(8, "phone number must be 8 digits long").required("phone number is a required field")
+            .matches(/^\d+$/, "phone number must only contain numbers"), // only allow numbers
+        email: yup.string().trim().lowercase().email().max(50).required()
+    });
+    try {
+        req.body = await validationSchema.validate(req.body, { abortEarly: false }); // Validate request body
+        
+        // Process valid data
+        // Check if account exists
+        let account = await Account.findByPk(req.params.id);
+        if (!account) {
+            return res.status(404).json({ message: "Account not found" });
+        }
+        // check if email or username exists
+        let accountWithUsername = await Account.findOne({ where: { username: req.body.username } });
+        if (accountWithUsername && accountWithUsername.id !== account.id) {
+            return res.status(400).json({ message: "Username already exists." });
+        }
+        let accountWithEmail = await Account.findOne({ where: { email: req.body.email } });
+        if (accountWithEmail && accountWithEmail.id !== account.id) {
+            return res.status(400).json({ message: "Email already exists." });
+        }
+
+        // Update Account
+        let data = req.body;
+        await Account.update(data, { where: { id: req.params.id } });
+        res.json({ message: `Account ${account.id} was updated successfully` });
+    }
+    catch (err) {
+        console.error(err); // Log the error to the server console
+        res.status(400).json({ errors: err.errors });
+    }
+});
+
+// delete user account (accessible by staff with Admin role)
+router.delete('/delete_user_account/:id', validateToken, checkRole(['Admin']), async (req, res) => {
+    try {
+        let account = await Account.findByPk(req.params.id);
+        if (!account) {
+            return res.status(404).json({ message: "Account not found" });
+        }
+        await account.destroy();
+        res.json({ message: `Account ${account.id} was deleted successfully` });
+    } catch (err) {
+        res.status(400).json({ message: "Error deleting account" });
+    }
+});
 
 module.exports = router;

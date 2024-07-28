@@ -107,10 +107,10 @@ const Sidebar = () => {
           </ListItem>
           <Collapse in={openAccount} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              <ListItem button component={Link} to="/staff/users" selected={isActive('/staff/users')} style={isActive('/staff/users') ? activeStyle : {}}>
+              <ListItem button component={Link} to="/staff/usersaccounts" selected={isActive('/staff/usersaccounts')} style={isActive('/staff/usersaccounts') ? activeStyle : {}}>
                 <ListItemText primary="Users" />
               </ListItem>
-              <ListItem button component={Link} to="/staff/staff" selected={isActive('/staff/staff')} style={isActive('/staff/staff') ? activeStyle : {}}>
+              <ListItem button component={Link} to="/staff/staffaccounts" selected={isActive('/staff/staffaccounts')} style={isActive('/staff/staffaccounts') ? activeStyle : {}}>
                 <ListItemText primary="Staff" />
               </ListItem>
             </List>

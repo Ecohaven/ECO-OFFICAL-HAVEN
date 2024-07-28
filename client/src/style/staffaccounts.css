@@ -1,0 +1,36 @@
+/* Back to Staff page in AddStaff link */
+.staffaccountslink{
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+    text-align: left;
+    margin-bottom: 1rem;
+    display: block;
+    transition: all 0.3s;
+}
+.staffaccountslink:hover {
+  color: #19682c;
+  text-decoration: underline;
+}
+
+/* Staff Account Profile Page */
+/* .account-field {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+} */
+.account-field {
+    display: flex;
+    font-weight: normal;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+.account-field:last-child {
+    border-bottom: none;
+}
+.account-details {
+    font-weight: bold;
+}

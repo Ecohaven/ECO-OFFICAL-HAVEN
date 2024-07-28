@@ -20,6 +20,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(50),
             allowNull: false
         },
+        last_login: {
+            type: DataTypes.DATE,
+            allowNull: true
+        },
         password: {
             type: DataTypes.STRING(100), // hashed password
             allowNull: false

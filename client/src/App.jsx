@@ -19,7 +19,7 @@ import Register from './pages/Get_Started/Register';
 import Login from './pages/Get_Started/Login';
 import Account_Deleted from './pages/Get_Started/account_deleted';
 
-{/* Account_Profile  part */}
+{/* Account_Profile part */}
 import Account_Profile from './pages/Account_Profile/Account_Profile';
 import Account_Profile_Events from './pages/Account_Profile/Events';
 import Account_Profile_QR_Codes from './pages/Account_Profile/QR_Codes';
@@ -68,6 +68,9 @@ import StaffLogin from './pages/backend/StaffLogin';
 import Staffhome from './pages/backend/Staffhome';
 import Staff_Account_Profile from './pages/backend/Staff_Account_Profile';
 
+import UserAccounts from './pages/backend/accountpages/UserAccounts';
+import StaffAccounts from './pages/backend/accountpages/StaffAccounts';
+import AddStaff from './pages/backend/accountpages/AddStaff';
 
 
 function App() {
@@ -190,6 +193,10 @@ function App() {
 
       <Route path={"/staffhome"} element={<StaffAuthorization element={Staffhome} allowedRoles={['Admin']} />} />
       <Route path={"/account"} element={<StaffAuthorization element={Staff_Account_Profile} allowedRoles={['Admin']} />} />
+
+      <Route path={"/usersaccounts"} element={<StaffAuthorization element={UserAccounts} allowedRoles={['Admin']} />} />
+      <Route path={"/staffaccounts"} element={<StaffAuthorization element={StaffAccounts} allowedRoles={['Admin']} />} />
+      <Route path={"/addstaff"} element={<StaffAuthorization element={AddStaff} allowedRoles={['Admin']} />} />
 
       <Route path={"/dashboard"} element={<StaffAuthorization element={dashboard} allowedRoles={['Admin']} />} />
 
