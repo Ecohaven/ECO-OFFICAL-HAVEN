@@ -181,6 +181,7 @@ router.get("/account/:accountName/bookings", async (req, res) => {
 });
 
 
+
 // Route to fetch and notify account of upcoming events
 router.get("/account/:accountName/notify", async (req, res) => {
   const { accountName } = req.params;
@@ -226,6 +227,8 @@ router.get("/account/:accountName/notify", async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+
 
 
 // GET request to fetch booking details by bookingId
