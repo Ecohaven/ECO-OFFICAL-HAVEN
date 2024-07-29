@@ -99,7 +99,7 @@ function Rewards() {
         {account ? (
           <button className='redeempagebutton'><a href='/redemptionshop'>Redemption Shop</a></button>
         ) : (
-          <button className='redeempagebutton' disabled>Redemption Shop</button>
+          <button className='redeempagebutton' disabled style={{cursor: 'not-allowed'}}>Redemption Shop</button>
         )}
         <p>*Find more rewards at our redemption shop</p>
       </div>

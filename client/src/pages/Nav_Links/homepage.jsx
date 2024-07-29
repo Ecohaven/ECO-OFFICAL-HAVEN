@@ -119,9 +119,9 @@ const HomePage = () => {
         Here are the latest events & workshops happening in Singapore!
       </Typography>
 
-      <Grid container spacing={1} sx={{ p: 3, mb: 8 }}>
+      <Grid container spacing={5} sx={{ p: 3, mb: 8}}>
         {events.map((event, index) => (
-          <Grid item key={event.id} xs={6} sm={6} md={6} lg={4}>
+          <Grid item key={event.id} xs={6} sm={6} md={6} lg={6}>
             <Box
               sx={{
                 p: 2,

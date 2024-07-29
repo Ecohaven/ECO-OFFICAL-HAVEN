@@ -283,6 +283,10 @@ const RewardTable = () => {
     }
   };
 
+  const handleResetClick = () => {
+    setSearchQuery(''); // Clear search input
+    setFilteredRows(rows); // Reset filtered rows to original rows
+  };
 
   const filteredRows = rows.filter(row =>
     row.itemName.toLowerCase().includes(searchQuery) ||
@@ -459,6 +463,16 @@ const RewardTable = () => {
           }}
         />
 
+        {/* Reset button added here */}
+        <Button className='resetbutton'
+          variant="contained"
+          onClick={handleResetClick}
+          sx={{ marginLeft: '0.5rem',
+          }} 
+        >
+          Reset
+        </Button>
+
         {/* Filter dropdown */}
         <FormControl
           variant="outlined"
@@ -509,7 +523,7 @@ const RewardTable = () => {
       <div>
         {/* fields */}
         <DataGrid
-          rows={rows}
+          rows={filteredRows}
           columns={columns}
           getRowId={(row) => row.id} // ensure each row has a unique id
           pageSize={5}

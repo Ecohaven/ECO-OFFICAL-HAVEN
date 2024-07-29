@@ -51,6 +51,16 @@
   margin-left: 10px !important;
 }
 
+.resetbutton {
+  background-color: red !important;
+  margin-top: 10px !important;
+}
+
+/* filter */
+.filter-dropdown {
+  margin-left: 20px !important;
+}
+
 /* popup */
 .popup {
   color: #14772B !important;
@@ -88,5 +98,11 @@
 
   .addnewproductbutton {
     left: 155px;
+  }
+  
+  .filter-dropdown {
+    display: block !important;
+    margin-top: 20px !important;
+    margin-left: -240px !important;
   }
 }
