@@ -104,7 +104,7 @@ const sendEmail = async () => {
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
       <Paper elevation={3} sx={{ padding: 4 }}>
-        <Typography variant="h4" component="h1" align="center" gutterBottom sx={{ color: '#4CAF50' }}>
+        <Typography variant="h4" gutterBottom sx={{ color: 'green',textAlign:'center',fontWeight:'bold' }}>
           Payment Successful!
         </Typography>
         <Typography variant="body1" align="center" gutterBottom>
