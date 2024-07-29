@@ -88,7 +88,7 @@ const HomePage = () => {
         Here are the latest events & workshops happening in Singapore!
       </Typography>
 
-      <Grid container spacing={5} sx={{ p: 3, mb: 8 }}>
+      <Grid container spacing={8} sx={{ p: 3, mb: 8, justifyContent: 'center' }}>
         {events.map((event, index) => (
           <Grid item key={event.id} xs={12} sm={6} md={3}>
             <Box
@@ -151,51 +151,51 @@ const HomePage = () => {
       </Grid>
 
       {/* Latest Products */}
-<Typography variant="h4" align="center" gutterBottom sx={{ fontWeight: 'bold', color: 'green', mb: 2 }}>
-  Latest Products
-</Typography>
+      <Typography variant="h4" align="center" gutterBottom sx={{ fontWeight: 'bold', color: 'green', mb: 2 }}>
+        Latest Products
+      </Typography>
 
-<Typography variant="body1" align="center" gutterBottom sx={{ mb: 2 }}>
-  Check out our latest eco-friendly products!
-</Typography>
+      <Typography variant="body1" align="center" gutterBottom sx={{ mb: 2 }}>
+        Check out our latest eco-friendly products!
+      </Typography>
 
-<Grid container spacing={5} sx={{ p: 3, mb: 8, justifyContent: 'center' }}>
-  {latestProducts.map((product) => (
-    <Grid item key={product.id} xs={12} sm={6} md={3} sx={{ display: 'flex', justifyContent: 'center' }}>
-      <Box
-        sx={{
-          p: 2,
-          width: '100%',
-          height: 400, // Fixed height for each product
-          maxWidth: 300, // Set maxWidth to ensure consistent sizing
-          border: '1px solid #ccc',
-          borderRadius: 5,
-          cursor: 'pointer',
-          backgroundColor: '#fff',
-          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-          '&:hover': {
-            backgroundColor: '#f0f0f0',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
-            transform: 'translateY(-4px)',
-          },
-          transition: 'background-color 0.3s, transform 0.3s, box-shadow 0.3s',
-        }}
-      >
-        <img
-          src={`http://localhost:3001/eco/product-images/${product.itemimg}`}
-          alt={product.itemName}
-          style={{ width: '100%', height: '300px', objectFit: 'cover', borderRadius: 5, marginBottom: '16px' }}
-        />
-        <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 1 }}>
-          {product.itemName}
-        </Typography>
-        <Typography variant="body1" sx={{ fontWeight: 'bold'}}>
-          <b>{product.leaves}</b> 🍃
-        </Typography>
-      </Box>
-    </Grid>
-  ))}
-</Grid>
+      <Grid container spacing={5} sx={{ p: 3, mb: 8, justifyContent: 'center' }}>
+        {latestProducts.map((product) => (
+          <Grid item key={product.id} xs={12} sm={6} md={3} sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Box
+              sx={{
+                p: 2,
+                width: '100%',
+                height: 400, // Fixed height for each product
+                maxWidth: 300, // Set maxWidth to ensure consistent sizing
+                border: '1px solid #ccc',
+                borderRadius: 5,
+                cursor: 'pointer',
+                backgroundColor: '#fff',
+                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                '&:hover': {
+                  backgroundColor: '#f0f0f0',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+                  transform: 'translateY(-4px)',
+                },
+                transition: 'background-color 0.3s, transform 0.3s, box-shadow 0.3s',
+              }}
+            >
+              <img
+                src={`http://localhost:3001/eco/product-images/${product.itemimg}`}
+                alt={product.itemName}
+                style={{ width: '100%', height: '300px', objectFit: 'cover', borderRadius: 5, marginBottom: '16px' }}
+              />
+              <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 1 }}>
+                {product.itemName}
+              </Typography>
+              <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                <b>{product.leaves}</b> 🍃
+              </Typography>
+            </Box>
+          </Grid>
+        ))}
+      </Grid>
 
       {/* Our partners */}
       <Typography variant="h4" align="center" gutterBottom sx={{ fontWeight: 'bold', color: 'green', mb: 2 }}>

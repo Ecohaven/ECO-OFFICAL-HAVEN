@@ -8,6 +8,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import LiveHelpIcon from '@mui/icons-material/LiveHelp';
+import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
 import {
   AccountBox as AccountIcon,
   Event as EventIcon,
@@ -161,6 +162,13 @@ const Sidebar = () => {
               <PaymentIcon />
             </ListItemIcon>
             <ListItemText primary="Payment" />
+          </ListItem>
+
+          <ListItem button component={Link} to="/staff/volunteerbackend" selected={isActive('/staff/volunteerbackend')} style={isActive('/staff/volunteerbackend') ? activeStyle : {}}>
+            <ListItemIcon style={{ color: 'white' }}>
+              <VolunteerActivismIcon />
+            </ListItemIcon>
+            <ListItemText primary="Volunteer" />
           </ListItem>
 
           {/* <ListItem button component={Link} to="/staff/refund" selected={isActive('/staff/refund')}>
