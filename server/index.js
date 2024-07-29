@@ -43,7 +43,7 @@ app.use("/staff", staffAccountRoute);
 const fileRoute = require('./routes/file');
 app.use("/file", fileRoute);
 
-// item upload image route
+// item upload route
 const ecoRoute = require('./routes/eco');
 app.use("/eco", ecoRoute);
 
@@ -51,6 +51,10 @@ app.use("/eco", ecoRoute);
 const collectionRoute = require('./routes/collection');
 app.use("/collect", collectionRoute);
 
+
+//Volunteer form
+const volunteerRoute = require('./routes/volunteer');
+app.use("/volunteer", volunteerRoute);
 
 //events route
 const eventsRoute = require('./routes/event');

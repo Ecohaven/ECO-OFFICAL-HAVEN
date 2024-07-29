@@ -81,7 +81,7 @@ const EventDataTable = () => {
  <Box sx={{ p: 2 }}/>
   {/* banner */}
       <div className="headbanner">
-        <img src="../../src/assets/images/eventbanner.jpg" alt="Banner"  className='banner'/>
+        <img src="../../src/assets/images/eventbanner.jpg" alt="Banner" />
       </div>
       <Grid container spacing={3} justifyContent="center">
         {events.map((event) => {

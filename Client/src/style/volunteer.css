@@ -1,0 +1,146 @@
+/* General form styling */
+.volunteer-form {
+  max-width: 600px;
+  margin: 0 auto;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Uniform styling for input fields */
+.form-input {
+  width: 100%; /* Take the full width of the container */
+  max-width: 600px; /* Set a maximum width for better control */
+  min-width: 300px; /* Optional: Set a minimum width */
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #4caf50;
+  border-radius: 4px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+/* Styling for input fields with errors */
+.input-error {
+  border-color: #d32f2f; /* Red border for error */
+}
+
+/* Dropdown container styling */
+.dropdown-checkbox {
+  width: 100%;
+  position: relative;
+  margin-bottom: 15px;
+}
+
+/* Dropdown toggle button */
+.dropdown-toggle {
+  width: 100%;
+  padding: 10px;
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #4caf50;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left;
+  font-size: 16px;
+}
+
+/* Dropdown menu styling */
+.dropdown-menu {
+  position: absolute;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: #ffffff;
+  border: 1px solid #4caf50;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 5px;
+  z-index: 1;
+}
+
+/* Styling for each item in the dropdown menu */
+.dropdown-item {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: #2e7d32;
+  background-color: #ffffff;
+  box-sizing: border-box;
+}
+
+.dropdown-item:hover {
+  background-color: #e8f5e9;
+}
+
+/* Checkbox and label styling */
+.dropdown-item input[type="checkbox"] {
+  margin-right: 10px;
+  accent-color: #4caf50; /* Checkbox color */
+}
+
+.dropdown-item label {
+  margin: 0;
+  cursor: pointer;
+  flex-grow: 1;
+}
+
+/* Button container styling */
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.form-buttons button {
+  width: 48%;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Specific button styles */
+.form-buttons button:first-child {
+  background-color: #4caf50; /* Green background for Add Volunteer */
+  color: white; /* White text */
+}
+
+.form-buttons button:last-child {
+  background-color: #f44336; /* Red background for Clear */
+  color: white; /* White text */
+}
+
+/* Error message styling */
+.error {
+  color: #d32f2f; /* Red color for errors */
+  font-size: 0.875em; /* Slightly smaller font size */
+  margin-top: 20px; /* Space below buttons */
+}
+
+/* Loading indicator styling */
+.loading {
+  font-size: 14px;
+  color: #666;
+}
+
+/* Specific styling for date input field */
+.form-date-input {
+  width: calc(100% - 22px); /* Adjust for padding and border */
+  padding: 10px;
+  border: 1px solid #4caf50;
+  border-radius: 4px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+
+
+
+

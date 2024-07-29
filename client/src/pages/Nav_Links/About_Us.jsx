@@ -8,10 +8,10 @@ import MissionImage from '../../assets/images/aboutus_mission.jpg';
 const AboutUs = () => {
     return (
         <div>
-
+   <Box sx={{ p: 2 }}/>
             {/* banner */}
             <div className="headbanner">
-                <img src="../../src/assets/images/aboutusbanner.png" alt="Banner" />
+                <img src="../../src/assets/images/aboutusbanner.jpg" alt="Banner"  style={{ width: '100%', height: 'auto' }}/>
                 <h1>About Us</h1>
             </div>
 

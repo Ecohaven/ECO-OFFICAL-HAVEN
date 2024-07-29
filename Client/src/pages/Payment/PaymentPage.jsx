@@ -48,7 +48,7 @@ const PaymentForm = () => {
 
   const handleSubmit = async (values, { setSubmitting, setStatus, resetForm }) => {
     try {
-      const finalAmount = amount + amount * (numberOfPax || 1);
+      const finalAmount = amount + amount * (numberOfPax || '');
 
       const response = await axios.post('http://localhost:3001/pay', { ...values, amount: finalAmount });
       const result = response.data;
