@@ -82,7 +82,7 @@ function Rewards() {
               <Grid item key={product.id} xs={12} className='product-item'>
                 <h2>{product.itemName}</h2>
                 <img src={`http://localhost:3001/eco/product-images/${product.itemimg}`} alt={product.itemName} />
-                <p className='leaves'><b>{product.leaves}</b> Leaves</p>
+                <p className='leaves'><b>{product.leaves}</b> 🍃</p>
               </Grid>
             ))
           ) : (
@@ -90,7 +90,7 @@ function Rewards() {
               <Grid item key={product.id} xs={12} sm={6} md={4} className='product-item'>
                 <h2>{product.itemName}</h2>
                 <img src={`http://localhost:3001/eco/product-images/${product.itemimg}`} alt={product.itemName} />
-                <p className='leaves'><b>{product.leaves}</b> Leaves</p>
+                <p className='leaves'><b>{product.leaves}</b> 🍃</p>
               </Grid>
             ))
           )}

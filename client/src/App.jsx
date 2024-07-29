@@ -76,7 +76,7 @@ import AddStaff from './pages/backend/accountpages/AddStaff';
 import Faq from './pages/FAQ/faq';
 import FaqBackend from './pages/FAQ/faqbackend';
 
-import VolunteerList from './pages/volunteerList/VolunteerList';
+import VolunteerList from './pages//VolunteerList';
 
 
 function App() {

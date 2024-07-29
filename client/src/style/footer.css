@@ -1,23 +1,23 @@
-/* Style for the footer container */
 .footer-container {
     background-color: #353535;
     padding: 20px;
-    width: 97.3%;
 }
 
-h6 {
+.footer-container h6 {
     font-size: 20px;
     color: white;
     margin-bottom: 30px;
+    text-align: left;
+    margin-left: 50px;
 }
 
-.col {
+.footer-container .col {
     padding: 10px;
 }
 
-.col1, .col2, .col3 {
-    width: 100%;
-    box-sizing: border-box;
+.footer-container .links {
+    text-align: left;
+    margin-left: 50px;
 }
 
 .col1 a, .col2 a, .col3 a {
@@ -35,6 +35,8 @@ h6 {
 .contact {
     font-size: 17px;
     color: white;
+    text-align: left;
+    margin-left: 50px;
 }
 
 .newsletter-form {
@@ -43,8 +45,9 @@ h6 {
 }
 
 .form-group {
-    display: inline-block;
+    display: flex;
     margin: 0 auto;
+    margin-left: 50px;
 }
 
 .newsletter-form input[type="email"] {
@@ -69,6 +72,11 @@ h6 {
     background: #14772B;
 }
 
+.social {
+    padding-left: 40px;
+    text-align: left;
+}
+
 .social img {
     width: 35px;
     margin-top: -10px;
@@ -83,17 +91,14 @@ h6 {
     background-color: #353535;
     padding: 10px 0;
     color: white;
-    font-size: 10px;
-    width: 100%;
+    font-size: 10px;    
+    text-align: left;
+    margin-left: 50px;
 }
 
-@media (min-width: 960px) {
-    .footer-content {
-        justify-content: space-between;
-    }
-
+@media (max-width: 960px) {
     .col2 {
-        margin-left: -200px; /* Adjust this value to move col2 more to the left */
+        margin-left: -100px; /* Adjust this value to move col2 more to the left */
     }
 
     .col3 {
@@ -103,15 +108,32 @@ h6 {
     .form-group {
         display: flex;
     }
+
+    .social {
+        padding-right: 180px; /* Remove any extra left padding */
+    }
 }
 
-@media (max-width: 959px) {
-    .col2, .col3 {
-        margin-left: 0;
+@media (max-width: 500px) {
+    .col1 {
+        margin-bottom: -50px;
     }
 
-    .col1, .col2, .col3 {
-        width: 100%;
+    .col2 {
+        margin-bottom: -50px;
+        margin-left: 0px;
+    }
+
+    .col3 {
+        margin-left: 0px;
+    }
+
+    .form-group {
+        display: flex;
+    }
+
+    .social {
+        padding-right: 230px;
     }
 
     .form-group {
