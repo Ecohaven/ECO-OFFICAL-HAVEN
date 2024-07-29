@@ -7,6 +7,7 @@ import { format } from 'date-fns';
 
 const HomePage = () => {
   const [latestProducts, setLatestProducts] = useState([]);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 500);
   const [events, setEvents] = useState([]);
   const { account } = useContext(AccountContext); // Get account info from context
   const navigate = useNavigate();
@@ -78,55 +79,22 @@ const HomePage = () => {
         <h1 style={{ color: 'white' }}>EcoHaven</h1>
       </div>
 
-      {/* Display latest products */}
-      <Grid container spacing={2} sx={{ p: 3 }}>
-        {latestProducts.map((product) => (
-          <Grid item key={product.id} xs={12} sm={6} md={4}>
-            <Box
-              sx={{
-                p: 2,
-                border: '1px solid #ccc',
-                borderRadius: 5,
-                backgroundColor: '#fff',
-                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-              }}
-            >
-              <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: 1 }}>
-                {product.name}
-              </Typography>
-              <img
-                src={product.image}
-                alt={product.name}
-                style={{ width: '100%', height: 'auto', borderRadius: 5 }}
-              />
-              <Typography variant="body1" color="textSecondary" sx={{ marginTop: 1 }}>
-                {product.description}
-              </Typography>
-              <Typography variant="body1" sx={{ fontWeight: 'bold', marginTop: 1 }}>
-                ${product.price}
-              </Typography>
-            </Box>
-          </Grid>
-        ))}
-      </Grid>
-
       {/* Display events */}
       <Typography variant="h4" align="center" gutterBottom sx={{ fontWeight: 'bold', color: 'green', mb: 2 }}>
         Events & Workshops
       </Typography>
 
-      <Typography variant="p" align="center" gutterBottom sx={{ mb: 2 }}>
+      <Typography variant="body1" align="center" gutterBottom sx={{ mb: 2 }}>
         Here are the latest events & workshops happening in Singapore!
       </Typography>
 
-      <Grid container spacing={5} sx={{ p: 3, mb: 8}}>
+      <Grid container spacing={5} sx={{ p: 3, mb: 8 }}>
         {events.map((event, index) => (
-          <Grid item key={event.id} xs={6} sm={6} md={6} lg={6}>
+          <Grid item key={event.id} xs={12} sm={6} md={3}>
             <Box
               sx={{
                 p: 2,
                 width: '100%',
-                maxWidth: 300,
                 height: 400, // Fixed height for each event
                 mx: 'auto',
                 border: '1px solid #ccc',
@@ -182,31 +150,69 @@ const HomePage = () => {
         ))}
       </Grid>
 
-      {/* Why Us */}
-      {/* <Typography variant="h4" align="center" gutterBottom sx={{ fontWeight: 'bold', color: 'green', mb: 2 }}>
-        Why Us
-      </Typography> */}
+      {/* Latest Products */}
+<Typography variant="h4" align="center" gutterBottom sx={{ fontWeight: 'bold', color: 'green', mb: 2 }}>
+  Latest Products
+</Typography>
+
+<Typography variant="body1" align="center" gutterBottom sx={{ mb: 2 }}>
+  Check out our latest eco-friendly products!
+</Typography>
+
+<Grid container spacing={5} sx={{ p: 3, mb: 8, justifyContent: 'center' }}>
+  {latestProducts.map((product) => (
+    <Grid item key={product.id} xs={12} sm={6} md={3} sx={{ display: 'flex', justifyContent: 'center' }}>
+      <Box
+        sx={{
+          p: 2,
+          width: '100%',
+          height: 400, // Fixed height for each product
+          maxWidth: 300, // Set maxWidth to ensure consistent sizing
+          border: '1px solid #ccc',
+          borderRadius: 5,
+          cursor: 'pointer',
+          backgroundColor: '#fff',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+          '&:hover': {
+            backgroundColor: '#f0f0f0',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+            transform: 'translateY(-4px)',
+          },
+          transition: 'background-color 0.3s, transform 0.3s, box-shadow 0.3s',
+        }}
+      >
+        <img
+          src={`http://localhost:3001/eco/product-images/${product.itemimg}`}
+          alt={product.itemName}
+          style={{ width: '100%', height: '300px', objectFit: 'cover', borderRadius: 5, marginBottom: '16px' }}
+        />
+        <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 1 }}>
+          {product.itemName}
+        </Typography>
+        <Typography variant="body1" sx={{ fontWeight: 'bold'}}>
+          <b>{product.leaves}</b> 🍃
+        </Typography>
+      </Box>
+    </Grid>
+  ))}
+</Grid>
 
       {/* Our partners */}
       <Typography variant="h4" align="center" gutterBottom sx={{ fontWeight: 'bold', color: 'green', mb: 2 }}>
         Our Partners
       </Typography>
 
-      <Typography variant="p" align="center" gutterBottom sx={{ mb: 2 }}>
+      <Typography variant="body1" align="center" gutterBottom sx={{ mb: 2 }}>
         Special thanks to all!
       </Typography>
       <Grid container spacing={4} justifyContent="center">
         {[
-          { img: '../../src/assets/images/cc_logo.png'},
-          { img: '../../src/assets/images/rc_logo.png'},
-          { img: '../../src/assets/images/rn_logo.png'}
-        ].map((step, index) => (
+          { img: '../../src/assets/images/cc_logo.png' },
+          { img: '../../src/assets/images/rc_logo.png' },
+          { img: '../../src/assets/images/rn_logo.png' }
+        ].map((partner, index) => (
           <Grid item key={index} xs={12} sm={6} md={3}>
-            <img src={step.img} alt={step.title} style={{ width: '200px', height: 'auto', display: 'block', margin: '0 auto', marginBottom: '50px', marginTop: '30px' }} />
-            <div className='desc'>
-              <p><b>{step.title}</b></p>
-              <p>{step.description}</p>
-            </div>
+            <img src={partner.img} alt={`Partner ${index}`} style={{ width: '200px', height: 'auto', display: 'block', margin: '0 auto', marginBottom: '50px', marginTop: '30px' }} />
           </Grid>
         ))}
       </Grid>

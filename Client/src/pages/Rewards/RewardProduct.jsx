@@ -537,7 +537,7 @@ const RewardTable = () => {
 
       {/* Add popup modal */}
       <Modal open={openAdd} onClose={handleCloseAdd}>
-        <Box sx={{ ...style, width: 400 }}>
+        <Box sx={{ width: 400 }}>
           <h2 className='popup'>Add New Item</h2>
           <hr></hr>
           <TextField fullWidth margin="normal" label="Item Name" name="itemName" value={formValues.itemName} onChange={handleInputChange} />

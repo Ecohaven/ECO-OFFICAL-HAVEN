@@ -183,6 +183,7 @@ router.get("/account/:accountName/bookings", async (req, res) => {
 
 
 // Route to fetch and notify account of upcoming events
+// Route to fetch and notify account of upcoming events
 router.get("/account/:accountName/notify", async (req, res) => {
   const { accountName } = req.params;
 
@@ -210,7 +211,7 @@ router.get("/account/:accountName/notify", async (req, res) => {
       if (event) {
         const startDate = moment(event.startDate);
         const daysUntilEvent = startDate.diff(now, 'days');
-        if (daysUntilEvent > 0 && daysUntilEvent <= 3) { // Events within the next 3 days
+        if (daysUntilEvent >= 0 && daysUntilEvent <= 3) { // Events within the next 3 days
           upcomingEvents.push({
             id: booking.id,
             eventName: booking.eventName,

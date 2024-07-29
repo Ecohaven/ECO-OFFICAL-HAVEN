@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import axios from 'axios';
 import TextField from '@mui/material/TextField';
-import { Alert, AlertTitle, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select,Typography } from '@mui/material';
+import { Alert, AlertTitle, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import Sidebar from '../../../components/sidebar';
 import EditIcon from '@mui/icons-material/Edit';
 import '../../style/rewards/collectionproduct.css'; // Importing CSS file for styling
@@ -16,6 +16,7 @@ const CollectionProduct = () => {
   const [searchError, setSearchError] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [filteredRows, setFilteredRows] = useState([]);
   const [editFormData, setEditFormData] = useState({
     id: '',
     name: '',
@@ -53,17 +54,24 @@ const CollectionProduct = () => {
     }
   };
 
+  const handleResetSearch = () => {
+    setSearchQuery('');
+    fetchRows(); // Fetch rows again to reset the table to its original state
+    setSearchError(false);
+  };
+
   const handleSearchChange = (event) => {
     const query = event.target.value.toLowerCase();
     setSearchQuery(query);
 
     const filtered = rows.filter(
       (row) =>
-        row.name.toLowerCase().includes(query) ||
-        row.phoneNumber.toLowerCase().includes(query) ||
-        row.email.toLowerCase().includes(query) ||
-        row.product.toLowerCase().includes(query)
+        Object.values(row).some(value =>
+          value.toString().toLowerCase().includes(query)
+        )
     );
+
+    setFilteredRows(filtered);
 
     if (filtered.length === 0 && query.trim() !== '') {
       setSearchError(true);
@@ -73,9 +81,7 @@ const CollectionProduct = () => {
   };
 
   const highlightText = (text, query) => {
-    if (!query) {
-      return text;
-    }
+    if (!query) return text;
     const parts = text.split(new RegExp(`(${query})`, 'gi'));
     return parts.map((part, index) =>
       part.toLowerCase() === query.toLowerCase() ? (
@@ -86,6 +92,18 @@ const CollectionProduct = () => {
         part
       )
     );
+  };
+
+  const getFilteredColumns = () => {
+    return columns.map(column => ({
+      ...column,
+      renderCell: (params) => (
+        <div>
+          {highlightText(params.value.toString(), searchQuery)}
+        </div>
+      ),
+      hide: !rows.some(row => highlightText(row[column.field], searchQuery) !== row[column.field])
+    }));
   };
 
   const handleEditClick = (id) => {
@@ -225,9 +243,7 @@ const CollectionProduct = () => {
     <div className="rewardshopback">
       <Sidebar />
       <div className='header'>
-      <Typography variant="h4" style={{textAlign:'left',fontWeight:'bold',marginTop:'25px'}}gutterBottom>
-                Collection Items
-            </Typography>
+        <h2>Collection Items</h2>
         <TextField
           variant="outlined"
           className="search"
@@ -249,6 +265,14 @@ const CollectionProduct = () => {
             },
           }}
         />
+
+        <Button
+          variant="outlined"
+          onClick={handleResetSearch}
+          sx={{ marginLeft: '1rem' }}
+        >
+          Reset
+        </Button>
       </div>
 
       {searchError && (
@@ -321,12 +345,11 @@ const CollectionProduct = () => {
       <div className="table-container">
         <div style={{ height: 400, width: '100%' }}>
           <DataGrid
-            rows={rows}
+            rows={filteredRows.length > 0 ? filteredRows : rows}
             columns={columns}
-            getRowId={(row) => row.id}
-            pageSize={5}
-            rowsPerPageOptions={[5, 10, 20]}
-            checkboxSelection
+            pageSize={10}
+            rowsPerPageOptions={[10]}
+            disableSelectionOnClick
           />
         </div>
       </div>
