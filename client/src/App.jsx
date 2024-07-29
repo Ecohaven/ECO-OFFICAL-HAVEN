@@ -72,6 +72,10 @@ import UserAccounts from './pages/backend/accountpages/UserAccounts';
 import StaffAccounts from './pages/backend/accountpages/StaffAccounts';
 import AddStaff from './pages/backend/accountpages/AddStaff';
 
+{/* additional */}
+import Faq from './pages/FAQ/faq';
+import FaqBackend from './pages/FAQ/faqbackend';
+
 
 function App() {
   const location = useLocation();
@@ -180,7 +184,8 @@ function App() {
 
        {/* End of check-In part */}
 
-
+       <Route path="/faq" element={<UserAndGuestRoute element={Faq} />} />
+ 
 
 
     </Routes>
@@ -212,6 +217,7 @@ function App() {
 
       <Route path={"/attendance"} element={<StaffAuthorization element={Attendance} allowedRoles={['Admin']} />} />
 
+      <Route path={"/faqbackend"} element={<StaffAuthorization element={FaqBackend} allowedRoles={['Admin']}/>} />
     </Routes>
   );
 

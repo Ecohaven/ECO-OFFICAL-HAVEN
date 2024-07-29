@@ -28,9 +28,9 @@ const FAQBackend = () => {
   const handleSave = async () => {
     try {
       if (isEditing) {
-        await axios.put(`http://localhost:5000/api/faqs/${currentFaq.id}`, currentFaq);
+        await axios.put(`http://localhost:3001/api/faqs/${currentFaq.id}`, currentFaq);
       } else {
-        await axios.post('http://localhost:5000/api/faqs', currentFaq);
+        await axios.post('http://localhost:3001/api/faqs', currentFaq);
       }
       setIsEditing(false);
       setCurrentFaq({ question: '', answer: '' });

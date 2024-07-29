@@ -16,6 +16,7 @@ const CollectionProduct = () => {
   const [searchError, setSearchError] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [statusFilter, setStatusFilter] = useState('All');
   const [filteredRows, setFilteredRows] = useState([]);
   const [editFormData, setEditFormData] = useState({
     id: '',
@@ -41,11 +42,18 @@ const CollectionProduct = () => {
     }
   }, [alertOpen]);
 
+  useEffect(() => {
+    filterRows(rows, searchQuery, statusFilter);
+  }, [statusFilter, searchQuery, rows]);
+
+
+
   const fetchRows = async () => {
     try {
       const response = await axios.get('http://localhost:3001/collect/collections');
       if (Array.isArray(response.data)) {
         setRows(response.data);
+        filterRows(response.data, searchQuery, statusFilter); // Ensure to filter with current filters
       } else {
         console.error('Expected an array from the API response');
       }
@@ -54,8 +62,10 @@ const CollectionProduct = () => {
     }
   };
 
+
   const handleResetSearch = () => {
     setSearchQuery('');
+    setFilteredRows([]); // Clear filtered rows to show all rows
     fetchRows(); // Fetch rows again to reset the table to its original state
     setSearchError(false);
   };
@@ -63,17 +73,36 @@ const CollectionProduct = () => {
   const handleSearchChange = (event) => {
     const query = event.target.value.toLowerCase();
     setSearchQuery(query);
+    filterRows(rows, query, statusFilter); // Pass updated search query and current status filter
+  };
 
-    const filtered = rows.filter(
-      (row) =>
-        Object.values(row).some(value =>
-          value.toString().toLowerCase().includes(query)
-        )
-    );
-
+  const filterRows = (rowsToFilter, search = searchQuery, status = statusFilter) => {
+    let filtered = rowsToFilter;
+  
+    // Debugging: Log current status filter and rows
+    console.log('Filtering rows with status:', status);
+  
+    // Filter based on search query
+    if (search) {
+      filtered = filtered.filter(
+        (row) =>
+          Object.values(row).some(value =>
+            value.toString().toLowerCase().includes(search.toLowerCase())
+          )
+      );
+    }
+  
+    // Filter based on status
+    if (status && status !== 'All') {
+      filtered = filtered.filter(row => row.status === status);
+    }
+  
     setFilteredRows(filtered);
-
-    if (filtered.length === 0 && query.trim() !== '') {
+  
+    // Debugging: Log the number of filtered rows
+    console.log('Filtered rows count:', filtered.length);
+  
+    if (filtered.length === 0 && search.trim() !== '') {
       setSearchError(true);
     } else {
       setSearchError(false);
@@ -92,6 +121,13 @@ const CollectionProduct = () => {
         part
       )
     );
+  };
+
+  const handleStatusFilterChange = (event) => {
+    const value = event.target.value;
+    console.log('Selected status:', value); // Debugging: Check the selected status
+    setStatusFilter(value);
+    filterRows(rows, searchQuery, value); // Pass updated status filter and current search query
   };
 
   const getFilteredColumns = () => {
@@ -135,16 +171,16 @@ const CollectionProduct = () => {
       await axios.put(`http://localhost:3001/collect/collections/${editFormData.id}`, {
         ...editFormData,
       });
-
+  
       // Update local state
       const updatedRows = rows.map(row =>
         row.id === editFormData.id ? { ...row, ...editFormData } : row
       );
       setRows(updatedRows);
-
+  
       // Close edit dialog after successful update
       setEditDialogOpen(false);
-
+  
       // Show success alert
       setAlertType('success');
       setAlertMessage('Collection updated successfully.');
@@ -242,38 +278,51 @@ const CollectionProduct = () => {
   return (
     <div className="rewardshopback">
       <Sidebar />
-      <div className='header'>
-        <h2>Collection Items</h2>
-        <TextField
-          variant="outlined"
-          className="search"
-          placeholder="Search..."
-          value={searchQuery}
-          onChange={handleSearchChange}
-          sx={{
-            marginRight: '1rem',
-            '& .MuiOutlinedInput-root': {
-              '& fieldset': {
-                borderColor: 'grey',
-              },
-              '&:hover fieldset': {
-                borderColor: 'green',
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: 'green',
-              },
-            },
-          }}
-        />
-
-        <Button
-          variant="outlined"
-          onClick={handleResetSearch}
-          sx={{ marginLeft: '1rem' }}
-        >
-          Reset
-        </Button>
-      </div>
+      <div className="header">
+  <h2>Collection Items</h2>
+  <div className="header-controls">
+    <TextField
+      variant="outlined"
+      className="search"
+      placeholder="Search..."
+      value={searchQuery}
+      onChange={handleSearchChange}
+      sx={{
+        marginRight: '1rem',
+        '& .MuiOutlinedInput-root': {
+          '& fieldset': {
+            borderColor: 'grey',
+          },
+          '&:hover fieldset': {
+            borderColor: 'green',
+          },
+          '&.Mui-focused fieldset': {
+            borderColor: 'green',
+          },
+        },
+      }}
+    />
+    <Button className='resetbutton'
+      variant="contained"
+      onClick={handleResetSearch}
+      sx={{ marginRight: '1rem' }}
+    >
+      Reset
+    </Button>
+    <FormControl variant="outlined" className="filtercollection" sx={{ minWidth: 120 }}>
+      <InputLabel>Status</InputLabel>
+      <Select
+        value={statusFilter}
+        onChange={handleStatusFilterChange}
+        label="Status"
+      >
+        <MenuItem value="All">All</MenuItem>
+        <MenuItem value="Collected">Collected</MenuItem>
+        <MenuItem value="Not Collected">Not Collected</MenuItem>
+      </Select>
+    </FormControl>
+  </div>
+</div>
 
       {searchError && (
         <Alert severity="error" onClose={() => setSearchError(false)} sx={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '50%' }}>
@@ -320,17 +369,17 @@ const CollectionProduct = () => {
             variant="outlined"
           />
           <FormControl fullWidth margin="normal" variant="outlined">
-            <InputLabel>Status</InputLabel>
-            <Select
-              value={editFormData.status}
-              onChange={handleEditFormChange}
-              label="Status"
-              name="status"
-            >
-              <MenuItem value="Not collected">Not collected</MenuItem>
-              <MenuItem value="Collected">Collected</MenuItem>
-            </Select>
-          </FormControl>
+  <InputLabel>Status</InputLabel>
+  <Select
+    value={editFormData.status}
+    onChange={handleEditFormChange}
+    label="Status"
+    name="status" // Make sure the name attribute is set
+  >
+    <MenuItem value="Not Collected">Not Collected</MenuItem>
+    <MenuItem value="Collected">Collected</MenuItem>
+  </Select>
+</FormControl>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleEditDialogClose} color="primary">

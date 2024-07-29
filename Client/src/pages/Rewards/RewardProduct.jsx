@@ -436,9 +436,7 @@ const RewardTable = () => {
       <Sidebar />
 
       <div className='header'>
-       <Typography variant="h4" style={{textAlign:'left',fontWeight:'bold',marginTop:'30px'}}gutterBottom>
-                Reward Product
-            </Typography>
+      <h2>Reward Products</h2>
 
         {/* Search bar */}
         <TextField

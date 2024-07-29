@@ -7,6 +7,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
+import LiveHelpIcon from '@mui/icons-material/LiveHelp';
 import {
   AccountBox as AccountIcon,
   Event as EventIcon,
@@ -22,7 +23,7 @@ import {
   ExpandLess,
   ExpandMore,
   Menu as MenuIcon,
-  Close as CloseIcon
+  Close as CloseIcon,
 } from '@mui/icons-material';
 import { useMediaQuery } from 'react-responsive';
 
@@ -181,6 +182,13 @@ const Sidebar = () => {
               <ReviewIcon />
             </ListItemIcon>
             <ListItemText primary="Review" />
+          </ListItem>
+
+          <ListItem button component={Link} to="/staff/faqbackend" selected={isActive('/staff/faqbackend')} style={isActive('/staff/faqbackend') ? activeStyle : {}}>
+            <ListItemIcon style={{ color: 'white' }}>
+              <LiveHelpIcon />
+            </ListItemIcon>
+            <ListItemText primary="FAQ" />
           </ListItem>
         </List>
       </Drawer>

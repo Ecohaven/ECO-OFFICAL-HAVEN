@@ -30,6 +30,11 @@
     /* Adjust width based on sidebar width */
 }
 
+/* .filtercollection {
+    margin-top: -55px !important;
+    margin-left: -200px !important;
+} */
+
 @media (max-width: 960px) {
     .search {
         margin-left: -240px !important;

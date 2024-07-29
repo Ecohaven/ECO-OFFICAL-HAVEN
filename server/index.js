@@ -92,3 +92,8 @@ app.use('/pay/', paymentRoutes);
 //refund
 const refundRoutes = require('./routes/refund');
 app.use('/refund/', refundRoutes);
+
+
+//faq
+const faqRoutes = require('./routes/faq');
+app.use('/api/faqs', faqRoutes);

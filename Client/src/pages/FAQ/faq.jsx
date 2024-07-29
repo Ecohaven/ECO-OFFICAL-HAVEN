@@ -11,7 +11,7 @@ const FAQ = () => {
 
   const fetchFaqs = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/faqs');
+      const response = await axios.get('http://localhost:3001/api/faqs');
       setFaqs(response.data);
     } catch (error) {
       console.error('Failed to fetch FAQs', error);
