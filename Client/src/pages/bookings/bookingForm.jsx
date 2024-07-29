@@ -44,6 +44,7 @@ const BookingForm = () => {
     }
   }, [account, setAccount]);
 
+
   useEffect(() => {
    const generateDateOptions = () => {
       if (event.startDate && event.endDate) {
@@ -127,6 +128,7 @@ const currentDate = new Date().toISOString().split('T')[0];
       };
 
       const response = await axios.post('http://localhost:3001/api/bookings', formData);
+      
 
       if (response.data.id && response.data.qrCodeText) {
         const { id, qrCodeText } = response.data;

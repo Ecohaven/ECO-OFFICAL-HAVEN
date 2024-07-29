@@ -4,7 +4,7 @@ import {
   Box, Container, AppBar, Toolbar, Typography, Button, Icon, IconButton, Popover, Input,
   List, ListItem, ListItemText, Divider, Drawer, Badge
 } from '@mui/material';
-import { AccessTime, Search, Clear, Edit, Notifications } from '@mui/icons-material';
+import { AccessTime, Search, Clear, Edit, Notifications, Style } from '@mui/icons-material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -24,6 +24,7 @@ function AccountNavbar() {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [notificationAnchorEl, setNotificationAnchorEl] = useState(null); // Anchor element for notifications popover
   const [notifications, setNotifications] = useState([]); // Notifications state
+const [leafPointsMessage, setLeafPointsMessage] = useState('');
   const location = useLocation();
   // const showAppBarAndFooter = !['/get_started', '/register', '/login', '/account_deleted'].includes(location.pathname); // Hide AppBar & Footer on these pages 
 
@@ -83,13 +84,14 @@ function AccountNavbar() {
   }, [account, location.pathname, navigate]);
 
 
-  useEffect(() => {
-    // Fetch notifications
+   useEffect(() => {
+    // Fetch notifications and leafPoints
     async function fetchNotifications() {
       if (account && account.name) {
         try {
           const response = await axios.get(`http://localhost:3001/api/bookings/account/${account.name}/notify`); // Fetch notifications from API based on username
           setNotifications(response.data.upcomingEvents);
+           setLeafPointsMessage(response.data.leafPointsMessage || '');  // Set leafPoints from response, default to 0 if not present
         } catch (error) {
           console.error("Error fetching notifications:", error);
         }
@@ -323,19 +325,28 @@ function AccountNavbar() {
               }}
               PaperProps={{ sx: { minWidth: '300px' } }}
             >
-              <Box sx={{ p: 2 }}>
-                <Typography variant="h6" style={{ color: 'black' }}>Notifications</Typography>
-                {notifications && notifications.length > 0 ? (
-                  <List>
-                    {notifications.map((event) => (
-                      <ListItem key={event.id}>
-                        <ListItemText
-                          primary={`A Reminder for ${event.eventName}`}
-                          secondary={`You have a event on: ${formatDate(event.startDate)}`}
-                        />
-                      </ListItem>
-                    ))}
-                  </List>
+              <Box sx={{ p: 2 }} >
+      <Typography variant="h6" color="textPrimary">Notifications</Typography>
+      {leafPointsMessage && <Typography style={{textWrap:'wrap',width:'280px',textAlign:'left',color:'grey',fontStyle:'italic'}} color="textSecondary">{leafPointsMessage}</Typography>} {/* Display the leafPointsMessage if it exists */}
+      {notifications && notifications.length > 0 ? (
+        <List>
+          {notifications.map((event) => (
+            <ListItem key={event.id}>
+              <ListItemText 
+                primary={
+                  <Typography sx={{ color: 'green', fontWeight: 'bold', textAlign: 'left' }}>
+                    {`A Reminder for ${event.eventName} `}
+                  </Typography>
+                }
+                secondary={
+                  <Typography sx={{ color: 'black', textAlign: 'left' }}>
+                    {`Upcoming event on: ${formatDate(event.startDate)}`}
+                  </Typography>
+                }
+              />
+            </ListItem>
+          ))}
+        </List>
                 ) : (
                   <Typography variant="body1">No new notifications</Typography>
                 )}

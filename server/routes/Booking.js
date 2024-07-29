@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const QRCodeLib = require('qrcode')
-const { Booking, CheckIn, events, Payment } = require('../models');
+const { Booking, CheckIn, events, Payment,ProductDetail, Account } = require('../models');
 const yup = require('yup');
 const { Op } = require("sequelize");
 const moment = require('moment');
@@ -181,8 +181,6 @@ router.get("/account/:accountName/bookings", async (req, res) => {
 });
 
 
-
-// Route to fetch and notify account of upcoming events
 // Route to fetch and notify account of upcoming events
 router.get("/account/:accountName/notify", async (req, res) => {
   const { accountName } = req.params;
@@ -203,7 +201,7 @@ router.get("/account/:accountName/notify", async (req, res) => {
 
     // Iterate over bookings to fetch event details
     for (const booking of bookings) {
-      const event = await events.findOne({
+      const event = await events.findOne({ // Ensure 'Event' is the correct model name
         where: { eventName: booking.eventName },
         attributes: ['startDate', 'endDate'],
       });
@@ -215,14 +213,41 @@ router.get("/account/:accountName/notify", async (req, res) => {
           upcomingEvents.push({
             id: booking.id,
             eventName: booking.eventName,
-            startDate: event.startDate,
-            endDate: event.endDate,
+            startDate: startDate.format('YYYY-MM-DD'), // Format the start date
+            endDate: moment(event.endDate).format('YYYY-MM-DD'), // Format the end date
           });
         }
       }
     }
 
-   res.json({ notifications: upcomingEvents.length > 0, upcomingEvents });
+  // Fetch user's leaf points
+    const user = await Account.findOne({
+      where: { name: accountName }, // Fetch by accountName (user's name)
+      attributes: ['leaf_points'], // Adjust attributes as needed
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const leafPoints = user.leaf_points;
+
+    // Fetch product rewards and check if the user's leaf points match any
+    const productRewards = await ProductDetail.findAll({
+      attributes: ['itemName', 'leaves'], // Adjust as needed
+    });
+
+    const matchingRewards = productRewards.filter(reward => reward.leaves <= leafPoints);
+
+    const leafPointsMessage = matchingRewards.length > 0
+      ? 'Check out our redemption shop! There are exclusive rewards to redeem!'
+      : '';
+
+    res.json({
+      notifications: upcomingEvents.length > 0,
+      upcomingEvents,
+      leafPointsMessage, // Include the message in the response
+    });
   } catch (error) {
     console.error('Error fetching bookings by accountName:', error);
     res.status(500).json({ error: 'Internal server error' });
