@@ -164,11 +164,11 @@ const Sidebar = () => {
             <ListItemText primary="Payment" />
           </ListItem>
 
-          <ListItem button component={Link} to="/staff/volunteerbackend" selected={isActive('/staff/volunteerbackend')} style={isActive('/staff/volunteerbackend') ? activeStyle : {}}>
+          <ListItem button component={Link} to="/staff/volunteerlist" selected={isActive('/staff/volunteerlist')} style={isActive('/staff/volunteerList') ? activeStyle : {}}>
             <ListItemIcon style={{ color: 'white' }}>
               <VolunteerActivismIcon />
             </ListItemIcon>
-            <ListItemText primary="Volunteer" />
+            <ListItemText primary="Volunteers" />
           </ListItem>
 
           {/* <ListItem button component={Link} to="/staff/refund" selected={isActive('/staff/refund')}>

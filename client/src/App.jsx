@@ -76,7 +76,7 @@ import AddStaff from './pages/backend/accountpages/AddStaff';
 import Faq from './pages/FAQ/faq';
 import FaqBackend from './pages/FAQ/faqbackend';
 
-// import VolunteerBackend from './pages/Nav_Links/VolunteerBackend';
+import VolunteerList from './pages/VolunteerList';
 
 
 function App() {
@@ -214,6 +214,9 @@ function App() {
       <Route path={"/AddEvent"} element={<StaffAuthorization element={AddEventBackend} allowedRoles={['Admin']} />} />
 
       <Route path={"/historypayment"} element={<StaffAuthorization element={Paymenthistory} allowedRoles={['Admin']} />} />
+
+      <Route path={"/volunteerlist"} element={<StaffAuthorization element={VolunteerList} allowedRoles={['Admin']} />} />
+
 
       <Route path={"/bookings"} element={<StaffAuthorization element={Bookings} allowedRoles={['Admin']} />} />
 
