@@ -184,7 +184,7 @@ const BookingList = () => {
             </Typography>
             <Sidebar />
             <Grid container spacing={2} alignItems="center">
-                <Grid item xs={12} sm={6} md={4}>
+                <Grid item xs={8} sm={5} md={4}>
                     <Card sx={{ backgroundColor: 'green', color: 'white' }}>
                         <CardContent>
                             <Typography variant="h6" color="white" gutterBottom>
@@ -200,7 +200,7 @@ const BookingList = () => {
                     </Card>
                 </Grid>
 
-                <Grid item xs={12} sm={6} md={4}>
+                <Grid item xs={8} sm={5} md={4}>
                     <Card sx={{ backgroundColor: 'green', color: 'white' }}>
                         <CardContent>
                             <Typography variant="h6" color="white" gutterBottom>
@@ -216,7 +216,7 @@ const BookingList = () => {
                     </Card>
                 </Grid>
 
-                <Grid item xs={12} sm={6} md={4}>
+                <Grid item xs={8} sm={5} md={4}>
                     <Card sx={{ backgroundColor: 'green', color: 'white' }}>
                         <CardContent>
                             <Typography variant="h6" color="white" gutterBottom>
@@ -232,9 +232,9 @@ const BookingList = () => {
                     </Card>
                 </Grid>
             </Grid>
+                
 
             <FilterDropdown handleFilter={handleFilter} handleReset={handleReset}  />
-
         
             <div className="data-grid-container">
                 <DataGrid

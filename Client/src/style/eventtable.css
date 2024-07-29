@@ -6,6 +6,7 @@
     margin-top: -25px;
     margin-bottom: 15px;
     padding: 20px;
+overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
 h2 {
@@ -237,6 +238,10 @@ input[type="text"] {
     color: black;
     transform: scale(1.2);
 }
+.event-data-grid-container {
+    height: 400px; /* Adjust the height as needed */
+    width: 121.5%;
+}
 @media (min-width: 600px) {
     .card {
         max-width: 300px;
@@ -296,6 +301,7 @@ input[type="text"] {
     align-items: center;
 }
 
+
 @media (max-width: 1000px) {
     .event-list-container {
         width: 200%;
@@ -311,20 +317,29 @@ input[type="text"] {
     }
 }
 
-/* Adjust the styles for mobile devices */
-@media (max-width: 500px) {
-    .event-filter {
-        flex-direction: column; /* Stack items vertically */
-        align-items: flex-start; /* Align items to the start */
+
+@media (max-width: 768px) {
+    .event-table-content {
+        padding: 0 10px;
+    }
+    
+    .filter-section {
+        flex-direction: column;
+        align-items: flex-start;
     }
 
-    .event-filter .MuiTextField-root {
-        margin-right: 0; /* Remove right margin */
-        margin-bottom: 8px; /* Add space below the search box */
+    .filter-section button {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    
+    .modal-box, .zoom-modal-box {
+        width: 90%;
+        max-width: 500px;
     }
 
-    .event-filter .MuiButton-root {
-        margin-left: 0; /* Remove left margin */
-        margin-top: 8px; /* Add space above the button */
+    .modal-box img {
+        width: 100%;
+        height: auto;
     }
 }

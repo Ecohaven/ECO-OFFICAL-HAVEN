@@ -71,7 +71,7 @@ const FilterDropdown = ({ handleFilter, handleReset }) => {
     return (
         <div style={{ padding: '16px', borderRadius: '8px', marginTop: '20px' }}>
             <Grid container spacing={2} alignItems="center">
-                <Grid item xs={12} sm={4} md={3}>
+                <Grid item xs={5} sm={3.5} md={3}>
                     <FormControl fullWidth sx={{ maxWidth: 250 }}>
                         <InputLabel>Status</InputLabel>
                         <Select
@@ -93,7 +93,7 @@ const FilterDropdown = ({ handleFilter, handleReset }) => {
                         </Select>
                     </FormControl>
                 </Grid>
-                <Grid item xs={12} sm={4} md={3}>
+                <Grid item xs={4} sm={3.5} md={3}>
                     <FormControl fullWidth sx={{ maxWidth: 250 }}>
                         <InputLabel>Number of Pax</InputLabel>
                         <Select
@@ -117,7 +117,7 @@ const FilterDropdown = ({ handleFilter, handleReset }) => {
                         </Select>
                     </FormControl>
                 </Grid>
-                <Grid item xs={12} sm={4} md={3}>
+                <Grid item xs={5} sm={3.5} md={3}>
                     <TextField
                         label="Event Name"
                         value={eventName}
@@ -134,18 +134,18 @@ const FilterDropdown = ({ handleFilter, handleReset }) => {
                         }}
                     />
                 </Grid>
-                <Grid item xs={12} md={3} style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+                <Grid item xs={8} md={3} style={{ display: 'flex', gap: '12px', justifyContent: 'flex-start' }}>
                     <Button
                         onClick={applyFilters}
                         variant="contained"
                         sx={{
-                            backgroundColor: '#007bff',
+                            backgroundColor: 'blue',
                             color: 'white',
                             borderRadius: '4px',
                             padding: '8px 16px',
                             fontSize: '0.875rem',
                             '&:hover': {
-                                backgroundColor: '#0056b3',
+                                backgroundColor: 'green',
                             },
                         }}
                     >
@@ -153,15 +153,14 @@ const FilterDropdown = ({ handleFilter, handleReset }) => {
                     </Button>
                     <Button
                         onClick={resetFilters}
-                        variant="outlined"
                         sx={{
-                            borderColor: '#ddd',
-                            color: '#333',
+                            backgroundColor: 'red',
+                            color: 'white',
                             borderRadius: '4px',
                             padding: '8px 16px',
                             fontSize: '0.875rem',
                             '&:hover': {
-                                borderColor: '#bbb',
+                                backgroundColor: 'green',
                             },
                         }}
                     >

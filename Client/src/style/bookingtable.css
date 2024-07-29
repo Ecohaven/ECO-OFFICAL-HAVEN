@@ -1,9 +1,10 @@
 .booking-list-container {
     width: 75%;
-    max-width: 1200px;
+    max-width: 1300px;
     margin-left: 250px;
     margin-bottom: 15px;
     padding: 20px;
+    overflow-x: hidden;
 }
 
 .h2 {
@@ -11,6 +12,10 @@
     font-size: 3rem;
     margin-bottom: 30px;
     margin-top: 5px;
+}
+.data-grid-container {
+    height: 400px;
+   width: 121.5% !important;
 }
 
 .card-container {
@@ -40,12 +45,6 @@ input.searchbox {
     color: blue;
 }
 
-@media (min-width: 600px) {
-    .card {
-        max-width: 300px;
-    }
-}
-
 .dialog-content {
     text-align: center;
     padding: 20px;
@@ -65,16 +64,35 @@ input.searchbox {
     margin-bottom: 10px;
     text-align: center;
 }
+@media (max-width: 1000px) {
+    .booking-list-container {
+        width: 100%;
+        /* Full width on mobile */
+        margin-left: 10px;
+        /* No left margin on mobile */
+        margin-right: -5px;
+        padding: 10px;
+        /* Reduce padding for smaller screens */
+    }
+}
+
 
 @media (min-width: 600px) {
     .search-box {
         text-align: right;
     }
+    .card {
+        width: 50% ;
+        max-width: 20px;
+        background-color: green;
+        color: white;
+    }
+
 }
 
 .data-grid-container {
     height: 400px;
-    width: 100%;
+    width: 110%;
     overflow-x: auto;
 }
 
@@ -85,14 +103,14 @@ input.searchbox {
     transform: translateX(-50%);
     z-index: 999;
     width: calc(100% - 40px);
-    /* Adjust for mobile width */
+
 }
 
 @media (max-width: 600px) {
     .booking-list-container {
-        width: 100%;
+        width: 120%;
         /* Full width on mobile */
-        margin-left: 0;
+        margin-left: 10px;
         /* No left margin on mobile */
         margin-right: -5px;
         padding: 10px;

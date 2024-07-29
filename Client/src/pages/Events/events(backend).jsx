@@ -13,8 +13,12 @@ import Sidebar from '../../../components/sidebar';
 import DeleteConfirmationModal from '../../../components/DeleteModal';
 import '../../style/eventtable.css';
 import EventCountList from '../../../components/EventCount';
+import { useMediaQuery } from '@mui/material';
 
 const EventDataTable = () => {
+
+const isMobile = useMediaQuery('(max-width:768px)');
+
     const navigate = useNavigate();
     const [events, setEvents] = useState([]);
     const [openAddEventModal, setOpenAddEventModal] = useState(false);
@@ -262,8 +266,9 @@ const EventDataTable = () => {
         {
             field: 'picture',
             headerName: 'Event Image',
-            width: 150,
+            width:  isMobile ? 120 : 150,
             renderCell: (params) => (
+
                 <div style={{ textAlign: 'center', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <img
                         src={`http://localhost:3001/api/event-picture/${params.row.id}`}
@@ -274,16 +279,16 @@ const EventDataTable = () => {
                 </div>
             ),
         },
-        { field: 'eventName', headerName: 'Event Name', width: 150 },
-        { field: 'startDate', headerName: 'Start Date', width: 120 },
-        { field: 'endDate', headerName: 'End Date', width: 120 },
-        { field: 'time', headerName: 'Time', width: 140 },
-        { field: 'location', headerName: 'Location', width: 90 },
-        { field: 'status', headerName: 'Status', width: 80 },
+        { field: 'eventName', headerName: 'Event Name', width: isMobile ? 100 : 150  },
+        { field: 'startDate', headerName: 'Start Date', width:isMobile ? 90 : 120 },
+        { field: 'endDate', headerName: 'End Date', width: isMobile ? 90 : 120 },
+        { field: 'time', headerName: 'Time', width: isMobile ? 90 : 120 },
+        { field: 'location', headerName: 'Location', width:  isMobile ? 70 : 90 },
+        { field: 'status', headerName: 'Status', width:  isMobile ? 60 : 70 },
         {
             field: 'checkIn',
             headerName: 'Check In',
-            width: 280,
+            width: isMobile ? 250:265,
             renderCell: (params) => (
                 <Button
                     variant="contained"
@@ -297,31 +302,31 @@ const EventDataTable = () => {
         {
             field: 'edit',
             headerName: 'Edit',
-            width: 80,
+            width: isMobile ? 60:80,
             renderCell: (params) => (
                 <EditIcon
                     onClick={() => handleOpenEditEvent(params.row)}
                     className="edit-icon"
-                    style={{ color: 'blue', cursor: 'pointer', marginLeft: '2px' }}
+                    style={{ color: 'blue', cursor: 'pointer', marginLeft: '2px',marginTop:'10px' }}
                 />
             ),
         },
         {
             field: 'delete',
             headerName: 'Delete',
-            width: 100,
+            width: isMobile ? 70:100,
             renderCell: (params) => (
                 <DeleteIcon
                     onClick={() => handleOpenDeleteConfirmation(params.row)}
                     className="delete-icon"
-                    style={{ color: 'red', cursor: 'pointer', marginLeft: '8px' }}
+                    style={{ color: 'red', cursor: 'pointer', marginLeft: '8px', marginTop:'10px' }}
                 />
             ),
         },
         {
             field: 'viewDetails',
             headerName: 'Details',
-            width: 100,
+            width: isMobile ? 50:100,
             renderCell: (params) => (
                 <Button
                     variant="text" // Change the variant to text for an underlined button
@@ -329,6 +334,7 @@ const EventDataTable = () => {
                         color: 'blue',
                         textDecoration: 'underline', // Underline the text
                         cursor: 'pointer',
+                        marginTop:'-10px'
                     }}
                     onClick={() => handleViewDetails(params.row)}
                 >
@@ -336,9 +342,6 @@ const EventDataTable = () => {
                 </Button>
             ),
         },
-
-
-
     ];
 
     return (
