@@ -24,6 +24,7 @@ const CheckInPage = () => {
     const [totalNotCheckedIn, setTotalNotCheckedIn] = useState(0);
     const [totalCancelled, setTotalCancelled] = useState(0);
     const [searchTerm, setSearchTerm] = useState('');
+ const [trackerText, setTrackerText] = useState('');
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -91,13 +92,15 @@ const CheckInPage = () => {
 
 const handleScan = async (data) => {
     if (!data || !data.text) {
-        setError('Invalid QR Code data. Please try scanning again.');
+        setTrackerText('Please scan QR Code here');
         return;
     }
 
+    // Reset tracker text at the beginning
+    setTrackerText(`Scanned QR Code: ${data.text}`);
+
     const qrCodeDataArray = data.text.split(','); // Assume QR codes are comma-separated
 
-    setError('');
     setModalMessage(''); // Clear the modal message
 
     try {
@@ -107,40 +110,59 @@ const handleScan = async (data) => {
         ));
 
         const successMessages = [];
+        const alreadyCheckedInMessages = [];
         let hasCheckedIn = false;
 
-        responses.forEach(response => {
+        responses.forEach((response, index) => {
             if (response.status === 200) {
                 const { qrCodeStatus } = response.data;
+                const qrCodeData = qrCodeDataArray[index];
+
                 if (qrCodeStatus === 'Checked-In') {
-                    successMessages.push('One or more QR Codes have already been checked in.');
+                    alreadyCheckedInMessages.push(`QR Code "${qrCodeData}" has already been checked in.`);
                     hasCheckedIn = true;
                 } else {
-                    successMessages.push('Check-in successful');
+                    successMessages.push(`QR Code "${qrCodeData}" check-in successful.`);
                 }
             } else {
-                successMessages.push('Unexpected response from server.');
+                successMessages.push(`Unexpected response for QR Code "${qrCodeDataArray[index]}".`);
             }
         });
 
-        if (successMessages.length > 0) {
-            setModalMessage(successMessages.join('\n'));
-            setModalType(hasCheckedIn ? 'warning' : 'success'); // Use warning if some QR codes are already checked in
+        // Display the first relevant message
+        let messageToDisplay = '';
+
+        if (alreadyCheckedInMessages.length > 0) {
+            messageToDisplay = alreadyCheckedInMessages[0];
+            setModalType('warning'); // Use warning if some QR codes are already checked in
+        } else if (successMessages.length > 0) {
+            messageToDisplay = successMessages[0];
+            setModalType('success'); // Display success message
+        } else {
+            // Handle no messages case
+            setModalType('');
+        }
+
+        if (messageToDisplay) {
+            setTrackerText(messageToDisplay);
+            setModalMessage(messageToDisplay);
             handleOpenModal('success');
 
-            // Delay before closing the modal and resetting the scanner
-            const messageDisplayDuration = 1000; // Duration to display the message (e.g., 1000 ms = 1 second)
+            // Display message for 1 minute before resetting
+            const displayDuration = 50000; // Duration to display each message (60,000 ms = 60 seconds)
+            const delayBeforeReopening = 5000; // Additional delay before reopening the modal (5,000 ms = 5 seconds)
+
             setTimeout(() => {
-                // Reset message and type before closing modal
                 setModalMessage('');
-                setModalType('');
+                setModalType(''); 
+                setTrackerText('');
                 handleCloseModal();
 
-                // Reopen the modal and reset message after a short delay
+                // Reopen the modal after the additional delay
                 setTimeout(() => {
                     handleOpenModal('scan'); // Open the scanner modal
-                }, 100);
-            }, messageDisplayDuration);
+                }, delayBeforeReopening);
+            }, displayDuration);
         }
 
         // Fetch updated check-ins data
@@ -157,7 +179,7 @@ const handleScan = async (data) => {
                     errorMessage = 'Record not found. Please check the details.';
                     break;
                 case 400:
-                    errorMessage = 'Invalid data provided. Please ensure all fields are correct.';
+                    errorMessage = 'Invalid QR-Code provided. Please ensure that it has not been checked in before.';
                     break;
                 default:
                     errorMessage = 'An unexpected error occurred. Please try again later.';
@@ -167,10 +189,20 @@ const handleScan = async (data) => {
             errorMessage = 'Network error. Please check your connection and try again.';
         }
 
-        setError(errorMessage);
-        handleCloseModal(); // Close the modal in case of an error
+        // Set tracker text for errors
+        setTrackerText(errorMessage);
+        setModalType('error'); // Optional: Set a type for error messages if needed
+
+        // Set a delay before closing the modal
+        const errorDisplayDuration = 5000; // Duration to display the error message (5 seconds)
+        setTimeout(() => {
+            handleCloseModal(); // Close the modal in case of an error
+        }, errorDisplayDuration);
     }
 };
+
+
+
 
 
     const handleCheckInByText = async (e) => {
@@ -382,13 +414,38 @@ const handleScan = async (data) => {
                                 </Button>
                             </Box>
                         ) : (
-                            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                                <QrScanner
-                                    onScan={handleScan}
-                                    onError={(error) => setError(`Scan Error: ${error.message}`)}
-                                    style={{ width: '100%' }}
-                                />
-                            </Box>
+                         <Box sx={{ mb: 2, width: '100%', maxWidth: 600, textAlign: 'center' }}>
+    <QrScanner
+        onScan={handleScan}
+        onError={(error) => setError(`Scan Error: ${error.message}`)}
+        className="success-message"
+        style={{
+            width: '100%',
+            borderRadius: 2,
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+            border: '1px solid rgba(0, 0, 0, 0.2)',
+            backgroundColor: 'background.paper',
+        }} 
+    />
+    
+    {/* Display the tracker text */}
+    <Typography
+        variant="h6"
+        sx={{
+            mt: 2,
+            textAlign: 'center',
+            color: 'text.primary',
+            fontWeight: 'bold',
+            backgroundColor: 'background.default',
+            padding: 1,
+            borderRadius: 1,
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+        }}
+    >
+        {trackerText || 'Scan a QR code to see the result here'}
+    </Typography>
+</Box>
+
                         )}
                         {modalMessage && (
                             <Typography variant="body1" color={modalType === 'success' ? 'green' : modalType === 'warning' ? 'orange' : 'red'} sx={{ mt: 2 }}>
