@@ -126,7 +126,7 @@ function Account_Profile_Payments() {
                 <TableBody>
                   {payments.map((payment) => (
                     <StyledTableRow key={payment.id} highlight={payment.status === 'Refunded'}>
-                      <StyledTableCell component="th" scope="row">
+                      <StyledTableCell component="th" scope="row" align='center'>
                         {payment.id}
                       </StyledTableCell>
                       <StyledTableCell align="center">{payment.status}</StyledTableCell>

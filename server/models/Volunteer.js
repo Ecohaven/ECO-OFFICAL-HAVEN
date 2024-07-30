@@ -6,17 +6,20 @@ module.exports = (sequelize, DataTypes) => {
     },
     email: {
       type: DataTypes.STRING,
-      allowNull: false,
-      unique: true
+      allowNull: false
     },
     phone: {
       type: DataTypes.STRING,
       allowNull: false
     },
     interest: {
-      type: DataTypes.STRING,
+      type: DataTypes.JSON,
       allowNull: true
-    }
+    },
+ availabilityDate:{
+  type: DataTypes.STRING,
+      allowNull: true
+}
   }, {
     tableName: 'volunteers'
   });

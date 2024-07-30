@@ -24,6 +24,7 @@ function AccountNavbar() {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [notificationAnchorEl, setNotificationAnchorEl] = useState(null); // Anchor element for notifications popover
   const [notifications, setNotifications] = useState([]); // Notifications state
+ const [showNotificationIcon, setShowNotificationIcon] = useState(true);
 const [leafPointsMessage, setLeafPointsMessage] = useState('');
   const location = useLocation();
   // const showAppBarAndFooter = !['/get_started', '/register', '/login', '/account_deleted'].includes(location.pathname); // Hide AppBar & Footer on these pages 
@@ -84,19 +85,26 @@ const [leafPointsMessage, setLeafPointsMessage] = useState('');
   }, [account, location.pathname, navigate]);
 
 
-   useEffect(() => {
-    // Fetch notifications and leafPoints
+
+  useEffect(() => {
     async function fetchNotifications() {
       if (account && account.name) {
         try {
-          const response = await axios.get(`http://localhost:3001/api/bookings/account/${account.name}/notify`); // Fetch notifications from API based on username
+          const response = await axios.get(`http://localhost:3001/api/bookings/account/${account.name}/notify`);
           setNotifications(response.data.upcomingEvents);
-           setLeafPointsMessage(response.data.leafPointsMessage || '');  // Set leafPoints from response, default to 0 if not present
+          setLeafPointsMessage(response.data.leafPointsMessage || '');
+          setShowNotificationIcon(true); // Show icon if user is logged in
         } catch (error) {
           console.error("Error fetching notifications:", error);
         }
+      } else {
+        // Hide notification icon if no account
+        setNotifications([]);
+        setLeafPointsMessage('');
+        setShowNotificationIcon(false);
       }
     }
+
     fetchNotifications();
   }, [account]);
 

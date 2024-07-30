@@ -17,6 +17,7 @@
   max-width: 600px; /* Set a maximum width for better control */
   min-width: 300px; /* Optional: Set a minimum width */
   padding: 10px;
+  margin-left: 10px;
   margin-bottom: 15px;
   border: 1px solid #4caf50;
   border-radius: 4px;
@@ -140,6 +141,21 @@
   box-sizing: border-box;
 }
 
+/* volunteer.css */
+.success-message {
+  text-align: center;
+  margin: 20px 0;
+  color: green;
+  font-weight: bold;
+}
+
+.availability-description {
+  display: block;
+  margin-top: -10px;
+  margin-bottom: 20px;
+  font-size: 0.9em;
+  color: #666;
+}
 
 
 

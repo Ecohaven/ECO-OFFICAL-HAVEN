@@ -13,7 +13,7 @@ const interestOptions = [
 
 const InputField = ({ type, name, placeholder, value, onChange, error, min, label }) => (
   <div className="form-group">
-    <label htmlFor={name}>{label}</label>
+    <label htmlFor={name} className="form-label">{label}</label>
     <input 
       type={type} 
       id={name} 
@@ -41,6 +41,7 @@ const VolunteerForm = ({ onSubmit = () => {} }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [validationErrors, setValidationErrors] = useState({});
+  const [successMessage, setSuccessMessage] = useState('');
 
   const handleChange = (name, value) => {
     setFormData(prevState => ({
@@ -70,6 +71,7 @@ const VolunteerForm = ({ onSubmit = () => {} }) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setSuccessMessage('');
 
     if (!validateForm()) {
       setLoading(false);
@@ -78,11 +80,15 @@ const VolunteerForm = ({ onSubmit = () => {} }) => {
 
     try {
       const response = await axios.post('http://localhost:3001/volunteer/', {
-        ...formData,
-        interest: formData.interests.join(', ') // Join interests into a single string
+        name: `${formData.firstName} ${formData.lastName}`, // Combine first and last name
+        email: formData.email,
+        phone: formData.phone,
+        interests: formData.interests, // Send interests array
+        availabilityDate: formData.availabilityDate
       });
       onSubmit(response.data);
-      setFormData({ firstName: '', lastName: '', email: '', phone: '', availabilityDate: '', interests: [''] });
+      setFormData({ firstName: '', lastName: '', email: '', phone: '', availabilityDate: '', interests: [] });
+      setSuccessMessage('Thank you for volunteering! Your application has been successfully submitted.');
     } catch (error) {
       console.error('Error creating volunteer:', error);
       setError('Error creating volunteer. Please try again.');
@@ -92,8 +98,9 @@ const VolunteerForm = ({ onSubmit = () => {} }) => {
   };
 
   const handleClear = () => {
-    setFormData({ firstName: '', lastName: '', email: '', phone: '', availabilityDate: '', interests: [''] });
+    setFormData({ firstName: '', lastName: '', email: '', phone: '', availabilityDate: '', interests: [] });
     setValidationErrors({});
+    setSuccessMessage('');
   };
 
   // Get today's date in YYYY-MM-DD format
@@ -106,6 +113,7 @@ const VolunteerForm = ({ onSubmit = () => {} }) => {
         <h1>Volunteer with us!</h1>
       </div>
       <h2 style={{ textAlign: 'center', marginTop: '-20px' }}>Volunteer Form</h2>
+      {successMessage && <div className="success-message">{successMessage}</div>}
       <form onSubmit={handleSubmit} className="volunteer-form">
         <InputField 
           type="text" 
@@ -152,6 +160,7 @@ const VolunteerForm = ({ onSubmit = () => {} }) => {
           min={today} // Set the min attribute to today's date
           label="Availability Date"
         />
+        <small className="availability-description">Please select the earliest date you are available to start volunteering.</small>
         <DropdownCheckbox 
           label="Select Your Interests" 
           options={interestOptions}
@@ -162,13 +171,13 @@ const VolunteerForm = ({ onSubmit = () => {} }) => {
 
         <div className="form-buttons">
           <button type="submit" disabled={loading}>
-            {loading ? 'Adding...' : 'Add Volunteer'}
+            {loading ? 'Submitting...' : 'Submit'}
           </button>
-          <button type="button" onClick={handleClear}>Clear</button>
+          <button type="button" onClick={handleClear} disabled={loading}>
+            Clear
+          </button>
         </div>
-
         {error && <p className="error">{error}</p>}
-        {loading && <div className="loading">Processing...</div>}
       </form>
     </div>
   );
