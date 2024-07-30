@@ -2,23 +2,18 @@
 .staffaccountslink{
     text-decoration: none;
     color: black;
-    font-weight: bold;
+    font-weight: normal;
     text-align: left;
-    margin-bottom: 1rem;
     display: block;
     transition: all 0.3s;
 }
 .staffaccountslink:hover {
-  color: #19682c;
+  color: grey;
   text-decoration: underline;
+  opacity: 0.7;
 }
 
 /* Staff Account Profile Page */
-/* .account-field {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-} */
 .account-field {
     display: flex;
     font-weight: normal;

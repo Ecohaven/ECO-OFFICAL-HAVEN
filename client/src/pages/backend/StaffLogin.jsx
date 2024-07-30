@@ -29,7 +29,7 @@ function StaffLogin() {
                 localStorage.setItem('accessToken', accessToken);
                 setAccount(response.data.account);
                 console.log(response.data.account);
-                navigate('/staff/staffhome');
+                navigate('/staff/dashboard');
             })
             .catch((err) => {
                 const errorMessage = err.response.data.message;

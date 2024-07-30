@@ -22,10 +22,16 @@ function Staff_Account_Profile() {
       >
         <Box
           sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '80%', maxWidth: 1000,
-            margin: 5, padding: 2, border: 1, borderRadius: 2, borderColor: 'grey.500'
+            margin: 5, padding: 2, border: 1, borderRadius: 2, borderColor: 'grey.500',
+            backgroundColor: '#19682c', boxShadow: 5
            }}>
-            <h2>Account Profile</h2>
-            <Box sx={{ padding: 4, margin: 2 }}>
+            <Typography variant="h3" align="center" fontWeight='bold'
+            sx={{  }}>
+                <span style={{ color: 'white' }}>Eco</span>
+                <span style={{ color: 'black' }}>Haven</span>
+            </Typography>
+            <Typography variant='h4' sx={{ textAlign: 'left', margin: 2, marginTop: 5, marginBottom: 0, color: 'white' }}><span style={{ fontWeight: 'bold' }} >{account.name}'s</span> Account</Typography>
+            <Box sx={{ padding: 4, margin: 2, color: 'white' }}>
             <p className='account-field'>
               Name: 
               <span className='account-details'>{account.name}</span>

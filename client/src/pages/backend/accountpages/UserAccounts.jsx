@@ -234,7 +234,7 @@ function UserAccounts() {
       <div
       style={{ maxWidth: '1400px', margin: '10px' }}
       >
-        <h2>Account/Users</h2>
+        <Typography variant="h4" sx={{ textAlign: 'left', marginBottom: 2 }}>User Accounts</Typography>
         <Box sx={{ display: 'flex', justifyContent: 'left', marginBottom: 2 }}>
           <TextField id="search" variant="outlined"
             sx={{ width: 300, textAlign: 'left' }}
@@ -243,7 +243,8 @@ function UserAccounts() {
             onChange={searchUserAccounts}
           />
           <Button variant="contained" color="secondary" onClick={clearSearch}
-            sx={{ marginLeft: 2, paddingLeft: 4, paddingRight: 4 }}>
+            sx={{ marginLeft: 2, paddingLeft: 4, paddingRight: 4 }}
+            style={{ backgroundColor: 'red' }}>
               Clear
           </Button>
         </Box>
@@ -268,7 +269,7 @@ function UserAccounts() {
         }}>
           <Box component="form" onSubmit={handleEdit.handleSubmit} sx={{ p: 3 }}>
             <Box>
-              <h2 style={{ color: 'green', marginBottom: 0, marginTop: 30 }}>Edit {editFormData.username}</h2>
+              <Typography variant="h4" style={{ color: 'green', marginBottom: 0, marginTop: 30, textAlign: 'left', fontWeight: 'bold' }}>Edit {editFormData.username}</Typography>
               <Divider sx={{ marginBottom: 5 }}/>
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>

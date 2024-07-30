@@ -65,7 +65,6 @@ import PaymentSucess from './pages/Payment/SuccessPage';
 
 {/* Staff pages part */}
 import StaffLogin from './pages/backend/StaffLogin';
-import Staffhome from './pages/backend/Staffhome';
 import Staff_Account_Profile from './pages/backend/Staff_Account_Profile';
 
 import UserAccounts from './pages/backend/accountpages/UserAccounts';
@@ -91,7 +90,7 @@ function App() {
   const shouldShowAppBarFooter = !noAppBarFooterPaths.includes(location.pathname);
 
   // Define the paths where Sidebar should not be rendered (Staff pages)
-  const noSideBarPaths = ['/staff/staff_login', '/staff/AddEvent'];
+  const noSideBarPaths = ['/staff/staff_login', '/staff/AddEvent', '/staff/addstaff'];
   const shouldShowSideBar = !noSideBarPaths.includes(location.pathname);
 
   useEffect(() => { // Fetch user data when the app component mounts
@@ -198,7 +197,6 @@ function App() {
     <Routes>
       <Route path="/staff_login" element={<GuestRoute element={StaffLogin} />} />
 
-      <Route path={"/staffhome"} element={<StaffAuthorization element={Staffhome} allowedRoles={['Admin']} />} />
       <Route path={"/account"} element={<StaffAuthorization element={Staff_Account_Profile} allowedRoles={['Admin']} />} />
 
       <Route path={"/usersaccounts"} element={<StaffAuthorization element={UserAccounts} allowedRoles={['Admin']} />} />

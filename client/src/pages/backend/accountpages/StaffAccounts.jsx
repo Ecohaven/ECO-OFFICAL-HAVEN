@@ -261,7 +261,7 @@ function StaffAccounts() {
             </Grid>
             <Grid item xxl={11} xl={10} md={9} sm={12}>
                 <div style={{ maxWidth: '1400px', margin: '10px' }}>
-                    <h2>Account/Staff</h2>
+                    <Typography variant="h4" sx={{ textAlign: 'left', marginBottom: 2 }}>Staff Accounts</Typography>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
                     <Box sx={{ display: 'flex', justifyContent: 'left' }}>
                         <TextField id="search" variant="outlined"
@@ -270,8 +270,9 @@ function StaffAccounts() {
                             value={search}
                             onChange={searchStaffAccounts}
                         />
-                        <Button variant="contained" color="secondary" onClick={clearSearch}
-                            sx={{ marginLeft: 2, paddingLeft: 4, paddingRight: 4 }}>
+                        <Button variant="contained" onClick={clearSearch}
+                            sx={{ marginLeft: 2, paddingLeft: 4, paddingRight: 4 }}
+                            style={{ backgroundColor: 'red' }}>
                             Clear
                         </Button>
                     </Box>    
@@ -301,7 +302,7 @@ function StaffAccounts() {
                 }}>
                     <Box component="form" onSubmit={handleEditStaffAccount.handleSubmit} sx={{ p: 3 }}>
                         <Box>
-                            <h2 style={{ color: 'green', marginBottom: 0, marginTop: 30 }}>Edit {editFormData.name}'s Account</h2>
+                        <Typography variant="h4" style={{ color: 'green', marginBottom: 0, marginTop: 30, textAlign: 'left', fontWeight: 'bold' }}>Edit {editFormData.name}'s Account</Typography>
                             <Divider sx={{ marginBottom: 5 }}/>
                         </Box>
                         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' , gap: 2 }}>

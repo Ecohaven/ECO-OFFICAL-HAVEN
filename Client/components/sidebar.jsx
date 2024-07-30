@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -28,13 +29,29 @@ import {
 } from '@mui/icons-material';
 import { useMediaQuery } from 'react-responsive';
 
+import { useContext } from 'react';
+import AccountContext from '/src/contexts/AccountContext';
+import { Typography, Box, Button } from '@mui/material';
+
+
 const Sidebar = () => {
   const [openAccount, setOpenAccount] = useState(false);
   const [openReward, setOpenReward] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
 
+  const { account, setAccount } = useContext(AccountContext);
+  const navigate = useNavigate();
+
   const isMobile = useMediaQuery({ maxWidth: 960 });
+
+  // logout for appbar
+  const handleLogout = () => { 
+    localStorage.removeItem('accessToken');
+    localStorage.clear();
+    setAccount(null);
+    navigate('/staff/staff_login');
+  }
 
   const handleAccountClick = () => {
     setOpenAccount(!openAccount);
@@ -57,6 +74,18 @@ const Sidebar = () => {
   const activeStyle = {
     color: 'lightgreen',
     textDecoration: 'underline',
+  };
+
+  const ProfileLink = {
+    textDecoration: 'none',
+    color: 'black',
+    marginRight: '1.5rem',
+    marginTop: '6px',
+    transition: '0.3s',
+    '&:hover': {
+      textDecoration: 'underline',
+      color: 'green',
+    },
   };
 
   return (
@@ -201,6 +230,22 @@ const Sidebar = () => {
         </List>
       </Drawer>
 
+      <Box style={{ display: 'flex', justifyContent: 'flex-end', width: '100%', marginTop: '1rem' }}>
+            <RouterLink to="/staff/account" style={ProfileLink}
+              onMouseEnter={(e) => (e.target.style.color = 'green', e.target.style.textDecoration = 'underline')}
+              onMouseLeave={(e) => (e.target.style.color = 'black', e.target.style.textDecoration = 'none')}
+            >
+              {account ? account.name : ''}
+            </RouterLink>
+            <Button onClick={handleLogout} 
+              style={{ backgroundColor: 'green', color: 'white', marginRight: '1.5rem' }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = 'darkgreen'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = 'green'}
+            >
+              Sign Out
+            </Button>
+        </Box>
+
       {/* Mobile drawer toggle button */}
       {isMobile && (
         <IconButton
@@ -208,7 +253,7 @@ const Sidebar = () => {
           style={{
             position: 'fixed',
             top: 10,
-            right: 10,
+            left: 10,
             backgroundColor: 'green',
             zIndex: 999,
           }}

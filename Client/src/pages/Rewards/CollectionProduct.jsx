@@ -277,7 +277,6 @@ const CollectionProduct = () => {
 
   return (
     <div className="rewardshopback">
-      <Sidebar />
       <div className="header">
   <h2>Collection Items</h2>
   <div className="header-controls">

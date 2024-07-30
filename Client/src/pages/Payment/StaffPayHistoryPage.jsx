@@ -140,7 +140,6 @@ const Backend = () => {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <Sidebar />
       <Box sx={{ flex: 1, padding: 4 }}>
        <Typography variant="h4" style={{textAlign:'left',fontWeight:'bold'}}gutterBottom>
                 Customer Payment Records

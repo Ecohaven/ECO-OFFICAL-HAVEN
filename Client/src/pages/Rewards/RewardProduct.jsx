@@ -432,8 +432,6 @@ const RewardTable = () => {
   return (
     <div className="rewardshopback">
 
-      {/* sidebar */}
-      <Sidebar />
 
       <div className='header'>
       <h2>Reward Products</h2>

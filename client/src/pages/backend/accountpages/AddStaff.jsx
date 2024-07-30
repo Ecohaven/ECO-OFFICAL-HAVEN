@@ -1,6 +1,8 @@
 import React from 'react'
 import { useState } from 'react';
-import { Box, Button, Grid, TextField, Typography, Snackbar, Alert, Select, MenuItem, FormControl } from '@mui/material';
+import { Box, Button, Grid, TextField, Typography, Snackbar, Alert, Select, MenuItem, FormControl,
+    Card, 
+ } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import http from '/src/http';
 import { useFormik } from 'formik';
@@ -74,14 +76,19 @@ function AddStaff() {
     });
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: '#99ffcc', minHeight: '100vh' }}>
         <Box sx={{ flexGrow: 1, margin: 5, maxWidth: 1000, display: 'flex', flexDirection: 'column', 
             justifyContent: 'center' }}>
-            <Link to="/staff/staffaccounts" className="staffaccountslink">
-                &lt; Back to Staff Accounts
-            </Link>
-            <Typography variant="h4" sx={{ marginBottom: '1rem' }}>Add Staff</Typography>
+            <img src="../src/assets/images/staffbanner.jpg" alt="Event Banner" style={{ width: '100%', height: 'auto', borderRadius: '8px' }} />
+                {/* <Typography variant="h4" sx={{ marginTop: '1.5rem' , marginBottom: '1rem' }}>Add Staff</Typography>  */}
+            <span style={{ display: 'flex', alignItems: 'center', marginBottom: '1.2rem', marginTop: '1.5rem' }}>
+                <Link to="/staff/staffaccounts" className="staffaccountslink">
+                    Staff Accounts
+                </Link>
+                <p style={{ margin: '0 0 0 8px', fontWeight: 'bold' }}> / Add Staff</p>
+            </span>
             
+            <Card sx={{ padding: '1rem' }}>
             <Box component="form" onSubmit={formik.handleSubmit}>
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
@@ -94,9 +101,8 @@ function AddStaff() {
                             onChange={formik.handleChange}
                             error={formik.touched.name && Boolean(formik.errors.name)}
                             helperText={formik.touched.name && formik.errors.name}
+                            sx={{ mb: 2 }}
                         />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
                         <TextField
                             fullWidth
                             id="email"
@@ -106,9 +112,8 @@ function AddStaff() {
                             onChange={formik.handleChange}
                             error={formik.touched.email && Boolean(formik.errors.email)}
                             helperText={formik.touched.email && formik.errors.email}
+                            sx={{ mb: 2 }}
                         />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
                         <TextField
                             fullWidth
                             id="phone_no"
@@ -118,9 +123,8 @@ function AddStaff() {
                             onChange={formik.handleChange}
                             error={formik.touched.phone_no && Boolean(formik.errors.phone_no)}
                             helperText={formik.touched.phone_no && formik.errors.phone_no}
+                            sx={{ mb: 2 }}
                         />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
                                 id="birthdate"
@@ -138,12 +142,12 @@ function AddStaff() {
                                         />
                                     ),
                                 }}
-                                sx={{ width: '100%' }}
+                                sx={{ width: '100%', mb: 2 }}
                             />
                         </LocalizationProvider>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        <FormControl fullWidth>
+                        <FormControl fullWidth sx={{ mb: 2 }}> 
                             <Select
                                 id="role"
                                 name="role"
@@ -158,8 +162,6 @@ function AddStaff() {
                                 ))}
                             </Select>
                         </FormControl>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
                         <TextField
                             fullWidth
                             id="password"
@@ -170,9 +172,8 @@ function AddStaff() {
                             onChange={formik.handleChange}
                             error={formik.touched.password && Boolean(formik.errors.password)}
                             helperText={formik.touched.password && formik.errors.password}
+                            sx={{ mb: 2 }}
                         />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
                         <TextField
                             fullWidth
                             id="confirm_password"
@@ -183,12 +184,14 @@ function AddStaff() {
                             onChange={formik.handleChange}
                             error={formik.touched.confirm_password && Boolean(formik.errors.confirm_password)}
                             helperText={formik.touched.confirm_password && formik.errors.confirm_password}
+                            sx={{ mb: 2 }}
                         />
                     </Grid>
                 </Grid>
-                <Button type="submit" variant="contained" sx={{ marginTop: '1rem' }}>Add Staff</Button>
+                <Button type="submit" variant="contained" sx={{ marginTop: '3rem' }}>Add Staff</Button>
             </Box>
-            
+            </Card>
+
             {/* Add account Success Alert */}
             <Snackbar open={addStaffSuccess} autoHideDuration={6000} 
             anchorOrigin={{ vertical: 'top', horizontal: 'center' }}

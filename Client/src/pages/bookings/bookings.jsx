@@ -182,7 +182,6 @@ const BookingList = () => {
            <Typography variant="h4" style={{textAlign:'left',fontWeight:'bold'}}gutterBottom>
                 Bookings
             </Typography>
-            <Sidebar />
             <Grid container spacing={2} alignItems="center">
                 <Grid item xs={8} sm={5} md={4}>
                     <Card sx={{ backgroundColor: 'green', color: 'white' }}>

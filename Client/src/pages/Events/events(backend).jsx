@@ -346,7 +346,6 @@ const isMobile = useMediaQuery('(max-width:768px)');
 
     return (
         <div className="event-list-container">
-            <Sidebar />
             <div className="event-table">
                <Typography variant="h4" style={{textAlign:'left',fontWeight:'bold',marginTop:'30px'}}gutterBottom>
                 Event List
