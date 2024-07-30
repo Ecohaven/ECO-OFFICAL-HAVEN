@@ -216,8 +216,8 @@ const PaymentForm = () => {
                         fullWidth
                         error={meta.touched && Boolean(meta.error)}
                       >
-                        <MenuItem value="Debit">Debit</MenuItem>
-                        <MenuItem value="Credit">Credit</MenuItem>
+                        <MenuItem value='Debit'>Debit</MenuItem>
+                        <MenuItem value='Credit'>Credit</MenuItem>
                       </Select>
                     )}
                   </Field>

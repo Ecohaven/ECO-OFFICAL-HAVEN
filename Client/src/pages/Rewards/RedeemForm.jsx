@@ -64,6 +64,8 @@ function RewardForm() {
             // Post data to backend
             await axios.post('http://localhost:3001/eco/redeem', {
                 accountId: account.id,
+                email:account.email,
+                phoneNumber: account.phone_no,
                 productName: product.itemName,
             });
 

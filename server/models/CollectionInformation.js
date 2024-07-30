@@ -1,4 +1,3 @@
-// models/CollectInformation.js
 module.exports = (sequelize, DataTypes) => {
   const CollectInformation = sequelize.define("CollectInformation", {
     name: {

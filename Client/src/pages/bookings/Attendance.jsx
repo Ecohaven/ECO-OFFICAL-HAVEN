@@ -101,6 +101,7 @@ const handleScan = async (data) => {
 
     const qrCodeDataArray = data.text.split(','); // Assume QR codes are comma-separated
 
+    setTrackerText('');
     setModalMessage(''); // Clear the modal message
 
     try {
@@ -148,9 +149,8 @@ const handleScan = async (data) => {
             setModalMessage(messageToDisplay);
             handleOpenModal('success');
 
-            // Display message for 1 minute before resetting
-            const displayDuration = 50000; // Duration to display each message (60,000 ms = 60 seconds)
-            const delayBeforeReopening = 5000; // Additional delay before reopening the modal (5,000 ms = 5 seconds)
+            const displayDuration = 40000; 
+            const delayBeforeReopening = 2000; // Additional delay before reopening the modal (5,000 ms = 5 seconds)
 
             setTimeout(() => {
                 setModalMessage('');
@@ -205,36 +205,42 @@ const handleScan = async (data) => {
 
 
 
-    const handleCheckInByText = async (e) => {
-        e.preventDefault();
+   const handleCheckInByText = async (e) => {
+    e.preventDefault();
 
-        if (!qrCodeText) {
-            setError('QR Code Text is required');
-            return;
+    if (!qrCodeText) {
+        setError('QR Code Text is required');
+        return;
+    }
+    setError('');
+
+
+    // Data to send
+    const dataToSend = { data: qrCodeText };
+
+    try {
+        const response = await axios.post('http://localhost:3001/checkin/checkin/text', dataToSend);
+
+        if (response.status === 200) {
+            const { message } = response.data;
+            setModalMessage(message); // Show the success message from the response
+            setModalType('success');
+            setModalOpen(false); 
+
+            // Reset qrCodeText field
+            setQrCodeText('');
+
+            fetchCheckIns(selectedEventName); // Fetch check-ins after successful check-in
+            navigate(`/staff/attendance?eventName=${encodeURIComponent(selectedEventName)}`);
+        } else {
+            setError('Unexpected response from server');
         }
-        setError('');
+    } catch (error) {
+        console.error('Error during check-in:', error);
+        setError('Failed to check-in, Check if it have been checked in already');
+    }
+};
 
-        // Data to send
-        const dataToSend = { data: qrCodeText };
-
-        try {
-            const response = await axios.post('http://localhost:3001/checkin/checkin/text', dataToSend);
-
-            if (response.status === 200) {
-                const { message } = response.data;
-                setModalMessage(message); // Show the success message from the response
-                setModalType('success');
-                setModalOpen(false); 
-                fetchCheckIns(selectedEventName); // Fetch check-ins after successful check-in
-                navigate(`/staff/attendance?eventName=${encodeURIComponent(selectedEventName)}`);
-            } else {
-                setError('Unexpected response from server');
-            }
-        } catch (error) {
-            console.error('Error during check-in:', error);
-            setError('Failed to check-in');
-        }
-    };
 
 
     const handleOpenModal = (type) => {
@@ -418,7 +424,7 @@ const handleScan = async (data) => {
     <QrScanner
         onScan={handleScan}
         onError={(error) => setError(`Scan Error: ${error.message}`)}
-        className="success-message"
+        className="successMessages"
         style={{
             width: '100%',
             borderRadius: 2,
@@ -446,11 +452,7 @@ const handleScan = async (data) => {
     </Typography>
 </Box>
 
-                        )}
-                        {modalMessage && (
-                            <Typography variant="body1" color={modalType === 'success' ? 'green' : modalType === 'warning' ? 'orange' : 'red'} sx={{ mt: 2 }}>
-                                {modalMessage}
-                            </Typography>
+                      
                         )}
                         <Button variant="outlined" onClick={handleCloseModal} sx={{ mt: 2 }} style={{ backgroundColor: 'red', color: 'white' }}>
                             Close

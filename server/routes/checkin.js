@@ -227,7 +227,7 @@ router.post('/checkin', async (req, res) => {
     // Update booking status based on QR code or paxName check-in
     if (checkInRecord.bookingId) {
       await Booking.update(
-        { status: 'Checked-In' },
+        { status: 'Attended' }, // Changed status to 'Attended'
         { where: { id: checkInRecord.bookingId }, transaction }
       );
     } else {

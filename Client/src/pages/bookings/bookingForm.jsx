@@ -256,7 +256,17 @@ const currentDate = new Date().toISOString().split('T')[0];
      <Typography variant="h6" gutterBottom sx={{ textAlign: 'left', color: 'black' }}>Description: <strong>{event.description}</strong></Typography>
       <Typography variant="h6" gutterBottom sx={{ textAlign: 'left', color: 'black' }}>Time: <strong>{event.time}</strong></Typography>
       <Typography variant="h6" gutterBottom sx={{ textAlign: 'left', color: 'black' }}>Location:  <strong>{event.location}</strong></Typography>
-      <Typography variant="h6" gutterBottom sx={{ textAlign: 'left', color: 'black' }}>Amount:  <strong>${event.amount}</strong></Typography>
+      <Typography
+  variant="h6"
+  gutterBottom
+  sx={{ textAlign: 'left', color: 'black' }}
+>
+  Admission: 
+  <strong>
+    {event.status === 'Paid' ? `$${event.amount}` : 'Free'}
+  </strong>
+</Typography>
+
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>
              <FormLabel style={{color:'black'}}>Event Date</FormLabel>

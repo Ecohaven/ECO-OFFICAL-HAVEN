@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { ProductDetail,Account } = require('../models'); // Adjust this import based on your project structure
+const { ProductDetail,Account,CollectInformation } = require('../models'); // Adjust this import based on your project structure
 const { Op } = require('sequelize');
 const multer = require('multer');
 const path = require('path');
@@ -160,11 +160,11 @@ router.delete('/product-detail/:id', async (req, res) => {
 });
 
 
-// POST route to redeem a product
+// POST route to redeem a product and create a new collection entry
 router.post('/redeem', async (req, res) => {
   try {
     // Validate the request body
-    const { accountId, productName } = req.body;
+    const { accountId, productName, phoneNumber, email } = req.body;
     await redeemValidationSchema.validate({ accountId, productName }, { abortEarly: false });
 
     // Fetch the product detail by productName
@@ -194,9 +194,22 @@ router.post('/redeem', async (req, res) => {
     await account.save();
     await product.save();
 
-    res.status(200).json({ message: 'Product redeemed successfully' });
+    // Generate a random 6-digit collectionId
+    const collectionId = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Create new collection entry
+    const newCollection = await CollectInformation.create({
+      name: account.name,
+      phoneNumber,
+      email,
+      product: productName,
+      collectionId
+    });
+
+    res.status(200).json({ message: 'Product redeemed successfully', newCollection });
   } catch (error) {
-    res.status(400).json({ message: 'Error redeeming product', error: error.message });
+    console.error('Error redeeming product and creating collection:', error);
+    res.status(400).json({ message: 'Error redeeming product and creating collection', error: error.message });
   }
 });
 module.exports = router;

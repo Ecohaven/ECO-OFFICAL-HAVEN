@@ -194,24 +194,44 @@ const isMobile = useMediaQuery('(max-width:768px)');
         navigate('/staff/AddEvent');
     };
 
-    const handleUpdateEvent = async (e) => {
-        e.preventDefault();
-        if (!validateForm()) return;
+const validateDates = (startDate, endDate) => {
+    // Convert dates to Date objects if they are strings
+    const start = new Date(startDate);
+    const end = new Date(endDate);
 
-        try {
-            const response = await axios.put(`http://localhost:3001/api/events/${selectedEvent.id}`, formValues);
-            const updatedEvent = response.data.event;
-            setEvents((prevEvents) =>
-                prevEvents.map((event) => (event.id === updatedEvent.id ? updatedEvent : event))
-            );
-            handleCloseEditEvent();
-            handleShowAlert('success', 'Event updated successfully!');
-            fetchEvents();
-        } catch (error) {
-            console.error('Error updating event:', error);
-            handleShowAlert('error', 'Error updating event. Please try again.');
-        }
-    };
+    // Check if the end date is before the start date
+    return end >= start;
+};
+
+const handleUpdateEvent = async (e) => {
+    e.preventDefault();
+
+    if (!validateForm()) return;
+
+    // Extract dates from form values
+    const { startDate, endDate } = formValues;
+
+    // Validate the date range
+    if (!validateDates(startDate, endDate)) {
+        handleShowAlert('error', 'End date cannot be before start date.');
+        return;
+    }
+
+    try {
+        const response = await axios.put(`http://localhost:3001/api/events/${selectedEvent.id}`, formValues);
+        const updatedEvent = response.data.event;
+        setEvents((prevEvents) =>
+            prevEvents.map((event) => (event.id === updatedEvent.id ? updatedEvent : event))
+        );
+        handleCloseEditEvent();
+        handleShowAlert('success', 'Event updated successfully!');
+        fetchEvents();
+    } catch (error) {
+        console.error('Error updating event:', error);
+        handleShowAlert('error', 'Error updating event. Please try again.');
+    }
+};
+
     const handleOpenDeleteConfirmation = (event) => {
         setDeleteConfirmation(event);
     };

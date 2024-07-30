@@ -1,34 +1,8 @@
-// routes/collectionRoutes.js
 const express = require('express');
 const router = express.Router();
 const { CollectInformation, User } = require('../models'); // Adjust path as needed
 
-// POST /collect/collections
-router.post('/', async (req, res) => {
-  try {
-    const { name, phoneNumber, email, product } = req.body;
-    console.log('Received data:', { name, phoneNumber, email, product }); // Log received data
-
-    // Generate a random 6-digit collectionId
-    const collectionId = Math.floor(100000 + Math.random() * 900000).toString();
-
-    // Create new collection entry
-    const newCollection = await CollectInformation.create({
-      name, // Assuming accountName corresponds to the field in your model
-      phoneNumber,
-      email,
-      product, // Ensure field name matches your model
-      collectionId
-    });
-
-    res.status(201).json(newCollection);
-  } catch (error) {
-    console.error('Error adding collection:', error);
-    res.status(400).json({ message: 'Error adding collection', error: error.message });
-  }
-});
-
-
+//For backend 
 
 // GET request to retrieve all collection details
 router.get('/collections', async (req, res) => {
