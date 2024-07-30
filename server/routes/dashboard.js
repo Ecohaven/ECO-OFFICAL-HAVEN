@@ -1,9 +1,25 @@
 const express = require('express');
 const router = express.Router();
-const { events,Booking,Payment,Account,Reward,Refund,Collection,sequelize } = require('../models');
+const { events,Booking,Payment,Account,Reward,Refund,Collection,sequelize,Volunteer } = require('../models');
 const { Op } = require("sequelize");
 
+// Summary API route to count the total number of volunteers
+router.get('/totalVolunteers', async (req, res) => {
+  try {
+    // Count the total number of volunteer entries
+    const totalVolunteers = await Volunteer.count(); // Use count for counting
 
+    res.status(200).json({
+      totalVolunteers
+    });
+  } catch (err) {
+    // Log the error for debugging
+    console.error(err);
+
+    // Return a more generic error message
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
 // Get revenue by day
 router.get("/revenueByDay", async (req, res) => {

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Booking,Payment,Event } = require('../models');
+const { Booking,Payment,Event,Volunteer } = require('../models');
 const yup = require('yup');
 const { Op } = require("sequelize");
 
@@ -86,4 +86,6 @@ router.get("/totalRevenue", async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 });
+
+
 module.exports = router;

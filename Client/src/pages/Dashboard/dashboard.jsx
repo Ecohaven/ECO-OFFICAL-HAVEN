@@ -11,6 +11,7 @@ const Dashboard = () => {
     const [highestUserLeafPoints, setHighestUserLeafPoints] = useState(null);
     const [events, setEvents] = useState([]);
     const [cancelledBookingsCount, setCancelledBookingsCount] = useState(0);
+const [totalVolunteers, setTotalVolunteers] = useState(0);
 
     useEffect(() => {
         axios.get('http://localhost:3001/dash/newSignUpsToday')
@@ -32,7 +33,13 @@ const Dashboard = () => {
         axios.get('http://localhost:3001/dash/cancelledBookingsCount')
             .then(res => setCancelledBookingsCount(res.data.cancelledBookingsCount))
             .catch(error => console.error('Error fetching cancelled bookings count:', error));
+
+        axios.get('http://localhost:3001/dash/totalVolunteers')
+            .then(res => setTotalVolunteers(res.data.totalVolunteers))
+            .catch(error => console.error('Error fetching total volunteers:', error));
     }, []);
+
+
 
     return (
         <Box sx={{ padding: '20px', marginLeft: { xs: '0', md: '300px' } }}>
@@ -93,7 +100,7 @@ const Dashboard = () => {
                             <Typography variant="h6" gutterBottom>
                                 Volunteers
                             </Typography>
-                            <Typography variant="h4">{cancelledBookingsCount}</Typography>
+                            <Typography variant="h4">{totalVolunteers}</Typography>
                             <Typography color="white">Users</Typography>
                         </CardContent>
                     </Card>
