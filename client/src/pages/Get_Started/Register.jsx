@@ -50,6 +50,10 @@ function Register() {
             const accessToken = res.data.accessToken; // Get accessToken from response
             localStorage.setItem('accessToken', accessToken); // Store accessToken in localStorage
             localStorage.setItem('username', res.data.account.username); // Store username in localStorage
+            // if resetToken exists in localStorage, remove it
+            if (localStorage.getItem('resetToken')) {
+              localStorage.removeItem('resetToken');
+            }
             setAccount(res.data.account); // Set account data in context
             navigate('/'); // Redirect to home page
         }).catch((err) => {

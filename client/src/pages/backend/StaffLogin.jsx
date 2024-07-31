@@ -27,6 +27,10 @@ function StaffLogin() {
             .then(response => {
                 const accessToken = response.data.accessToken;
                 localStorage.setItem('accessToken', accessToken);
+                // if resetToken exists in localStorage, remove it
+                if (localStorage.getItem('resetToken')) {
+                    localStorage.removeItem('resetToken');
+                }
                 setAccount(response.data.account);
                 console.log(response.data.account);
                 navigate('/staff/dashboard');

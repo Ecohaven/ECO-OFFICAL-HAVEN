@@ -39,6 +39,10 @@ app.use("/account", accountRoute);
 const staffAccountRoute = require('./routes/staffaccount');
 app.use("/staff", staffAccountRoute);
 
+// Reset Password Routes
+const resetPasswordRoute = require('./routes/reset_password');
+app.use("/reset_password", resetPasswordRoute);
+
 //Account file route 
 const fileRoute = require('./routes/file');
 app.use("/file", fileRoute);

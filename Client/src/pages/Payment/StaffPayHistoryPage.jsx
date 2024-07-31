@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Select, MenuItem, Typography, Box, TextField } from '@mui/material';
+import { Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Select, MenuItem, Typography, Box, TextField } from '@mui/material';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import Sidebar from '../../../components/sidebar';
@@ -139,126 +139,132 @@ const Backend = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <Box sx={{ flex: 1, padding: 4 }}>
-       <Typography variant="h4" style={{textAlign:'left',fontWeight:'bold'}}gutterBottom>
-                Customer Payment Records
-            </Typography>
-        {status && (
-          <Typography color={status.error ? 'error' : 'success'}>
-            {status.message}
-          </Typography>
-        )}
+    <Grid container spacing={2}>
+      <Grid item xxl={1} xl={2} md={3} sm={0}>
+      </Grid>
+      <Grid item xxl={11} xl={10} md={9} sm={12}>
+        <Box sx={{ display: 'flex' }}>
+          <Box sx={{ flex: 1, padding: 4 }}>
+          <Typography variant="h4" style={{textAlign:'left',fontWeight:'bold'}}gutterBottom>
+                    Customer Payment Records
+                </Typography>
+            {status && (
+              <Typography color={status.error ? 'error' : 'success'}>
+                {status.message}
+              </Typography>
+            )}
 
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-          <Select
-            value={filterStatus}
-            onChange={handleFilterChange}
-            displayEmpty
-            sx={{ minWidth: 120 }}
-          >
-            <MenuItem value="">
-              <em>All</em>
-            </MenuItem>
-            <MenuItem value="Paid">Complete</MenuItem>
-            <MenuItem value="Unpaid">Incomplete</MenuItem>
-          </Select>
-          <Select
-            value={searchCriteria}
-            onChange={handleSearchCriteriaChange}
-            displayEmpty
-            sx={{ minWidth: 120, ml: 2 }}
-          >
-            <MenuItem value="id">ID</MenuItem>
-            <MenuItem value="name">Name</MenuItem>
-            <MenuItem value="date">Date</MenuItem>
-            <MenuItem value="month">Month</MenuItem>
-            <MenuItem value="day">Day</MenuItem>
-            <MenuItem value="year">Year</MenuItem>
-          </Select>
-          <TextField
-            label="Search"
-            variant="outlined"
-            value={searchQuery}
-            onChange={handleSearchChange}
-            sx={{ ml: 2, flex: 1 }}
-          />
-        </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+              <Select
+                value={filterStatus}
+                onChange={handleFilterChange}
+                displayEmpty
+                sx={{ minWidth: 120 }}
+              >
+                <MenuItem value="">
+                  <em>All</em>
+                </MenuItem>
+                <MenuItem value="Paid">Complete</MenuItem>
+                <MenuItem value="Unpaid">Incomplete</MenuItem>
+              </Select>
+              <Select
+                value={searchCriteria}
+                onChange={handleSearchCriteriaChange}
+                displayEmpty
+                sx={{ minWidth: 120, ml: 2 }}
+              >
+                <MenuItem value="id">ID</MenuItem>
+                <MenuItem value="name">Name</MenuItem>
+                <MenuItem value="date">Date</MenuItem>
+                <MenuItem value="month">Month</MenuItem>
+                <MenuItem value="day">Day</MenuItem>
+                <MenuItem value="year">Year</MenuItem>
+              </Select>
+              <TextField
+                label="Search"
+                variant="outlined"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                sx={{ ml: 2, flex: 1 }}
+              />
+            </Box>
 
-        <TableContainer component={Paper} elevation={3} sx={{ mb: 4 }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ fontWeight: 'bold' }}>Payment ID</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Cardholder Name</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Amount</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Date</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Refunds</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Action</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredPayments.map((payment) => (
-                <TableRow key={payment.id}>
-                  <TableCell>{payment.id}</TableCell>
-                  <TableCell>{payment.cardholderName}</TableCell>
-                  <TableCell>${payment.amount}</TableCell>
-                  <TableCell>{payment.date ? new Date(payment.date).toLocaleDateString() : 'Invalid Date'}</TableCell>
-                  <TableCell>
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      <Box
-                        sx={{
-                          width: 12,
-                          height: 12,
-                          borderRadius: '50%',
-                          backgroundColor: payment.status?.toLowerCase() === 'paid' ? 'green' : 'red',
-                          mr: 1,
-                        }}
-                      />
-                      {payment.status}
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    {payment.refunds && payment.refunds.length > 0 ? (
-                      payment.refunds.map((refund) => (
-                        <Box key={refund.id} sx={{ mb: 1 }}>
-                          {`Refund ID: ${refund.id}, Status: ${refund.status}`}
+            <TableContainer component={Paper} elevation={3} sx={{ mb: 4 }}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: 'bold' }}>Payment ID</TableCell>
+                    <TableCell sx={{ fontWeight: 'bold' }}>Cardholder Name</TableCell>
+                    <TableCell sx={{ fontWeight: 'bold' }}>Amount</TableCell>
+                    <TableCell sx={{ fontWeight: 'bold' }}>Date</TableCell>
+                    <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
+                    <TableCell sx={{ fontWeight: 'bold' }}>Refunds</TableCell>
+                    <TableCell sx={{ fontWeight: 'bold' }}>Action</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {filteredPayments.map((payment) => (
+                    <TableRow key={payment.id}>
+                      <TableCell>{payment.id}</TableCell>
+                      <TableCell>{payment.cardholderName}</TableCell>
+                      <TableCell>${payment.amount}</TableCell>
+                      <TableCell>{payment.date ? new Date(payment.date).toLocaleDateString() : 'Invalid Date'}</TableCell>
+                      <TableCell>
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                          <Box
+                            sx={{
+                              width: 12,
+                              height: 12,
+                              borderRadius: '50%',
+                              backgroundColor: payment.status?.toLowerCase() === 'paid' ? 'green' : 'red',
+                              mr: 1,
+                            }}
+                          />
+                          {payment.status}
                         </Box>
-                      ))
-                    ) : (
-                      'No refunds'
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => generatePdf(payment)}
-                    >
-                      Download PDF
-                    </Button>
-                    {payment.refunds && payment.refunds.length > 0 && payment.refunds.map(refund => (
-                      refund.status === 'Pending' && (
+                      </TableCell>
+                      <TableCell>
+                        {payment.refunds && payment.refunds.length > 0 ? (
+                          payment.refunds.map((refund) => (
+                            <Box key={refund.id} sx={{ mb: 1 }}>
+                              {`Refund ID: ${refund.id}, Status: ${refund.status}`}
+                            </Box>
+                          ))
+                        ) : (
+                          'No refunds'
+                        )}
+                      </TableCell>
+                      <TableCell>
                         <Button
-                          key={refund.id}
                           variant="contained"
-                          color="success"
-                          onClick={() => approveRefund(refund.id)}
-                          sx={{ ml: 1 }}
+                          color="primary"
+                          onClick={() => generatePdf(payment)}
                         >
-                          Approve Refund
+                          Download PDF
                         </Button>
-                      )
-                    ))}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Box>
-    </Box>
+                        {payment.refunds && payment.refunds.length > 0 && payment.refunds.map(refund => (
+                          refund.status === 'Pending' && (
+                            <Button
+                              key={refund.id}
+                              variant="contained"
+                              color="success"
+                              onClick={() => approveRefund(refund.id)}
+                              sx={{ ml: 1 }}
+                            >
+                              Approve Refund
+                            </Button>
+                          )
+                        ))}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
+        </Box>
+      </Grid>
+    </Grid>
   );
 };
 

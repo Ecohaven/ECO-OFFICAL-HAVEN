@@ -155,8 +155,11 @@ function AddStaff() {
                                 onChange={formik.handleChange}
                                 error={formik.touched.role && Boolean(formik.errors.role)}
                                 displayEmpty
+                                inputProps={{ sx: { textAlign: 'left' } }} // Ensures text is aligned to the left
                             >
-                                <MenuItem value="" disabled>Select Role</MenuItem>
+                                <MenuItem value="" 
+                                sx={{ justifyContent: 'flex-start', textAlign: 'left' }}
+                                disabled>Select Role</MenuItem>
                                 {[ 'Admin' ].map((role) => (
                                     <MenuItem key={role} value={role}>{role}</MenuItem>
                                 ))}

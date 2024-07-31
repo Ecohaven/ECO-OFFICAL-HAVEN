@@ -30,6 +30,10 @@ function Login() {
         const accessToken = response.data.accessToken; // Get accessToken from response
         localStorage.setItem('accessToken', accessToken); // Store accessToken in localStorage
         localStorage.setItem('username', response.data.account.username); // Store username in localStorage
+        // if resetToken exists in localStorage, remove it
+        if (localStorage.getItem('resetToken')) {
+          localStorage.removeItem('resetToken');
+        }
         setAccount(response.data.account); // Set account data in context
         navigate('/'); // Redirect to home page
       }).catch((err) => {
@@ -77,13 +81,19 @@ function Login() {
                   helperText={formik.touched.password && formik.errors.password}
                 />
               </Box>
-              <Box sx={{ mt: 2 }}>
-                <Button variant="contained" type="submit">
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 0, mb: 7 }}>
+                <Link to="/reset_password/request" className='login-register-link'
+                  style={{ fontSize: '0.9rem' }}>
+                    Forgot Password?
+                </Link>
+              </Box>   
+              <Box sx={{ mt: 2, textAlign: 'center' }}>
+                <Button variant="contained" type="submit" className='login-register-button'>
                   Sign In
                 </Button>
+                <p>Don't have an account?<Link to="/register" className='login-register-link'>Register</Link></p>
               </Box>
             </Box>
-            <p>Don't have an account?<Link to="/register" className='login-register-link'>Register</Link></p>
           </div>
         </Grid>
       </Grid>

@@ -8,7 +8,7 @@ require('dotenv').config();
 const { validateToken, checkRole } = require('../middlewares/auth');
 const fs = require('fs');
 const path = require('path');
-
+const { verify } = require('crypto');
 
 router.post("/register", async (req, res) => {
     let data = req.body;
@@ -63,7 +63,9 @@ router.post("/register", async (req, res) => {
             status: "Active",
             role: "User",
             leaf_points: 10,
-            last_login: result.last_login
+            last_login: result.last_login,
+            verificationCode: null,
+            verificationCodeExpires: null,
         };
         let accessToken = sign(userInfo, process.env.APP_SECRET,
             { expiresIn: process.env.TOKEN_EXPIRES_IN });
@@ -124,7 +126,9 @@ router.post("/login", async (req, res) => {
             status: account.status,
             role: account.role,
             leaf_points: account.leaf_points,
-            last_login: account.last_login
+            last_login: account.last_login,
+            verificationCode: null,
+            verificationCodeExpires: null,
         };
         let accessToken = sign(userInfo, process.env.APP_SECRET, // Create token
             { expiresIn: process.env.TOKEN_EXPIRES_IN });

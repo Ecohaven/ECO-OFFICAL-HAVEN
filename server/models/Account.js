@@ -42,6 +42,15 @@ module.exports = (sequelize, DataTypes) => {
         last_login: {
             type: DataTypes.DATE,
             allowNull: true
+        },
+        // New fields for password reset
+        verificationCode: {
+            type: DataTypes.STRING(6),
+            allowNull: true
+        },
+        verificationCodeExpires: {
+            type: DataTypes.DATE,
+            allowNull: true
         }
     },
         {

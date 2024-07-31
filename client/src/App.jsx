@@ -18,6 +18,9 @@ import Get_Started from './pages/Get_Started/Get_Started';
 import Register from './pages/Get_Started/Register';
 import Login from './pages/Get_Started/Login';
 import Account_Deleted from './pages/Get_Started/account_deleted';
+import ResetPasswordRequest from './pages/Get_Started/ResetPasswordRequest';
+import ResetPasswordVerify from './pages/Get_Started/ResetPasswordVerify';
+import ResetPassword from './pages/Get_Started/ResetPassword';
 
 {/* Account_Profile part */}
 import Account_Profile from './pages/Account_Profile/Account_Profile';
@@ -85,7 +88,7 @@ function App() {
   const [account, setAccount] = useState(null);
 
   // Define the paths where AppBar and Footer should not be rendered
-  const noAppBarFooterPaths = ['/get_started', '/login', '/register', '/account_deleted'
+  const noAppBarFooterPaths = ['/get_started', '/login', '/register', '/account_deleted', '/reset_password/request', '/reset_password/verify', '/reset_password/reset'
                               ,'/collectionproduct', '/rewardproduct','/attendance','/bookings','/eventbackend','/AddEvent','/historypayment'];
   const shouldShowAppBarFooter = !noAppBarFooterPaths.includes(location.pathname);
 
@@ -142,6 +145,9 @@ function App() {
       <Route path="/login" element={<GuestRoute element={Login} />} />
       <Route path="/register" element={<GuestRoute element={Register} />} />
       <Route path="/account_deleted" element={<GuestRoute element={Account_Deleted} />} />
+      <Route path="/reset_password/request" element={<GuestRoute element={ResetPasswordRequest} />} />
+      <Route path="/reset_password/verify" element={<GuestRoute element={ResetPasswordVerify} />} />
+      <Route path="/reset_password/reset" element={<GuestRoute element={ResetPassword} />} />
       {/* ^ End of guests only ^ */}
       
       {/* Routes available for users and guests  */}

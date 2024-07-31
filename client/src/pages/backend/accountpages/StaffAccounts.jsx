@@ -366,6 +366,7 @@ function StaffAccounts() {
                                 onChange={handleEditStaffAccount.handleChange}
                                 error={handleEditStaffAccount.touched.role && Boolean(handleEditStaffAccount.errors.role)}
                                 // helperText={handleEditStaffAccount.touched.role && handleEditStaffAccount.errors.role}
+                                inputProps={{ sx: { textAlign: 'left' } }} // Ensures text is aligned to the left
                                 sx={{ display: 'absolute' }}
                             >
                                 {[ 'Admin' ].map((role) => (
