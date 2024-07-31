@@ -314,7 +314,7 @@ const [leafPointsMessage, setLeafPointsMessage] = useState('');
               onClick={handleNotificationClick}
               sx={{ marginLeft: { xs: '0.5rem', md: '1rem', color: 'grey' } }}
             >
-              <Badge badgeContent={notifications ? notifications.length : 0} color="black">
+              <Badge badgeContent={notifications ? notifications.length : 0} color="black" >
                 <Notifications />
               </Badge>
             </IconButton>

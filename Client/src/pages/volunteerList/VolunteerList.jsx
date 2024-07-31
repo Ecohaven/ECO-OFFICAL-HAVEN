@@ -72,8 +72,7 @@ const VolunteerList = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.put(`http://localhost:3001/volunteer/updatevolunteer/${editVolunteer.id}`, formData);
-      console.log('Update Response:', response.data);
+      await axios.put(`http://localhost:3001/volunteer/updatevolunteer/${editVolunteer.id}`, formData);
       const updatedVolunteers = await axios.get('http://localhost:3001/volunteer/getvolunteer');
       setVolunteers(updatedVolunteers.data);
       setEditVolunteer(null);
@@ -86,8 +85,27 @@ const VolunteerList = () => {
   };
 
   return (
-    <Box sx={{ padding: 2, marginLeft: isMobile ? '0' : '280px' }}>
-      <Typography variant="h4" style={{ textAlign: 'left', fontWeight: 'bold', marginTop: '30px' }} gutterBottom>
+    <Box 
+      sx={{ 
+        padding: 2, 
+        marginLeft: isMobile ? '0' : '280px', 
+        marginRight: isMobile ? '0' : 'auto',
+        maxWidth: '1200px', // Ensure content width is not too wide
+        width: '100%',
+        boxSizing: 'border-box'
+      }}
+    >
+      <Typography 
+        variant="h4" 
+        sx={{ 
+          textAlign: 'left', 
+          fontWeight: 'bold', 
+          marginTop: '30px', 
+          marginBottom: '20px',
+          width: '100%',
+        }} 
+        gutterBottom
+      >
         Volunteer List
       </Typography>
       {loading && <CircularProgress />}
@@ -97,7 +115,7 @@ const VolunteerList = () => {
       {volunteers.length === 0 && !loading && !error && !successMessage ? (
         <Typography>No volunteers found.</Typography>
       ) : (
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} sx={{ mb: 4 }}>
           <Table>
             <TableHead>
               <TableRow>
@@ -116,7 +134,14 @@ const VolunteerList = () => {
                   <TableCell>{volunteer.phone}</TableCell>
                   <TableCell>{volunteer.interest}</TableCell>
                   <TableCell>
-                    <Box sx={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 1 }}>
+                    <Box 
+                      sx={{ 
+                        display: 'flex', 
+                        flexDirection: isMobile ? 'column' : 'row', 
+                        gap: 1, 
+                        alignItems: isMobile ? 'flex-start' : 'center'
+                      }}
+                    >
                       <Button 
                         variant="contained" 
                         color="success" 
@@ -142,7 +167,22 @@ const VolunteerList = () => {
       )}
 
       {editVolunteer && (
-        <Box component="form" onSubmit={handleUpdate} sx={{ mt: 3, p: 2, border: '1px solid #ddd', borderRadius: 1, backgroundColor: '#f9f9f9', marginLeft: isMobile ? '0' : '50px' }}>
+        <Box 
+          component="form" 
+          onSubmit={handleUpdate} 
+          sx={{ 
+            mt: 3, 
+            p: 2, 
+            border: '1px solid #ddd', 
+            borderRadius: 1, 
+            backgroundColor: '#f9f9f9',
+            boxShadow: 1,
+            width: '100%',
+            maxWidth: '600px', // Limit max width for larger screens
+            marginLeft: isMobile ? '0' : 'auto',
+            marginRight: isMobile ? '0' : 'auto'
+          }}
+        >
           <Typography variant="h6" gutterBottom>Update Volunteer</Typography>
           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
             <TextField
@@ -173,7 +213,7 @@ const VolunteerList = () => {
               onChange={(e) => setFormData({ ...formData, interest: e.target.value })}
               sx={{ mb: 2 }}
             />
-            <Box sx={{ display: 'flex', gap: 1 }}>
+            <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
               <Button type="submit" variant="contained" color="primary">Update Volunteer</Button>
               <Button type="button" variant="outlined" color="secondary" onClick={() => setEditVolunteer(null)}>Cancel</Button>
             </Box>

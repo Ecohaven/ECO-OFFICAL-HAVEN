@@ -3,6 +3,8 @@ import { Grid, Typography, Modal, Box, Button, useMediaQuery } from '@mui/materi
 import { useTheme } from '@mui/material/styles';
 import axios from 'axios';
 import { format, isSameDay, isBefore, startOfDay, parseISO } from 'date-fns';
+import bannerImage from '../../assets/images/eventbanner.jpg';
+import mobileBannerImage from '../../assets/images/eventbanner.jpg'; 
 
 const EventDataTable = () => {
   const theme = useTheme();
@@ -78,23 +80,43 @@ const EventDataTable = () => {
 
   return (
     <>
- <Box sx={{ p: 2 }}/>
-  {/* banner */}
-      <div className="headbanner">
-        <img src="../../src/assets/images/eventbanner.jpg" alt="Banner" />
-      </div>
-      <Grid container spacing={3} justifyContent="center">
+      {/* Banner Section */}
+      <Box
+        sx={{
+          position: 'relative',
+          width: '100%',
+          height: isMobile ? '250px' : '400px',
+          backgroundImage: `url(${isMobile ? mobileBannerImage : bannerImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        
+      </Box>
+
+      <Grid container spacing={{ xs: 3, sm: 10, md: 4 }} justifyContent="center">
         {events.map((event) => {
           const expired = isEventExpired(event.endDate);
           return (
-            <Grid item key={event.id} xs={12} sm={6} md={4}>
+            <Grid item key={event.id} xs={11} sm={6} md={4}>
               <Box
                 sx={{
                   p: 2,
-                  width: '100%',
+                  width: {
+                    xs: '100%',   // Full width for extra-small screens
+                    sm: '80%',    // 80% width for small screens
+                  },
                   maxWidth: 400,
-                  marginLeft: '90px',
+                  marginLeft: {
+                    xs: '2px',   // extra-small screens
+                    md: '25px' // medium and up
+                  },
                   marginBottom:'20px',
+                  marginTop:'60px',
                   border: '5px solid green',
                   borderRadius: 5,
                   cursor: 'pointer',
@@ -116,7 +138,7 @@ const EventDataTable = () => {
                 />
                 <Typography variant="h7" sx={{ mt: 4, mb: 2, fontWeight: 'bold', color: 'black', fontSize: '20px' }}>
                   {event.eventName}
-                </Typography>
+                </Typography> 
                 <Typography variant="body1" color="black" sx={{ mb: 2, mt: 1 }}>
                 </Typography>
                 <Typography variant="h7" color="black">
@@ -136,7 +158,7 @@ const EventDataTable = () => {
                 )}
                 {expired && (
                   <Typography variant="body2" color="red" sx={{ mt: 2 }}>
-                    Event has passed. No bookings allowed.You can click and view information if you would like to.
+                    Event has passed. No bookings allowed. You can click and view information if you would like to.
                   </Typography>
                 )}
               </Box>
@@ -186,32 +208,37 @@ const EventDataTable = () => {
                 <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', color: 'black' }}>
                   {selectedEvent.eventName}
                 </Typography>
-                <Typography variant="body1" color={'black'} gutterBottom>
-                 Description : {selectedEvent.description}
+                <Typography variant="body1" color="black">
+                  <strong>Date: {formatDatesRange(selectedEvent.startDate, selectedEvent.endDate)}</strong>
                 </Typography>
-                <Typography variant="body1" color={'black'}>
-                  <strong>Location:</strong> {selectedEvent.location}
+                <Typography variant="body1" color="black">
+                  <strong>Time: {selectedEvent.time}</strong>
                 </Typography>
-                <Typography variant="body1" color={'black'}>
-                  <strong>Date:</strong> {formatDatesRange(selectedEvent.startDate, selectedEvent.endDate)}
+                <Typography variant="body1" color="black">
+                  <strong>Description: </strong> {selectedEvent.description}
                 </Typography>
-                <Typography variant="body1" color={'black'}>
-                  <strong>Time:</strong> {selectedEvent.time}
+                <Typography variant="body1" color="black">
+                  <strong>Location: </strong> {selectedEvent.location}
                 </Typography>
-                <Typography variant="body1" color={'black'}>
-                  <strong>Leaf Points:</strong> {selectedEvent.leafPoints}
-                </Typography>
-                <Typography variant="body1" color={'black'}>
-                  <strong>Admission:</strong> {selectedEvent.status}
-                </Typography>
-                {selectedEvent.status !== 'Free' && (
-                  <Typography variant="body1">
-                    <strong>Amount:</strong> {selectedEvent.amount}
+                {selectedEvent.status === 'Free' ? (
+                  <Typography variant="body1" color="black">
+                    <strong>Admission: Free</strong> 
+                  </Typography>
+                ) : (
+                  <Typography variant="body1" color="black">
+                    <strong>Amount: </strong> ${selectedEvent.amount}
                   </Typography>
                 )}
-                <Button variant="contained" onClick={handleCloseEventModal} sx={{ mt: 2, fontWeight: 'bold', bgcolor: 'green', color: 'white' }}>
-                  Close
-                </Button>
+                <Box sx={{ mt: 2 }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleCloseEventModal}
+                    sx={{ mr: 2 }}
+                  >
+                    Close
+                  </Button>
+                </Box>
               </Box>
             </>
           )}
