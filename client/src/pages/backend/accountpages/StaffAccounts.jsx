@@ -256,19 +256,17 @@ function StaffAccounts() {
     }, []);
 
     return (
-        <Grid container spacing={2}>
-            <Grid item xxl={1} xl={2} md={3} sm={0}>
-            </Grid>
-            <Grid item xxl={11} xl={10} md={9} sm={12}>
+        <Box id='staff-account-profile-box'>
                 <div style={{ maxWidth: '1400px', margin: '10px' }}>
-                    <Typography variant="h4" sx={{ textAlign: 'left', marginBottom: 2 }}>Staff Accounts</Typography>
+                    <Typography variant="h4" sx={{ textAlign: 'left', marginBottom: 2, fontWeight: 'bold' }}>Staff Accounts</Typography>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'left' }}>
-                        <TextField id="search" variant="outlined"
+                    <Box  sx={{ display: 'flex', justifyContent: 'left' }}>
+                        <TextField id="search" variant="outlined" 
                             sx={{ width: 300, textAlign: 'left' }}
+                            size="small"
                             placeholder="Search..."
                             value={search}
-                            onChange={searchStaffAccounts}
+                            onChange={searchStaffAccounts} className='searchbar'
                         />
                         <Button variant="contained" onClick={clearSearch}
                             sx={{ marginLeft: 2, paddingLeft: 4, paddingRight: 4 }}
@@ -290,7 +288,7 @@ function StaffAccounts() {
                     }}
                     />
                 </div>
-            </Grid>
+            {/* </Grid> */}
 
             {/* Edit Staff Account popup */}
             {editPopup && (
@@ -430,8 +428,7 @@ function StaffAccounts() {
                 Staff account deleted successfully!
                 </Alert>
             </Snackbar>
-
-        </Grid>
+        </Box>
     )
 }
 

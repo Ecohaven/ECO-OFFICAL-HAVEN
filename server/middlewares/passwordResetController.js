@@ -5,9 +5,11 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
 const yup = require('yup');
-const { Account } = require('../models');
+const { Account, StaffAccount } = require('../models');
 
 require('dotenv').config();
+
+// Reset Password for user accounts
 
 // Generate and send reset token
 const sendVerificationCode = async (req, res) => {
@@ -31,8 +33,7 @@ const sendVerificationCode = async (req, res) => {
 
         // Save verification code and expiration time
         account.verificationCode = verificationCode;
-        // account.verificationCodeExpires = Date.now() + 600000; // 10 minutes
-        account.verificationCodeExpires = Date.now() + 60000; // 1 minute
+        account.verificationCodeExpires = Date.now() + 600000; // 10 minutes
 
         await account.save();
 
@@ -40,13 +41,13 @@ const sendVerificationCode = async (req, res) => {
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: process.env.EMAIL,
-                pass: process.env.EMAIL_PASSWORD
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
             }
         });
 
         const mailOptions = {
-            from: process.env.EMAIL,
+            from: process.env.EMAIL_USER,
             to: email,
             subject: 'EcoHaven: Password Reset',
             text: `Your verification code is ${verificationCode}`
@@ -186,4 +187,5 @@ const resetPassword = async (req, res) => {
     }
 }
 
+// Reset Password for staff accounts
 module.exports = { sendVerificationCode, verifyCode, resetPassword };

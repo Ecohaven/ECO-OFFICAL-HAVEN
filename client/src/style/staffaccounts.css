@@ -29,3 +29,17 @@
 .account-details {
     font-weight: bold;
 }
+
+@media (max-width: 960px) {
+    #staff-account-profile-box {
+        margin-left: 0;
+    }
+    .searchbar {
+        max-width: 200px;
+    }
+}
+@media (min-width: 961px) {
+    #staff-account-profile-box {
+        margin-left: 250px;
+    }
+}

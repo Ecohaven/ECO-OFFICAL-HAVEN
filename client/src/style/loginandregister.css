@@ -54,3 +54,13 @@
   color: #19682c;
   text-decoration: underline;
 }
+.login-register-forms-stepper {
+  margin-top: 3rem;
+  margin-bottom: 2.5rem;
+  width: 60%;
+  /* put the stepper in the center */
+  margin-left: auto;
+  margin-right: auto;
+
+
+}

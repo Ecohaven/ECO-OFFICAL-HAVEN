@@ -52,7 +52,14 @@ const HomePage = () => {
 
   const handleBookNow = (event) => {
     if (isEventExpired(event.startDate)) return;
-    navigate('/BookingForm', { state: { event } });
+    // check if user is logged in
+    if (!localStorage.getItem('accessToken')) {
+      navigate('/login');
+      return;
+    }
+    else {
+      navigate('/BookingForm', { state: { event } });
+    }
   };
 
   const isEventExpired = (startDate) => {

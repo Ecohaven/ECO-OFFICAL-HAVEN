@@ -201,6 +201,7 @@ function App() {
   const staffRoutes = ( // Staff routes are protected by StaffAuthorization HOC
     // Staff routes start with "/staff" e.g. "/staff/staff_login"
     <Routes>
+      <Route path="*" element={<Navigate to="/staff/dashboard" />} /> {/* Redirect to dashboard if invalid path */}
       <Route path="/staff_login" element={<GuestRoute element={StaffLogin} />} />
 
       <Route path={"/account"} element={<StaffAuthorization element={Staff_Account_Profile} allowedRoles={['Admin']} />} />

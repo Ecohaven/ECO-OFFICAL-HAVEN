@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, TextField, Button, Grid, Typography } from '@mui/material';
+import { Box, TextField, Button, Grid, Typography, Stepper, Step, StepLabel } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
@@ -7,7 +7,6 @@ import '../../style/loginandregister.css'
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import http from '/src/http';
-
 
 function ResetPasswordVerify() {
     const navigate = useNavigate();
@@ -68,6 +67,12 @@ function ResetPasswordVerify() {
         }
     });
 
+    const steps = [
+      'Enter Email',
+      'Verify Code',
+      'Reset Password'
+    ];
+
   return (
     <Box>
       <Grid container spacing={2} className='login-register-elements'>
@@ -75,6 +80,15 @@ function ResetPasswordVerify() {
           <img src="/src/assets/images/register_bg.png" alt="eco-haven" className='eco-haven-image'/>
         </Grid>
         <Grid item md={7} xs={12} className='login-register-forms'>
+          <Box className="login-register-forms-stepper">
+            <Stepper activeStep={1} alternativeLabel>
+              {steps.map((label) => (
+                <Step key={label}>
+                  <StepLabel>{label}</StepLabel>
+                </Step>
+              ))}
+            </Stepper>
+          </Box>
           <div className="login-register">
             <Typography variant="h5" sx={{ my: 2, textAlign: 'left', fontWeight: 'bold', mt: '4.5rem' }}>
               Enter the verification code sent to your email

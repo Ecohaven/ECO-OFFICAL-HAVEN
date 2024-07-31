@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, TextField, Button, Grid, Typography } from '@mui/material';
+import { Box, TextField, Button, Grid, Typography, Stepper, Step, StepLabel } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
@@ -43,8 +43,7 @@ function ResetPasswordRequest() {
         const { resetToken } = response.data;
           localStorage.setItem('resetToken', JSON.stringify({
             token: resetToken,
-            // expires: Date.now() + 600000 // 10 minutes from now
-            expires: Date.now() + 60000 // 1 minute from now
+            expires: Date.now() + 600000 // 10 minutes from now
           })); 
         navigate('/reset_password/verify'); // Redirect to verify page with email
       }).catch((err) => {
@@ -60,6 +59,12 @@ function ResetPasswordRequest() {
     }
   });
 
+  const steps = [
+    'Enter Email',
+    'Verify Code',
+    'Reset Password'
+  ];
+
   return (
     <Box>
       <Grid container spacing={2} className='login-register-elements'>
@@ -67,6 +72,15 @@ function ResetPasswordRequest() {
           <img src="/src/assets/images/register_bg.png" alt="eco-haven" className='eco-haven-image'/>
         </Grid>
         <Grid item md={7} xs={12} className='login-register-forms'>
+          <Box className="login-register-forms-stepper">
+            <Stepper activeStep={0} alternativeLabel>
+              {steps.map((label) => (
+                <Step key={label}>
+                  <StepLabel>{label}</StepLabel>
+                </Step>
+              ))}
+            </Stepper>
+          </Box>
           <div className='get-started'>
             <Link to="/login" className='get-started-link'>&lt; Back to Login</Link>
           </div>

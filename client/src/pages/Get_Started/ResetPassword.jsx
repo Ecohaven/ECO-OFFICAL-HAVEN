@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { TextField, Button, Typography, Box, Grid } from '@mui/material';
+import { TextField, Button, Typography, Box, Grid, Stepper, Step, StepLabel } from '@mui/material';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import http from '/src/http';
@@ -89,6 +89,12 @@ function ResetPassword() {
     }
   });
 
+  const steps = [
+    'Enter Email',
+    'Verify Code',
+    'Reset Password'
+  ];
+
   return (
     <Box>
       <Grid container spacing={2} className='login-register-elements'>
@@ -96,7 +102,17 @@ function ResetPassword() {
           <img src="/src/assets/images/register_bg.png" alt="eco-haven" className='eco-haven-image'/>
         </Grid>
         <Grid item md={7} xs={12} className='login-register-forms'>
+          <Box className="login-register-forms-stepper">
+            <Stepper activeStep={2} alternativeLabel>
+              {steps.map((label) => (
+                <Step key={label}>
+                  <StepLabel>{label}</StepLabel>
+                </Step>
+              ))}
+            </Stepper>
+          </Box>
           <div className="login-register">
+            
             <Typography variant="h5" sx={{ my: 2, textAlign: 'left', fontWeight: 'bold', mt: '4.5rem' }}>
               Enter your new password
             </Typography>

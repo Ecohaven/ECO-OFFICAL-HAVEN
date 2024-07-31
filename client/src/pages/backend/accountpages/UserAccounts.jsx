@@ -227,20 +227,18 @@ function UserAccounts() {
 
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xxl={1} xl={2} md={3} sm={0}>
-      </Grid>
-      <Grid item xxl={11} xl={10} md={9} sm={12}>
+    <Box id='staff-account-profile-box'>
       <div
       style={{ maxWidth: '1400px', margin: '10px' }}
       >
-        <Typography variant="h4" sx={{ textAlign: 'left', marginBottom: 2 }}>User Accounts</Typography>
+        <Typography variant="h4" sx={{ textAlign: 'left', marginBottom: 2, fontWeight: 'bold' }}>User Accounts</Typography>
         <Box sx={{ display: 'flex', justifyContent: 'left', marginBottom: 2 }}>
           <TextField id="search" variant="outlined"
             sx={{ width: 300, textAlign: 'left' }}
+            size='small'
             placeholder="Search..."
             value={search}
-            onChange={searchUserAccounts}
+            onChange={searchUserAccounts} className='searchbar'
           />
           <Button variant="contained" color="secondary" onClick={clearSearch}
             sx={{ marginLeft: 2, paddingLeft: 4, paddingRight: 4 }}
@@ -257,7 +255,6 @@ function UserAccounts() {
           }}
         />
       </div>
-      </Grid>
 
       {/* Edit User Account popup Form */}
       {editPopup && (
@@ -370,7 +367,7 @@ function UserAccounts() {
           User account deleted successfully!
         </Alert>
       </Snackbar>
-    </Grid>
+    </Box>
   )
 }
 

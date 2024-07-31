@@ -1,6 +1,6 @@
 import React from 'react'
 import { useContext, useEffect } from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, Grid } from '@mui/material';
 import AccountContext from '/src/contexts/AccountContext';
 import dayjs from 'dayjs';
 import '../../style/staffaccounts.css';
@@ -11,8 +11,7 @@ function Staff_Account_Profile() {
     console.log("Account data:", account);
 
     return (
-      <>
-      <Box 
+      <Box id='staff-account-profile-box'
         sx={{ 
           display: 'flex', 
           justifyContent: 'center', 
@@ -24,7 +23,7 @@ function Staff_Account_Profile() {
           sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '80%', maxWidth: 1000,
             margin: 5, padding: 2, border: 1, borderRadius: 2, borderColor: 'grey.500',
             backgroundColor: '#19682c', boxShadow: 5
-           }}>
+          }}>
             <Typography variant="h3" align="center" fontWeight='bold'
             sx={{  }}>
                 <span style={{ color: 'white' }}>Eco</span>
@@ -52,11 +51,9 @@ function Staff_Account_Profile() {
               Birthdate: 
               <span className='account-details'>{ dayjs(account.birthdate).format('LL') }</span>
             </p>
-
             </Box>
         </Box>
       </Box>
-      </>
     )
 }
 
