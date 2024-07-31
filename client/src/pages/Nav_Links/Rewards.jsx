@@ -36,16 +36,21 @@ function Rewards() {
     <div>
 
       {/* banner */}
-      <div className="headbanner">
+      <div className="rewardbanner">
         <img src="../../src/assets/images/rewardsbanner.png" alt="Banner" />
-        <h1>Rewards</h1>
       </div>
 
       {/* greenreward */}
       <div className='greenreward'>
         <h1>Green rewards</h1>
         <p>Earn leaves and exchange them for rewards! It takes less than 2 minutes to create an account. Sign up with us now!</p>
-        <button className='signupbutton'><a href='/redemptionshop'>Sign up now!</a></button> {/* change link afterwards */}
+        <button
+          className='signupbutton'
+          disabled={!!account}
+          style={{ cursor: account ? 'not-allowed' : 'pointer', color: 'white'}}
+        >
+          <a href='/get_started' style={{ textDecoration: 'none', color: 'inherit' }}>Sign up now!</a>
+        </button>
       </div>
 
       {/* divider */}
@@ -99,7 +104,7 @@ function Rewards() {
         {account ? (
           <button className='redeempagebutton'><a href='/redemptionshop'>Redemption Shop</a></button>
         ) : (
-          <button className='redeempagebutton' disabled style={{cursor: 'not-allowed'}}>Redemption Shop</button>
+          <button className='redeempagebutton' disabled style={{ cursor: 'not-allowed' }}>Redemption Shop</button>
         )}
         <p>*Find more rewards at our redemption shop</p>
       </div>
@@ -108,7 +113,13 @@ function Rewards() {
       <div className='greenreward2'>
         <h1>Green rewards</h1>
         <p>Earn leaves and exchange them for rewards! It takes less than 2 minutes to create an account. Sign up with us now!</p>
-        <button className='signupbutton'><a href='/redemptionshop'>Sign up now!</a></button> {/* change link afterwards */}
+        <button
+          className='signupbutton'
+          disabled={!!account}
+          style={{ cursor: account ? 'not-allowed' : 'pointer', color: '#14772B'}}
+        >
+          <a href='/get_started' style={{ textDecoration: 'none', color: 'inherit' }}>Sign up now!</a>
+        </button>
         <p className='qn'>Any questions? Check out our <a href='/faq'>FAQ</a> here</p>
       </div>
     </div>

@@ -70,9 +70,8 @@ function RedemptionShop() {
     <div>
 
       {/* banner */}
-      <div className="headbanner">
+      <div className="rewardbanner">
         <img src="../../src/assets/images/redemptionbanner.png" alt="Banner" />
-        <h1>Redemption Shop</h1>
       </div>
 
       {/* back */}

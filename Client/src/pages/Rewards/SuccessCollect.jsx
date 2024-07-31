@@ -39,9 +39,8 @@ function Rewards() {
       
       {/* banner */}
       <Grid item>
-        <div className="headbanner">
+        <div className="rewardbanner">
           <img src="../../src/assets/images/successbanner.png" alt="Banner" />
-          <h1>Thank you!</h1>
         </div>
       </Grid>
 

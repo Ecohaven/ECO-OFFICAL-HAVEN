@@ -10,9 +10,8 @@ const AboutUs = () => {
         <div>
    <Box sx={{ p: 2 }}/>
             {/* banner */}
-            <div className="headbanner">
-                <img src="../../src/assets/images/aboutusbanner.jpg" alt="Banner"  style={{ width: '100%', height: 'auto' }}/>
-                <h1>About Us</h1>
+            <div className="aboutbanner">
+                <img src="../../src/assets/images/aboutusbanner.png" alt="Banner"  style={{ width: '100%', height: 'auto' }}/>
             </div>
 
             {/* heading */}

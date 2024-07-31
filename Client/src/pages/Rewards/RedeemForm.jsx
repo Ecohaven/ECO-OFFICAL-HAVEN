@@ -96,9 +96,8 @@ function RewardForm() {
     return (
         <div className='rewardform'>
             {/* banner */}
-            <div className="headbanner">
-                <img src="../../src/assets/images/redemptionbanner.png" alt="Banner" />
-                <h1>Redeem Form</h1>
+            <div className="rewardbanner">
+                <img src="../../src/assets/images/redeemformbanner.png" alt="Banner" />
             </div>
 
             {/* back button */}
