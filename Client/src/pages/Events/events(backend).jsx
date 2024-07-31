@@ -411,13 +411,16 @@ const handleUpdateEvent = async (e) => {
                         </div>
                         <div className="form-field">
                             <TextField
-                                label="Description"
-                                name="description"
-                                value={formValues.description}
-                                onChange={handleInputChange}
-                                fullWidth
-                                required
-                            />
+        label="Description"
+        name="description"
+        value={formValues.description}
+        onChange={handleInputChange}
+        fullWidth
+        required
+        multiline
+        rows={5} // Adjust the number of rows to make the TextField taller
+        
+    />
                         </div>
                         <div className="form-field">
                             <TextField

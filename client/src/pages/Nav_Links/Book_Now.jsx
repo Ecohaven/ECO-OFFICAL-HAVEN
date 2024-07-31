@@ -14,7 +14,7 @@ import mobileBannerImage from '../../assets/images/Eco-Banner.jpg';
 const BookNowPage = () => {
   const [events, setEvents] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState('All'); // Initialize to 'All'
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -48,7 +48,7 @@ const BookNowPage = () => {
     if (selectedCategory === 'All') {
       setFilteredEvents(events);
     } else {
-      setFilteredEvents(events.filter(event => event.category === selectedCategory));
+      setFilteredEvents(events.filter(event => event.category.toLowerCase() === selectedCategory.toLowerCase()));
     }
   };
 
@@ -73,16 +73,12 @@ const BookNowPage = () => {
   const formatDateRange = (startDate, endDate) => {
     const formattedStartDate = format(new Date(startDate), 'dd MMM yyyy');
     const formattedEndDate = format(new Date(endDate), 'dd MMM yyyy');
-    if (formattedStartDate === formattedEndDate) {
-      return formattedStartDate;
-    } else {
-      return `${formattedStartDate} - ${formattedEndDate}`;
-    }
+    return formattedStartDate === formattedEndDate ? formattedStartDate : `${formattedStartDate} - ${formattedEndDate}`;
   };
 
   const ResponsiveBanner = () => {
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm')); // Check if the screen size is small or below
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     return (
       <Box sx={{ p: 2 }}>
@@ -91,16 +87,16 @@ const BookNowPage = () => {
             sx={{
               width: '90%',
               height: '100px',
-              backgroundColor: 'lightgreen', // Background color for the text element
-              color: '#000', 
-              backgroundImage: `url(${mobileBannerImage})`, // Background image for the text element
+              backgroundColor: 'lightgreen',
+              color: '#000',
+              backgroundImage: `url(${mobileBannerImage})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              padding: '20px', // Padding for better spacing
-              textAlign: 'center', // Center align text
+              padding: '20px',
+              textAlign: 'center',
             }}
           >
           </Box>
@@ -151,12 +147,12 @@ const BookNowPage = () => {
             </Grid>
             <Grid item>
               <Button
-                variant={selectedCategory === 'Upcycling' ? 'contained' : 'outlined'}
-                onClick={() => setSelectedCategory('Upcycling')}
+                variant={selectedCategory === 'upcycling' ? 'contained' : 'outlined'}
+                onClick={() => setSelectedCategory('upcycling')}
                 sx={{
                   borderColor: '#ddd',
-                  color: selectedCategory === 'Upcycling' ? 'white' : '#333',
-                  backgroundColor: selectedCategory === 'Upcycling' ? 'green' : 'transparent',
+                  color: selectedCategory === 'upcycling' ? 'white' : '#333',
+                  backgroundColor: selectedCategory === 'upcycling' ? 'green' : 'transparent',
                 }}
                 startIcon={<BuildIcon />}
               >
@@ -165,12 +161,12 @@ const BookNowPage = () => {
             </Grid>
             <Grid item>
               <Button
-                variant={selectedCategory === 'Workshop' ? 'contained' : 'outlined'}
-                onClick={() => setSelectedCategory('Workshop')}
+                variant={selectedCategory === 'workshop' ? 'contained' : 'outlined'}
+                onClick={() => setSelectedCategory('workshop')}
                 sx={{
                   borderColor: '#ddd',
-                  color: selectedCategory === 'Workshop' ? 'white' : '#333',
-                  backgroundColor: selectedCategory === 'Workshop' ? 'green' : 'transparent',
+                  color: selectedCategory === 'workshop' ? 'white' : '#333',
+                  backgroundColor: selectedCategory === 'workshop' ? 'green' : 'transparent',
                 }}
                 startIcon={<WorkshopIcon />}
               >
@@ -179,12 +175,12 @@ const BookNowPage = () => {
             </Grid>
             <Grid item>
               <Button
-                variant={selectedCategory === 'Garden Walk' ? 'contained' : 'outlined'}
-                onClick={() => setSelectedCategory('Garden Walk')}
+                variant={selectedCategory === 'garden-walk' ? 'contained' : 'outlined'}
+                onClick={() => setSelectedCategory('garden-walk')}
                 sx={{
                   borderColor: '#ddd',
-                  color: selectedCategory === 'Garden Walk' ? 'white' : '#333',
-                  backgroundColor: selectedCategory === 'Garden Walk' ? 'green' : 'transparent',
+                  color: selectedCategory === 'garden-walk' ? 'white' : '#333',
+                  backgroundColor: selectedCategory === 'garden-walk' ? 'green' : 'transparent',
                 }}
                 startIcon={<LocalFloristIcon />}
               >
@@ -231,33 +227,23 @@ const BookNowPage = () => {
                     alt={event.eventName}
                     style={{ width: '100%', height: 200, objectFit: 'cover', borderRadius: 10 }}
                   />
-                  <Typography variant="body1" color="black" sx={{ fontWeight: 'bold', mt: 2 }}>
+<Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: 2, textAlign: 'left', color: 'black' }}>
+                    Location:{event.location}
+                  </Typography>
+                  <Typography variant="body1" color="black" sx={{ fontWeight: 'bold', marginTop: 2, textAlign: 'left' }}>
                     Date: {formatDateRange(event.startDate, event.endDate)}
                   </Typography>
-                  <Typography variant="body1" color="black" sx={{ fontWeight: 'bold', mt: 2 }}>
-                    {event.status === 'Paid' ? 'Price' : 'Admission: Free'}
-                    {event.status === 'Paid' && (
-                      <>: ${event.amount}</>
-                    )}
-                  </Typography>
-                  <Typography variant="body2" color="black" sx={{ fontWeight: 'bold', mt: 2 }}>
-                    Time: {event.startTime} - {event.endTime}
+                   <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: 2, textAlign: 'left', color: 'black' }}>
+                    Time: {event.time}
                   </Typography>
                   <Button
                     variant="contained"
+                    color="primary"
+                    sx={{ marginTop: 2, display: 'block', mx: 'auto' }}
                     onClick={() => handleBookNow(event)}
                     disabled={isEventExpired(event.startDate)}
-                    sx={{
-                      mt: 2,
-                      width: '100%',
-                      bgcolor: 'green',
-                      color: 'white',
-                      '&:hover': {
-                        bgcolor: 'darkgreen',
-                      },
-                    }}
                   >
-                    {isEventExpired(event.startDate) ? 'Event Expired' : 'Book Now'}
+                    {isEventExpired(event.startDate) ? 'Expired' : 'Book Now'}
                   </Button>
                 </Box>
               </Grid>
@@ -269,9 +255,9 @@ const BookNowPage = () => {
   };
 
   return (
-    <Box>
+    <div>
       <ResponsiveBanner />
-    </Box>
+    </div>
   );
 };
 
