@@ -1,17 +1,24 @@
+body {
+    overflow-x: hidden;
+}
+
 /* banner */
 .headbanner {
     position: relative;
     width: 100%;
-    height: 400px; /* Fixed height for the banner */
+    height: 400px;
+    /* Fixed height for the banner */
     text-align: center;
     margin-bottom: 50px;
-    overflow: hidden; /* Hides any overflowed parts of the image */
+    overflow: hidden;
+    /* Hides any overflowed parts of the image */
 }
 
 .headbanner img {
     width: 100%;
     height: 110%;
-    object-fit: cover; /* Ensures the image covers the entire container */
+    object-fit: cover;
+    /* Ensures the image covers the entire container */
 }
 
 .headbanner h1 {
@@ -21,9 +28,11 @@
     transform: translate(-50%, -50%);
     font-size: 40px;
     font-weight: bold;
-    color: black; /* Ensure the text is readable on the banner */
+    color: black;
+    /* Ensure the text is readable on the banner */
     margin: 0;
-    padding: 0 10px; /* Optional: Adds some padding to prevent text from touching edges */
+    padding: 0 10px;
+    /* Optional: Adds some padding to prevent text from touching edges */
 }
 
 .headbanner h1 {
@@ -35,17 +44,20 @@
 /* banner FOR REWARD */
 .rewardbanner {
     position: relative;
-    width: 1688.4px;
-    height: 379.6px; /* Fixed height for the banner */
+    width: 1520.4px;
+    height: 379.6px;
+    /* Fixed height for the banner */
     text-align: center;
     margin-bottom: 50px;
-    overflow: hidden; /* Hides any overflowed parts of the image */
+    overflow: hidden;
+    /* Hides any overflowed parts of the image */
 }
 
 .rewardbanner img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Ensures the image covers the entire container */
+    object-fit: cover;
+    /* Ensures the image covers the entire container */
 }
 
 /* banner for ABOUT US */
@@ -54,13 +66,15 @@
     width: 100%;
     text-align: center;
     margin-bottom: 50px;
-    overflow: hidden; /* Hides any overflowed parts of the image */
+    overflow: hidden;
+    /* Hides any overflowed parts of the image */
 }
 
 .aboutbanner img {
     width: 100%;
     height: 110%;
-    object-fit: cover; /* Ensures the image covers the entire container */
+    object-fit: cover;
+    /* Ensures the image covers the entire container */
 }
 
 /* greenreward */
@@ -158,8 +172,6 @@ h1 {
 }
 
 /* products */
-
-
 .rewards .product-item img {
     width: 200px;
     height: 200px;
@@ -168,18 +180,18 @@ h1 {
     margin: auto;
     border: 5px solid #14772B;
     border-radius: 15px;
-    margin-left: 175px;
+
 }
 
 .rewards .product-item h2 {
     margin-top: 30px;
-} 
 
+}
 
 .rewards .product-item .leaves {
     margin-top: -20px;
     margin-bottom: 20px;
-    margin-left: -140px;
+    margin-left: -180px;
 }
 
 /* greenreward2 */
@@ -283,37 +295,23 @@ h1 {
         margin-left: 10px;
     }
 
-    .rewards .product-item {
-        flex: 1 1 calc(50% - 20px); /* Adjust width to fit 2 items per row with some spacing */
-        margin-right: 10px;
-        margin-bottom: 20px; /* Add margin-bottom for spacing */
-    }
-
     .rewards h1 {
-        font-size: 2.5vw; /* Adjust font size for smaller screens */
+        font-size: 2.5vw;
+        /* Adjust font size for smaller screens */
         width: 90%;
     }
 
-    .rewards .product-item h2 {
-        font-size: 2.5vw; /* Adjust font size for smaller screens */
-        width: 100%;
-    }
-
-    .rewards .product-item:last-child {
-        margin-right: 50px;
-    }
-
-    .rewards p, .greenreward2 .qn {
-        font-size: 1.5vw; /* Adjust font size for smaller screens */
+    .rewards p,
+    .greenreward2 .qn {
+        font-size: 1.5vw;
+        /* Adjust font size for smaller screens */
         width: 90%;
-    }
-
-    .rewards .product-item img {
-        margin-left: 20px;
     }
 
     .rewards .product-item .leaves {
-        margin-left: 15px;
+        margin-top: -20px;
+        margin-bottom: 40px;
+        margin-left: 20px;
     }
 
 }
@@ -356,23 +354,35 @@ h1 {
         margin-left: 10px;
     }
 
-    .rewards .product-item h2 {
-        font-size: 4vw; /* Adjust font size for smaller screens */
-        width: 58%;
-    }
-
-    .rewards .product-item:last-child {
-        margin-right: -150px;
-    }
-
-    .rewards p, .greenreward2 .qn {
-        font-size: 2vw; /* Adjust font size for smaller screens */
+    .rewards p,
+    .greenreward2 .qn {
+        font-size: 2.5vw;
+        /* Adjust font size for smaller screens */
         width: 90%;
     }
 
-    .rewards .product-item .leaves {
-        margin-left: -80px;
-        font-size: 3vw;
+    .rewards .product-item img {
+        width: 200px;
+        height: 200px;
+        max-width: 100%;
+        display: block;
+        margin: auto;
+        border: 5px solid #14772B;
+        border-radius: 15px;
+        margin-left: 130px;
+
     }
-    
+
+    .rewards .product-item h2 {
+        padding-left: 230px;
+        font-size: 4vw;
+
+    }
+
+    .rewards .product-item .leaves {
+        margin-top: -20px;
+        margin-bottom: 30px;
+        margin-left: 25px;
+    }
+
 }

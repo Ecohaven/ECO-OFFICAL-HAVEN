@@ -532,39 +532,84 @@ const RewardTable = () => {
       </Button>
 
       {/* Add popup modal */}
-      <Modal open={openAdd} onClose={handleCloseAdd}>
-        <Box sx={{ width: 400 }}>
-          <h2 className='popup'>Add New Item</h2>
-          <hr></hr>
-          <TextField fullWidth margin="normal" label="Item Name" name="itemName" value={formValues.itemName} onChange={handleInputChange} />
-          <TextField fullWidth margin="normal" label="Leaves" name="leaves" type="number" value={formValues.leaves} onChange={handleInputChange} />
-          <TextField fullWidth margin="normal" label="Stock" name="stock" type="number" value={formValues.stock} onChange={handleInputChange} />
-          <TextField fullWidth margin="normal" label="Code" name="code" value={formValues.code} onChange={handleInputChange} />
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Category</InputLabel>
-            <Select
-              name="category"
-              value={formValues.category}
-              onChange={handleInputChange}
-            >
-              <MenuItem value="Bags and Acessories">Bags and Accessories</MenuItem>
-              <MenuItem value="Household">Household</MenuItem>
-              <MenuItem value="Craft and Hobbies">Craft and Hobbies</MenuItem>
-              <MenuItem value="Electronics">Electronics</MenuItem>
-              <MenuItem value="Lifestyle">Lifestyle</MenuItem>
-              <MenuItem value="Others/Miscellaneous">Others/Miscellaneous</MenuItem>
-            </Select>
-          </FormControl>
-          <input type="file" accept="image/*" onChange={handleFileChange} /> {/* Add file input */}
-          <Button variant="contained" onClick={handleSaveAdd} className='addbutton'>
-            Add
-          </Button>
-          <Button variant="contained" onClick={handleCloseAdd} className='cancelbutton'>
-            Cancel
-          </Button>
-          {errorAdding && <p style={{ color: 'red' }}>{errorAdding}</p>}
-        </Box>
-      </Modal>
+      <Modal
+  open={openAdd}
+  onClose={handleCloseAdd}
+  aria-labelledby="add-product-title"
+  aria-describedby="add-product-description"
+>
+  <Box sx={style}>
+    <Typography id="add-product-title" variant="h6" component="h2">
+      Add New Product
+    </Typography>
+
+    {/* Form Fields */}
+    <TextField
+      label="Item Name"
+      name="itemName"
+      value={formValues.itemName}
+      onChange={handleInputChange}
+      fullWidth
+      margin="normal"
+    />
+    <TextField
+      label="Leaves"
+      name="leaves"
+      value={formValues.leaves}
+      onChange={handleInputChange}
+      fullWidth
+      margin="normal"
+      type="number"
+    />
+    <TextField
+      label="Stock"
+      name="stock"
+      value={formValues.stock}
+      onChange={handleInputChange}
+      fullWidth
+      margin="normal"
+      type="number"
+    />
+    <TextField
+      label="Code"
+      name="code"
+      value={formValues.code}
+      onChange={handleInputChange}
+      fullWidth
+      margin="normal"
+    />
+    <FormControl fullWidth margin="normal">
+      <InputLabel>Category</InputLabel>
+      <Select
+        name="category"
+        value={formValues.category}
+        onChange={handleInputChange}
+      >
+        <MenuItem value="bags and accessories">Bags and Accessories</MenuItem>
+        <MenuItem value="lifestyle">Lifestyle</MenuItem>
+        <MenuItem value="craft and hobbies">Craft and Hobbies</MenuItem>
+        <MenuItem value="household">Household</MenuItem>
+        <MenuItem value="electronics">Electronics</MenuItem>
+      </Select>
+    </FormControl>
+    <input type="file" onChange={handleFileChange} />
+
+    {/* Error Message */}
+    {errorAdding && (
+      <Alert severity="error">{errorAdding}</Alert>
+    )}
+
+    {/* Popup Buttons */}
+    <div className="popup-buttons">
+      <Button className="popup-button" onClick={handleSaveAdd}>
+        Save
+      </Button>
+      <Button className="popup-button cancel" onClick={handleCloseAdd}>
+        Cancel
+      </Button>
+    </div>
+  </Box>
+</Modal>
 
 
       {/* edit popup */}

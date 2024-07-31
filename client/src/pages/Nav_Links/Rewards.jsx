@@ -82,24 +82,25 @@ function Rewards() {
         <h1>Use Leaves to get attractive rewards and nurture the environment.</h1>
 
         <Grid container spacing={4} className='products'>
-          {isMobile ? (
-            latestProducts.slice(0, 1).map((product) => (
-              <Grid item key={product.id} xs={12} className='product-item'>
-                <h2>{product.itemName}</h2>
-                <img src={`http://localhost:3001/eco/product-images/${product.itemimg}`} alt={product.itemName} />
-                <p className='leaves'><b>{product.leaves}</b> 🍃</p>
-              </Grid>
-            ))
-          ) : (
-            latestProducts.map((product) => (
-              <Grid item key={product.id} xs={12} sm={6} md={4} className='product-item'>
-                <h2>{product.itemName}</h2>
-                <img src={`http://localhost:3001/eco/product-images/${product.itemimg}`} alt={product.itemName} />
-                <p className='leaves'><b>{product.leaves}</b> 🍃</p>
-              </Grid>
-            ))
-          )}
-        </Grid>
+  {isMobile ? (
+    latestProducts.slice(0, 1).map((product) => (
+      <Grid item key={product.id} xs={12} className='product-item'>
+        <h2>{product.itemName}</h2>
+        <img src={`http://localhost:3001/eco/product-images/${product.itemimg}`} alt={product.itemName} />
+        <p className='leaves'><b>{product.leaves}</b> 🍃</p>
+      </Grid>
+    ))
+  ) : (
+    latestProducts.map((product) => (
+      <Grid item key={product.id} xs={12} sm={6} md={4} className='product-item'>
+        <h2>{product.itemName}</h2>
+        <img src={`http://localhost:3001/eco/product-images/${product.itemimg}`} alt={product.itemName} style={{ width: '200px', height: '200px' }} />
+        <p className='leaves'><b>{product.leaves}</b> 🍃</p>
+      </Grid>
+    ))
+  )}
+</Grid>
+
 
         {account ? (
           <button className='redeempagebutton'><a href='/redemptionshop'>Redemption Shop</a></button>

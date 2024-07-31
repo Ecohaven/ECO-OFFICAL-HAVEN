@@ -13,10 +13,8 @@ export default function Footer() {
                         <div className='col col1'>
                             <h6 className='section-title'>Overview</h6>
                             <a href='/about_us' className='links'>About Us</a>
-                            <a href='#!' className='links'>Workshops</a>
                             <a href='/events' className='links'>Events</a>
                             <a href='/rewards' className='links'>Rewards</a>
-                            <a href='/volunteer' className='links'>Volunteer</a>
                         </div>
                     </Grid>
 
@@ -24,9 +22,7 @@ export default function Footer() {
                         <div className='col col2'>
                             <h6 className='section-title'>Help & FAQs</h6>
                             <a href='/faq' className='links'>FAQs</a>
-                            <a href='#!' className='links'>Payment methods</a>
-                            <a href='#!' className='links'>Refunds</a>
-                            <a href='#!' className='links'>Terms & Conditions</a>
+                            <a href='/volunteer' className='links'>Volunteer</a>
                         </div>
                     </Grid>
 
