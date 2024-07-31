@@ -65,7 +65,7 @@ function ResetPassword() {
 
       http.post('/reset_password/reset', payload)
       .then(response => {
-        alert("Password updated successfully");
+        alert("Password updated successfully. You can now login with your new password.");
         localStorage.removeItem('resetToken');
         navigate('/login');
         

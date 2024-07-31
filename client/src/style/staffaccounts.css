@@ -31,7 +31,7 @@
 }
 
 @media (max-width: 960px) {
-    #staff-account-profile-box {
+    .staff-account-profile-box {
         margin-left: 0;
     }
     .searchbar {
@@ -39,7 +39,7 @@
     }
 }
 @media (min-width: 961px) {
-    #staff-account-profile-box {
+    .staff-account-profile-box {
         margin-left: 250px;
     }
 }

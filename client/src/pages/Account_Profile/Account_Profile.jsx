@@ -150,7 +150,11 @@ function Account_Profile() {
       current_password: yup.string().trim().required("This is a required field"),
       new_password: yup.string().trim().min(8).max(50).required("This is a required field")
         .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$/,
-        "password must have a mix of lower and uppercase letters and at least 1 number"),
+        "password must have a mix of lower and uppercase letters and at least 1 number")
+        // new password must be different from old password
+        .test('passwords-match', 'New password cannot be the same as the old password', function(value) {
+          return value !== this.parent.current_password; // Check if new password is different from old password
+        }),
       confirm_new_password: yup.string().trim().oneOf([yup.ref('new_password'), null], 'Passwords must match').required("This is a required field")
     }),
     onSubmit: (data) => {

@@ -32,6 +32,15 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.ENUM('Active', 'Inactive'),
             allowNull: false,
             defaultValue: 'Active'
+        },
+        // New fields for password reset
+        verificationCode: {
+            type: DataTypes.STRING(6),
+            allowNull: true
+        },
+        verificationCodeExpires: {
+            type: DataTypes.DATE,
+            allowNull: true
         }
     },
     {

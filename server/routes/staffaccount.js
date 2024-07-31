@@ -167,6 +167,40 @@ router.get('/get_account', validateToken, checkRole(['Admin']),  async (req, res
     }
 });
 
+// update password
+router.put('/update_password/:id', validateToken, checkRole(['Admin']), async (req, res) => {
+    let id = req.params.id;
+    let validationSchema = yup.object({
+        current_password: yup.string().trim().required("This is a required field"),
+        new_password: yup.string().trim().min(8).max(50).required("This is a required field")
+        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$/,
+        "password must have a mix of lower and uppercase letters and at least 1 number")
+    });
+    try {
+        req.body = await validationSchema.validate(req.body, { abortEarly: false }); // Validate request body
+        // Process valid data
+        let staffAccount = await StaffAccount.findOne({ where: { id: id } });
+        if (!staffAccount) {
+            return res.status(404).json({ message: "Account not found" });
+        }
+        // Check if current password is correct
+        let isPasswordValid = await bcrypt.compare(req.body.current_password, staffAccount.password); // Check passwords
+        if (!isPasswordValid) {
+            return res.status(400).json({ message: "Password is not correct" });
+        }
+        // Hash new password
+        let newPassword = await bcrypt.hash(req.body.new_password, 10);
+        // Update password
+        await StaffAccount.update({ password: newPassword }, { where: { id: id } });
+        res.json({ message: "Password updated successfully" });
+    } catch (err) {
+        res.status(400).json({ errors: err.errors });
+        return;
+    }
+});
+
+
+
 // get all staff accounts (accessible by staff with Admin role)
 router.get('/get_staff_accounts', validateToken, checkRole(['Admin']),  async (req, res) => {
     try {

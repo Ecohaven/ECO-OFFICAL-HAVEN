@@ -5,6 +5,7 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import http from '/src/http';
 import AccountContext from '/src/contexts/AccountContext';
+import { Link } from 'react-router-dom';
 
 function StaffLogin() {
     const navigate = useNavigate();
@@ -73,7 +74,7 @@ function StaffLogin() {
                         style: {
                           backgroundColor: 'white'
                         },
-                        notchedOutline: {
+                        notchedoutline: {
                           borderColor: 'black'
                         }
                       }}
@@ -99,7 +100,7 @@ function StaffLogin() {
                     style: {
                       backgroundColor: 'white'
                     },
-                    notchedOutline: {
+                    notchedoutline: {
                       borderColor: 'black'
                     }
                   }}
@@ -112,6 +113,16 @@ function StaffLogin() {
                     }
                   }}
                 />
+                <Link to="/staff/staff_reset_password/request" style={{ textDecoration: 'none', color: 'white' }}>
+                    <Typography variant="subtitle2" align="right" sx={{ marginTop: '10px', transition: 'all 0.3s',
+                      // on hover
+                      "&:hover": {
+                        textDecoration: 'underline',
+                        
+                      }
+
+                     }}>Forgot password?</Typography>
+                </Link>
             </Box>
             <Box>
                 <Button variant="contained" type="submit" color='secondary'

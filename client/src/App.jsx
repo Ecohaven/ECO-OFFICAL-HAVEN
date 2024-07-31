@@ -21,6 +21,9 @@ import Account_Deleted from './pages/Get_Started/account_deleted';
 import ResetPasswordRequest from './pages/Get_Started/ResetPasswordRequest';
 import ResetPasswordVerify from './pages/Get_Started/ResetPasswordVerify';
 import ResetPassword from './pages/Get_Started/ResetPassword';
+import StaffResetPasswordRequest from './pages/backend/staffResetPassword/StaffResetPasswordRequest';
+import StaffResetPasswordVerify from './pages/backend/staffResetPassword/StaffResetPasswordVerify';
+import StaffResetPassword from './pages/backend/staffResetPassword/StaffResetPassword';
 
 {/* Account_Profile part */}
 import Account_Profile from './pages/Account_Profile/Account_Profile';
@@ -93,7 +96,7 @@ function App() {
   const shouldShowAppBarFooter = !noAppBarFooterPaths.includes(location.pathname);
 
   // Define the paths where Sidebar should not be rendered (Staff pages)
-  const noSideBarPaths = ['/staff/staff_login', '/staff/AddEvent', '/staff/addstaff'];
+  const noSideBarPaths = ['/staff/staff_login', '/staff/AddEvent', '/staff/addstaff', '/staff/staff_reset_password/request', '/staff/staff_reset_password/verify', '/staff/staff_reset_password/reset'];
   const shouldShowSideBar = !noSideBarPaths.includes(location.pathname);
 
   useEffect(() => { // Fetch user data when the app component mounts
@@ -203,6 +206,9 @@ function App() {
     <Routes>
       <Route path="*" element={<Navigate to="/staff/dashboard" />} /> {/* Redirect to dashboard if invalid path */}
       <Route path="/staff_login" element={<GuestRoute element={StaffLogin} />} />
+      <Route path="/staff_reset_password/request" element={<GuestRoute element={StaffResetPasswordRequest} />} />
+      <Route path="/staff_reset_password/verify" element={<GuestRoute element={StaffResetPasswordVerify} />} />
+      <Route path="/staff_reset_password/reset" element={<GuestRoute element={StaffResetPassword} />} />
 
       <Route path={"/account"} element={<StaffAuthorization element={Staff_Account_Profile} allowedRoles={['Admin']} />} />
 

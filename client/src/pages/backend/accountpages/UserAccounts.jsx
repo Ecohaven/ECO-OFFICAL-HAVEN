@@ -7,6 +7,7 @@ import * as yup from 'yup';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid } from '@mui/x-data-grid';
+import '../../../style/staffaccounts.css';
 
 import ExclamationMarkIcon from '../../../assets/icons/exclamation-mark.png';
 
@@ -227,7 +228,7 @@ function UserAccounts() {
 
 
   return (
-    <Box id='staff-account-profile-box'>
+    <Box className='staff-account-profile-box'>
       <div
       style={{ maxWidth: '1400px', margin: '10px' }}
       >
@@ -248,7 +249,7 @@ function UserAccounts() {
         </Box>
 
         <DataGrid rows={userAccounts} columns={columns} pageSize={5}
-          sx={{ display: 'flex', minHeight: 400, width: '100%', margin: 'auto',
+          sx={{ display: 'flex', minHeight: 400, width: '100%', margin: 'auto', textAlign: 'left',
             // remove the border around a selected data grid cell using :focus and :focus-within
             '& .MuiDataGrid-cell:focus': { outline: 'none' },
             '& .MuiDataGrid-cell:focus-within': { outline: 'none' }
@@ -324,7 +325,7 @@ function UserAccounts() {
         open={editConfirmation}
         autoHideDuration={6000}
         onClose={() => setEditConfirmation(false)}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
       >
         <Alert onClose={() => setEditConfirmation(false)} severity="success" sx={{ width: '100%' }}>
           User account updated successfully!
@@ -361,7 +362,7 @@ function UserAccounts() {
         open={deleteConfirmation} 
         autoHideDuration={6000} 
         onClose={() => setDeleteConfirmation(false)}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
       >
         <Alert onClose={() => setDeleteConfirmation(false)} severity="success" sx={{ width: '100%' }}>
           User account deleted successfully!

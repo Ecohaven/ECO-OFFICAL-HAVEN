@@ -12,6 +12,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid } from '@mui/x-data-grid';
 import AccountContext from '../../../contexts/AccountContext';
+import '../../../style/staffaccounts.css';
 
 import ExclamationMarkIcon from '../../../assets/icons/exclamation-mark.png';
 
@@ -256,7 +257,7 @@ function StaffAccounts() {
     }, []);
 
     return (
-        <Box id='staff-account-profile-box'>
+        <Box className='staff-account-profile-box'>
                 <div style={{ maxWidth: '1400px', margin: '10px' }}>
                     <Typography variant="h4" sx={{ textAlign: 'left', marginBottom: 2, fontWeight: 'bold' }}>Staff Accounts</Typography>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
@@ -281,14 +282,13 @@ function StaffAccounts() {
                     </Box>
 
                     <DataGrid rows={staffAccounts} columns={columns} pageSize={5} 
-                    sx={{ display: 'flex', minHeight: 400, width: '100%', margin: 'auto',
+                    sx={{ display: 'flex', minHeight: 400, width: '100%', margin: 'auto', textAlign: 'left',
                         // remove the border around a selected data grid cell using :focus and :focus-within
                         '& .MuiDataGrid-cell:focus': { outline: 'none' },
                         '& .MuiDataGrid-cell:focus-within': { outline: 'none' }
                     }}
                     />
                 </div>
-            {/* </Grid> */}
 
             {/* Edit Staff Account popup */}
             {editPopup && (
@@ -386,7 +386,7 @@ function StaffAccounts() {
                 open={editConfirmation}
                 autoHideDuration={6000}
                 onClose={() => setEditConfirmation(false)}
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
             >
                 <Alert onClose={() => setEditConfirmation(false)} severity="success" sx={{ width: '100%' }}>
                     Staff account updated successfully!
@@ -422,7 +422,7 @@ function StaffAccounts() {
                 open={deleteConfirmation} 
                 autoHideDuration={6000} 
                 onClose={() => setDeleteConfirmation(false)}
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
             >
                 <Alert onClose={() => setDeleteConfirmation(false)} severity="success" sx={{ width: '100%' }}>
                 Staff account deleted successfully!
