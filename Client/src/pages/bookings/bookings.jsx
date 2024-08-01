@@ -245,6 +245,7 @@ const BookingList = () => {
                     loading={loading}
                     disableSelectionOnClick
                     getRowId={(row) => row.id}
+                    sx = {{ textAlign: 'left' }}
                 />
             </div>
 

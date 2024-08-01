@@ -526,6 +526,7 @@ const RewardTable = () => {
           pageSize={5}
           checkboxSelection
           className="data-grid"
+          sx = {{ textAlign: 'left' }}
         />
       </div>
       <Button variant="contained" onClick={handleOpenAdd} className='addnewproductbutton'>

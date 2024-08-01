@@ -90,7 +90,6 @@ function App() {
   // Define initial state for user and staff account
   const [account, setAccount] = useState(null);
 
-  console.log("Current path:", location.pathname);
 
   // Define the paths where AppBar and Footer should not be rendered
   const noAppBarFooterPaths = ['/get_started', '/login', '/register', '/account_deleted', '/reset_password/request', '/reset_password/verify', '/reset_password/reset'

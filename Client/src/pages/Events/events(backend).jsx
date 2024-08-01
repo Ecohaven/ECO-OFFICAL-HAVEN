@@ -392,7 +392,8 @@ const handleUpdateEvent = async (e) => {
                 </div>
 
                 <div className="event-data-grid-container">
-                    <DataGrid rows={events} columns={columns} pageSize={10} />
+                    <DataGrid rows={events} columns={columns} pageSize={10} 
+                    sx={{ textAlign: 'left' }} />
                 </div>
             </div>
             <Modal open={openAddEventModal} onClose={handleCloseEditEvent}>

@@ -407,6 +407,7 @@ const CollectionProduct = () => {
             pageSize={10}
             rowsPerPageOptions={[10]}
             disableSelectionOnClick
+            sx = {{ textAlign: 'left' }}
           />
         </div>
       </div>
