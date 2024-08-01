@@ -96,7 +96,7 @@ function ResetPassword() {
   ];
 
   return (
-    <Box>
+    <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Grid container spacing={2} className='login-register-elements'>
         <Grid item md={5} xs={12} className='image-container'>
           <img src="/src/assets/images/register_bg.png" alt="eco-haven" className='eco-haven-image'/>
@@ -113,7 +113,7 @@ function ResetPassword() {
           </Box>
           <div className="login-register">
             
-            <Typography variant="h5" sx={{ my: 2, textAlign: 'left', fontWeight: 'bold', mt: '4.5rem' }}>
+            <Typography variant="h5" sx={{ my: 2, textAlign: 'left', fontWeight: 'bold', mt: '2rem' }}>
               Enter your new password
             </Typography>
             <Box component="form" onSubmit={handleResetPassword.handleSubmit}>

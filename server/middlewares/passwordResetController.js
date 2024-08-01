@@ -49,8 +49,18 @@ const sendVerificationCode = async (req, res) => {
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: email,
-            subject: 'EcoHaven: Password Reset',
-            text: `Your verification code is ${verificationCode}`
+            subject: 'EcoHaven: Verification Code',
+            html: `
+                <html>
+                <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; background-color: #f4f4f9; margin: 0; padding: 0;">
+                <div style="max-width: 700px; margin: auto; padding: 20px; border-radius: 8px; background-color: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                    <h1 style="text-align: center; color: #4CAF50;">Eco<span style="color: #333;">Haven</span></h1>
+                    <h2 style="text-align: center; color: #333;">Verification Code</h2>
+                    <p style="text-align: center; color: #333;">Your verification code is <strong>${verificationCode}</strong></p>
+                </div>
+                </body>
+                </html>
+            `
         };
 
         // Send email
@@ -226,7 +236,17 @@ const sendVerificationCodeStaff = async (req, res) => {
             from: process.env.EMAIL_USER,
             to: email,
             subject: 'EcoHaven: Password Reset',
-            text: `Your verification code is ${verificationCode}`
+            html: `
+                <html>
+                <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; background-color: #f4f4f9; margin: 0; padding: 0;">
+                <div style="max-width: 700px; margin: auto; padding: 20px; border-radius: 8px; background-color: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                    <h1 style="text-align: center; color: #4CAF50;">Eco<span style="color: #333;">Haven</span></h1>
+                    <h2 style="text-align: center; color: #333;">Verification Code</h2>
+                    <p style="text-align: center; color: #333;">Your verification code is <strong>${verificationCode}</strong></p>
+                </div>
+                </body>
+                </html>
+            `
         };
 
         // Send email

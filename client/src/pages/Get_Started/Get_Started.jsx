@@ -8,7 +8,7 @@ import { Margin } from '@mui/icons-material';
 
 function Get_Started() {
   return (
-    <Box>
+    <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
         <Grid container spacing={2} className='login-register-elements'>
             <Grid item md={5} xs={12} className='image-container'>
                 <img src="../src/assets/images/login_bg.png" alt="eco-haven" className='eco-haven-image'/>

@@ -3,8 +3,41 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import { Facebook, Instagram } from '@mui/icons-material'; // Import MUI icons
 import '../src/style/footer.css';
+import { useFormik } from 'formik';
+import * as yup from 'yup';
+import http from '../src/http';
 
-export default function Footer() {
+function Footer() {
+
+    const subscribe = useFormik({
+        initialValues: {
+            email: ''
+        },
+        validationSchema: yup.object({
+            email: yup.string().email().required("This is a required field")
+        }),
+        onSubmit: (data) => {
+            data.email = data.email.trim();
+
+            const payload = {
+                email: data.email
+            };
+
+            http.post('/subscribe/subscription', payload)
+            .then(response => {
+                subscribe.setValues({ email: '' });
+                // remove error message if exists
+                if (subscribe.errors.email) {
+                    subscribe.setErrors({ email: '' });
+                }
+                console.log(response.data);
+            })
+            .catch(error => {
+                console.error(error.response.data);
+            });
+        }
+    });
+
     return (
         <footer className='footer-container'>
             <Box sx={{ flexGrow: 1 }} className='footer-content'>
@@ -34,11 +67,27 @@ export default function Footer() {
                             </p>
 
                             <div className="newsletter-form">
-                                <form>
+                                <form onSubmit={subscribe.handleSubmit}>
+                                    <div>
                                     <div className="form-group">
-                                        <input type="email" className="form-control" id="newsletter-email" aria-describedby="emailHelp" placeholder="Enter email here" />
-                                        <button type="submit" className="subscribe">Subscribe</button>
+                                        <input 
+                                        type="email" 
+                                        className="form-control" 
+                                        id="newsletter-email" 
+                                        name='email' 
+                                        aria-describedby="emailHelp" 
+                                        placeholder="Enter email here"
+                                        value={subscribe.values.email}
+                                        onChange={subscribe.handleChange}
+                                        />
+                                        <button type="submit" className="btn btn-primary" >Subscribe</button>
                                     </div>
+                                        {subscribe.touched.email && subscribe.errors.email ? (
+                                            <div className="error-message" style={{ color: 'red', marginTop: '5px' }}>
+                                                {subscribe.errors.email}
+                                            </div>
+                                        ) : null}
+                                    </div> 
                                 </form>
                             </div>
 
@@ -61,3 +110,5 @@ export default function Footer() {
         </footer>
     );
 }
+
+export default Footer;

@@ -11,7 +11,7 @@ import StaffAuthorization from '/src/hoc/staffAuthorization';
 
 {/* Components */}
 import AccountNavbar from '../components/accountnavbar';
-import footer from '../components/footer';
+import Footer from '../components/footer';
 import Sidebar from '../components/sidebar';
 
 import Get_Started from './pages/Get_Started/Get_Started';
@@ -89,6 +89,8 @@ function App() {
   const navigate = useNavigate();
   // Define initial state for user and staff account
   const [account, setAccount] = useState(null);
+
+  console.log("Current path:", location.pathname);
 
   // Define the paths where AppBar and Footer should not be rendered
   const noAppBarFooterPaths = ['/get_started', '/login', '/register', '/account_deleted', '/reset_password/request', '/reset_password/verify', '/reset_password/reset'
@@ -245,10 +247,7 @@ function App() {
                 <>
                   {shouldShowAppBarFooter && <AccountNavbar />}
                   {userRoutes}
-                  {shouldShowAppBarFooter && 
-                    <footer>
-                      {footer()}
-                    </footer>
+                  {shouldShowAppBarFooter && <Footer />
                   }
                 </>
             }

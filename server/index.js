@@ -105,3 +105,7 @@ app.use('/refund/', refundRoutes);
 //faq
 const faqRoutes = require('./routes/faq');
 app.use('/api/faqs', faqRoutes);
+
+// subscribe
+const subscribeRoute = require('./routes/subscribe');
+app.use('/subscribe', subscribeRoute);

@@ -1,7 +1,7 @@
 .login-register-elements {
-    height: 100vh;
     margin: 0;
     padding: 0;
+    flex: 1;
     display: flex;
 }
 .image-container {
@@ -15,6 +15,7 @@
 @media (max-width: 900px) {
     .login-register-elements {
       height: 0;
+      flex: 0;
     }
     .image-container img {
       height: 100px;
