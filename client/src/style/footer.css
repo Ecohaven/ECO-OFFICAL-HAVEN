@@ -96,6 +96,21 @@
     margin-left: 50px;
 }
 
+@media (max-width: 1300px) {
+    
+    .form-group {
+        display: flex;
+        flex-direction: column; /* Stack items vertically */
+        align-items: center; /* Center items horizontally */
+        margin: 0 auto;
+        margin-left: 0; /* Reset left margin */
+    }
+
+    .newsletter-form {
+        margin-right: -50px;
+    }
+}
+
 @media (max-width: 960px) {
     .col2 {
         margin-left: -100px; /* Adjust this value to move col2 more to the left */
@@ -114,7 +129,7 @@
     }
 }
 
-@media (max-width: 500px) {
+@media (max-width: 600px) {
     .col1 {
         margin-bottom: -50px;
     }
@@ -137,6 +152,17 @@
     }
 
     .form-group {
-        display: flex;
+        flex-direction: row; /* Ensure items are side by side */
+        flex-wrap: wrap; /* Allow wrapping if needed */
+    }
+
+    .newsletter-form input[type="email"] {
+        width: calc(100% - 110px); /* Adjust width to accommodate button */
+        max-width: 200px; /* Ensure the input doesn't get too wide */
+        margin-left: 50px;
+    }
+
+    .newsletter-form button {
+        width: 100px;
     }
 }

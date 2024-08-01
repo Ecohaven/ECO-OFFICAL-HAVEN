@@ -9,7 +9,7 @@ import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
-import { Alert, AlertTitle,Typography } from '@mui/material';
+import { Alert, AlertTitle, Typography } from '@mui/material';
 
 import '../../style/rewards/rewardproduct.css';
 import Sidebar from '../../../components/sidebar';
@@ -434,7 +434,7 @@ const RewardTable = () => {
 
 
       <div className='header'>
-      <h2>Reward Products</h2>
+        <h2>Reward Products</h2>
 
         {/* Search bar */}
         <TextField
@@ -463,8 +463,9 @@ const RewardTable = () => {
         <Button className='resetbutton'
           variant="contained"
           onClick={handleResetClick}
-          sx={{ marginLeft: '0.5rem',
-          }} 
+          sx={{
+            marginLeft: '0.5rem',
+          }}
         >
           Reset
         </Button>
@@ -533,83 +534,76 @@ const RewardTable = () => {
 
       {/* Add popup modal */}
       <Modal
-  open={openAdd}
-  onClose={handleCloseAdd}
-  aria-labelledby="add-product-title"
-  aria-describedby="add-product-description"
->
-  <Box sx={style}>
-    <Typography id="add-product-title" variant="h6" component="h2">
-      Add New Product
-    </Typography>
-
-    {/* Form Fields */}
-    <TextField
-      label="Item Name"
-      name="itemName"
-      value={formValues.itemName}
-      onChange={handleInputChange}
-      fullWidth
-      margin="normal"
-    />
-    <TextField
-      label="Leaves"
-      name="leaves"
-      value={formValues.leaves}
-      onChange={handleInputChange}
-      fullWidth
-      margin="normal"
-      type="number"
-    />
-    <TextField
-      label="Stock"
-      name="stock"
-      value={formValues.stock}
-      onChange={handleInputChange}
-      fullWidth
-      margin="normal"
-      type="number"
-    />
-    <TextField
-      label="Code"
-      name="code"
-      value={formValues.code}
-      onChange={handleInputChange}
-      fullWidth
-      margin="normal"
-    />
-    <FormControl fullWidth margin="normal">
-      <InputLabel>Category</InputLabel>
-      <Select
-        name="category"
-        value={formValues.category}
-        onChange={handleInputChange}
+        open={openAdd}
+        onClose={handleCloseAdd}
       >
-        <MenuItem value="bags and accessories">Bags and Accessories</MenuItem>
-        <MenuItem value="lifestyle">Lifestyle</MenuItem>
-        <MenuItem value="craft and hobbies">Craft and Hobbies</MenuItem>
-        <MenuItem value="household">Household</MenuItem>
-        <MenuItem value="electronics">Electronics</MenuItem>
-      </Select>
-    </FormControl>
-    <input type="file" onChange={handleFileChange} />
+        <Box sx={{ ...style, width: 400 }}>
+          <h2 className='popup'>Add New Product</h2>
+          <hr />
 
-    {/* Error Message */}
-    {errorAdding && (
-      <Alert severity="error">{errorAdding}</Alert>
-    )}
+          {/* Form Fields */}
+          <TextField
+            label="Item Name"
+            name="itemName"
+            value={formValues.itemName}
+            onChange={handleInputChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Leaves"
+            name="leaves"
+            value={formValues.leaves}
+            onChange={handleInputChange}
+            fullWidth
+            margin="normal"
+            type="number"
+          />
+          <TextField
+            label="Stock"
+            name="stock"
+            value={formValues.stock}
+            onChange={handleInputChange}
+            fullWidth
+            margin="normal"
+            type="number"
+          />
+          <TextField
+            label="Code"
+            name="code"
+            value={formValues.code}
+            onChange={handleInputChange}
+            fullWidth
+            margin="normal"
+          />
+          <FormControl fullWidth margin="normal">
+            <InputLabel>Category</InputLabel>
+            <Select
+              name="category"
+              value={formValues.category}
+              onChange={handleInputChange}
+            >
+              <MenuItem value="bags and accessories">Bags and Accessories</MenuItem>
+              <MenuItem value="lifestyle">Lifestyle</MenuItem>
+              <MenuItem value="craft and hobbies">Craft and Hobbies</MenuItem>
+              <MenuItem value="household">Household</MenuItem>
+              <MenuItem value="electronics">Electronics</MenuItem>
+            </Select>
+          </FormControl>
+          <input type="file" onChange={handleFileChange} />
 
-    {/* Popup Buttons */}
-    <div className="popup-buttons">
-      <Button className="popup-button" onClick={handleSaveAdd}>
-        Save
-      </Button>
-      <Button className="popup-button cancel" onClick={handleCloseAdd}>
-        Cancel
-      </Button>
-    </div>
-  </Box>
-</Modal>
+          {/* Popup Buttons */}
+          <Button variant="contained" className='savebutton' onClick={handleSaveAdd} style={{ marginTop: '10px', marginRight: '10px' }}>
+            Save
+          </Button>
+          <Button variant="contained" className='cancelbutton' onClick={handleCloseAdd} style={{ marginTop: '10px' }}>
+            Cancel
+          </Button>
+
+          {/* Error Message */}
+          {errorAdding && <p style={{ color: 'red' }}>{errorAdding}</p>}
+        </Box>
+      </Modal>
 
 
       {/* edit popup */}

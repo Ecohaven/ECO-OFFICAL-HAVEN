@@ -78,10 +78,10 @@ const CollectionProduct = () => {
 
   const filterRows = (rowsToFilter, search = searchQuery, status = statusFilter) => {
     let filtered = rowsToFilter;
-  
+
     // Debugging: Log current status filter and rows
     console.log('Filtering rows with status:', status);
-  
+
     // Filter based on search query
     if (search) {
       filtered = filtered.filter(
@@ -91,17 +91,17 @@ const CollectionProduct = () => {
           )
       );
     }
-  
+
     // Filter based on status
     if (status && status !== 'All') {
       filtered = filtered.filter(row => row.status === status);
     }
-  
+
     setFilteredRows(filtered);
-  
+
     // Debugging: Log the number of filtered rows
     console.log('Filtered rows count:', filtered.length);
-  
+
     if (filtered.length === 0 && search.trim() !== '') {
       setSearchError(true);
     } else {
@@ -171,16 +171,16 @@ const CollectionProduct = () => {
       await axios.put(`http://localhost:3001/collect/collections/${editFormData.id}`, {
         ...editFormData,
       });
-  
+
       // Update local state
       const updatedRows = rows.map(row =>
         row.id === editFormData.id ? { ...row, ...editFormData } : row
       );
       setRows(updatedRows);
-  
+
       // Close edit dialog after successful update
       setEditDialogOpen(false);
-  
+
       // Show success alert
       setAlertType('success');
       setAlertMessage('Collection updated successfully.');
@@ -278,50 +278,50 @@ const CollectionProduct = () => {
   return (
     <div className="rewardshopback">
       <div className="header">
-  <h2>Collection Items</h2>
-  <div className="header-controls">
-    <TextField
-      variant="outlined"
-      className="search"
-      placeholder="Search..."
-      value={searchQuery}
-      onChange={handleSearchChange}
-      sx={{
-        marginRight: '1rem',
-        '& .MuiOutlinedInput-root': {
-          '& fieldset': {
-            borderColor: 'grey',
-          },
-          '&:hover fieldset': {
-            borderColor: 'green',
-          },
-          '&.Mui-focused fieldset': {
-            borderColor: 'green',
-          },
-        },
-      }}
-    />
-    <Button className='resetbutton'
-      variant="contained"
-      onClick={handleResetSearch}
-      sx={{ marginRight: '1rem' }}
-    >
-      Reset
-    </Button>
-    <FormControl variant="outlined" className="filtercollection" sx={{ minWidth: 120 }}>
-      <InputLabel>Status</InputLabel>
-      <Select
-        value={statusFilter}
-        onChange={handleStatusFilterChange}
-        label="Status"
-      >
-        <MenuItem value="All">All</MenuItem>
-        <MenuItem value="Collected">Collected</MenuItem>
-        <MenuItem value="Not Collected">Not Collected</MenuItem>
-      </Select>
-    </FormControl>
-  </div>
-</div>
+        <h2>Collection Items</h2>
+        <div className="header-controls">
+          <TextField
+            variant="outlined"
+            className="search"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+            sx={{
+              marginRight: '1rem',
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderColor: 'grey',
+                },
+                '&:hover fieldset': {
+                  borderColor: 'green',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'green',
+                },
+              },
+            }}
+          />
+          <Button className='resetbutton'
+            variant="contained"
+            onClick={handleResetSearch}
+            sx={{ marginRight: '1rem' }}
+          >
+            Reset
+          </Button>
+          <FormControl variant="outlined" className="filtercollection" sx={{ minWidth: 120 }}>
+            <InputLabel>Status</InputLabel>
+            <Select
+              value={statusFilter}
+              onChange={handleStatusFilterChange}
+              label="Status"
+            >
+              <MenuItem value="All">All</MenuItem>
+              <MenuItem value="Collected">Collected</MenuItem>
+              <MenuItem value="Not Collected">Not Collected</MenuItem>
+            </Select>
+          </FormControl>
+        </div>
+      </div>
 
       {searchError && (
         <Alert severity="error" onClose={() => setSearchError(false)} sx={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '50%' }}>
@@ -337,8 +337,17 @@ const CollectionProduct = () => {
         </Alert>
       )}
 
+      {/* edit popup */}
       <Dialog open={editDialogOpen} onClose={handleEditDialogClose}>
-        <DialogTitle>Edit Row</DialogTitle>
+        <DialogTitle
+          style={{
+            color: '#14772B',
+            textAlign: 'center',
+            fontSize: '40px',
+            fontWeight: 'bold'
+
+          }}>Edit Row</DialogTitle>
+        <hr style={{ border: '1px solid #ddd', margin: '0 20px' }} />
         <DialogContent>
           <TextField
             fullWidth
@@ -368,24 +377,24 @@ const CollectionProduct = () => {
             variant="outlined"
           />
           <FormControl fullWidth margin="normal" variant="outlined">
-  <InputLabel>Status</InputLabel>
-  <Select
-    value={editFormData.status}
-    onChange={handleEditFormChange}
-    label="Status"
-    name="status" // Make sure the name attribute is set
-  >
-    <MenuItem value="Not Collected">Not Collected</MenuItem>
-    <MenuItem value="Collected">Collected</MenuItem>
-  </Select>
-</FormControl>
+            <InputLabel>Status</InputLabel>
+            <Select
+              value={editFormData.status}
+              onChange={handleEditFormChange}
+              label="Status"
+              name="status" // Make sure the name attribute is set
+            >
+              <MenuItem value="Not Collected">Not Collected</MenuItem>
+              <MenuItem value="Collected">Collected</MenuItem>
+            </Select>
+          </FormControl>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleEditDialogClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleEditFormSubmit} color="primary">
+          <Button onClick={handleEditFormSubmit} color="primary" className='savebutton' style={{ color: 'white', marginRight: '10px'}}>
             Save
+          </Button>
+          <Button onClick={handleEditDialogClose} color="primary" className='cancelbutton' style={{ color: 'white' }}>
+            Cancel
           </Button>
         </DialogActions>
       </Dialog>

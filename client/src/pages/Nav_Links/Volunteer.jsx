@@ -108,10 +108,10 @@ const VolunteerForm = ({ onSubmit = () => {} }) => {
 
   return (
     <div>
-      <div className="headbanner">
+      <div className="volunteerbanner">
         <img src="../../src/assets/images/volunteerbanner.png" alt="Banner" />
       </div>
-      <h2 style={{ textAlign: 'center', marginTop: '-20px' }}>Volunteer Form</h2>
+      <h2 className = "header" style={{ textAlign: 'center', marginTop: '-20px' }}>Volunteer Form</h2>
       {successMessage && <div className="success-message">{successMessage}</div>}
       <form onSubmit={handleSubmit} className="volunteer-form">
         <InputField 

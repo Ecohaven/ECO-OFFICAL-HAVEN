@@ -1,3 +1,20 @@
+/* banner FOR VOLUNTEER */
+.volunteerbanner {
+  position: relative;
+  width: 100%; /* Change to 100% to make it responsive */
+  height: auto; /* Set height to auto to maintain aspect ratio */
+  text-align: center;
+  margin-bottom: 50px;
+  overflow: hidden;
+  max-width: 1520.4px; /* Set the max-width to the original width */
+}
+
+.volunteerbanner img {
+  width: 100%;
+  height: auto; /* Set height to auto to maintain aspect ratio */
+  object-fit: cover;
+}
+
 /* General form styling */
 .volunteer-form {
   max-width: 600px;
@@ -157,6 +174,13 @@
   color: #666;
 }
 
+@media (max-width: 500px) {
+  .header {
+    font-size: 7vw;
+  }
 
-
-
+  .success-message,
+  .error {
+    font-size: 4vw;
+  }
+}

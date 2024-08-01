@@ -44,20 +44,18 @@ body {
 /* banner FOR REWARD */
 .rewardbanner {
     position: relative;
-    width: 1520.4px;
-    height: 379.6px;
-    /* Fixed height for the banner */
+    width: 100%; /* Change to 100% to make it responsive */
+    height: auto; /* Set height to auto to maintain aspect ratio */
     text-align: center;
     margin-bottom: 50px;
     overflow: hidden;
-    /* Hides any overflowed parts of the image */
+    max-width: 1520.4px; /* Set the max-width to the original width */
 }
 
 .rewardbanner img {
     width: 100%;
-    height: 100%;
+    height: auto; /* Set height to auto to maintain aspect ratio */
     object-fit: cover;
-    /* Ensures the image covers the entire container */
 }
 
 /* banner for ABOUT US */
@@ -255,6 +253,13 @@ h1 {
 
 /* Responsive design for mobile devices */
 @media (max-width: 960px) {
+    .rewardbanner {
+        height: 200px; /* Adjust height for better fit */
+    }
+
+    .rewardbanner img {
+        height: 100%; /* Maintain the cover fit */
+    }
 
     .greenreward h1,
     .stepsheader h1,
@@ -317,6 +322,13 @@ h1 {
 }
 
 @media (max-width: 500px) {
+    .rewardbanner {
+        height: 150px; /* Adjust height for smaller screens */
+    }
+
+    .rewardbanner img {
+        height: 100%; /* Maintain the cover fit */
+    }
 
     .greenreward h1,
     .stepsheader h1,
