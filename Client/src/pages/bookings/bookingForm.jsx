@@ -4,6 +4,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import QRCode from 'qrcode.react';
 import AccountContext from '../../contexts/AccountContext';
+import ecoGmailImg from '../../assets/images/eco-gmail.jpg';
+
+
 
 const BookingForm = () => {
   const { state } = useLocation();
@@ -176,42 +179,140 @@ const currentDate = new Date().toISOString().split('T')[0];
   };
 
 
-  const sendEmail = async (formData, bookingId, qrCodeText, paxQrCodeRecords) => {
+  const sendEmail = async (formData, bookingId, qrCodeText,paxQrCodeRecords) => {
     try {
       await axios.post('http://localhost:3001/send-email', {
         to: ['ecohaven787@gmail.com'],
         subject: `${formData.eventName} Booking Successful`,
         html: `
-          <html>
-            <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; background-color: #f4f4f9; margin: 0; padding: 0;">
-              <div style="max-width: 700px; margin: auto; padding: 20px; border-radius: 8px; background-color: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <h1 style="text-align: center; color: #4CAF50;">Eco<span style="color: #333;">Haven</span></h1>
-                <h2 style="text-align: center; color: #333;">Booking Details</h2>
-                <p><strong>Booking ID:</strong> ${bookingId}</p>
-                <p><strong>Event:</strong> ${formData.eventName}</p>
-                <p><strong>Email:</strong> ${account.email}</p>
-                <p><strong>Phone Number:</strong> ${account.phone_no}</p>
-                <p><strong>Event Date:</strong> ${event.startDate}</p>
-                <p><strong>Booked Date:</strong> ${new Date(formData.bookingDate).toLocaleDateString('en-GB')}</p>
-                <p><strong>Event Time:</strong> ${event.time}</p>
-                <p><strong>Amount:</strong> ${event.amount}</p>
-                <p><strong>Location:</strong> ${event.location}</p>
-                ${qrCodeText ? `<div style="text-align: center; margin: 20px 0;">
-                  <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrCodeText)}" alt="QR Code" style="border-radius: 8px;">
-                </div>` : ''}
-                ${paxQrCodeRecords.length > 0 ? `<div>
-                  <h3 style="color: #333;">Your Additional Guest QR Codes</h3>
-                  ${paxQrCodeRecords.map(record => `
-                    <div style="margin-bottom: 10px;">
-                      <p><strong>${record.paxName}</strong> - ${record.paxQrCodeText}</p>
-                      <img src="${record.paxQrCodeUrl}" alt="QR Code for ${record.paxName}" style="display: block; margin: auto; border-radius: 8px;">
-                    </div>
-                  `).join('')}
-                </div>` : ''}
-                <p style="text-align: center; color: #666;">Please download or remember this QR code text for check-in.</p>
-              </div>
-            </body>
-          </html>
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #333;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      padding: 0;
+      border-radius: 8px;
+      background-color: #e0f7f4;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      overflow: hidden;
+    }
+    .left-column {
+      flex: 0.75; /* Reduced width for the event details section */
+      text-align: center;
+      background-color: #99c2a2;
+      padding: 20px;
+      position: relative;
+      min-width: 150px; /* Ensuring a smaller width for event details */
+    }
+    .left-column img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    .left-column p {
+      margin: 10px 0;
+      font-weight: bold;
+      font-size: 16px;
+      color: #fff;
+    }
+    .right-column {
+      flex: 3; /* Adjusted to make it larger than the left-column */
+      padding: 20px;
+      background-color: #ffffff;
+    }
+    .right-column h1 {
+      text-align: center;
+      color: #4CAF50;
+      margin: 0;
+    }
+    .right-column h2 {
+      text-align: center;
+      color: #333;
+      margin-top: 10px;
+      margin-bottom: 20px;
+      font-size: 22px;
+    }
+    .right-column p {
+      margin: 8px 0;
+      line-height: 1.5;
+    }
+    .qr-code-container {
+      text-align: center;
+      margin: 20px 0;
+    }
+    .qr-code-container img {
+      border-radius: 8px;
+      border: 2px solid #4CAF50;
+    }
+    .guest-qr-codes {
+      margin-top: 20px;
+    }
+    .guest-qr-code {
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .guest-qr-code p {
+      margin: 0;
+      font-weight: bold;
+    }
+    .guest-qr-code img {
+      margin-top: 5px;
+      border-radius: 8px;
+      border: 2px solid #4CAF50;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="left-column">
+      <p><strong>Event:</strong> ${formData.eventName}</p>
+      <p><strong>Event Date:</strong> ${event.startDate}</p>
+      <p><strong>Event Time:</strong> ${event.time}</p>
+      <p><strong>Location:</strong> ${event.location}</p>
+      <p><strong>Amount:</strong> ${event.amount}</p>
+    </div>
+    <div class="right-column">
+      <h1>Eco<span style="color: #333;">Haven</span></h1>
+      <h2>Booking Details</h2>
+      <p><strong>Booking ID:</strong> ${bookingId}</p>
+      <p><strong>Email:</strong> ${account.email}</p>
+      <p><strong>Phone Number:</strong> ${account.phone_no}</p>
+      <p><strong>Booked Date:</strong> ${new Date(formData.bookingDate).toLocaleDateString('en-GB')}</p>
+      ${qrCodeText ? `
+      <div class="qr-code-container">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrCodeText)}" alt="QR Code">
+      </div>` : ''}
+      ${paxQrCodeRecords.length > 0 ? `
+      <div class="guest-qr-codes">
+        <h3>Your Additional Guest QR Codes</h3>
+        ${paxQrCodeRecords.map(record => `
+        <div class="guest-qr-code">
+          <p>${record.paxName}</p>
+          <img src="${record.paxQrCodeUrl}" alt="QR Code for ${record.paxName}">
+        </div>`).join('')}
+      </div>` : ''}
+      <p style="text-align: center; color: #666;">Please show this QR-Code for check-in.</p>
+    </div>
+  </div>
+</body>
+</html>
+
         `
       });
       console.log('Email sent successfully!');
@@ -227,18 +328,77 @@ const currentDate = new Date().toISOString().split('T')[0];
           to: [record.paxEmail],
           subject: `Your QR Code for ${event.eventName}`,
           html: `
-            <html>
-              <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; background-color: #f4f4f9; margin: 0; padding: 0;">
-                <div style="max-width: 600px; margin: auto; padding: 20px; border-radius: 8px; background-color: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                  <h2 style="color: #333;">Hi ${record.paxName},</h2>
-                  <p>Your QR code for the event <strong>${event.eventName}</strong> is included below:</p>
-                  <div style="text-align: center; margin: 20px 0;">
-                    <img src="${record.paxQrCodeUrl}" alt="QR Code" style="display: block; margin: auto; border-radius: 8px;">
-                  </div>
-                  <p style="color: #666;">Please show this QR code on the actual day. Thank you!</p>
-                </div>
-              </body>
-            </html>
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #333;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+      border-radius: 8px;
+      background-color: #e0f7f4;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    h2 {
+      color: white;
+      margin-bottom: 20px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    p {
+      color: #333;
+      margin: 10px 0;
+      font-size: 16px;
+    }
+    .qr-code-container {
+      margin: 20px 0;
+      padding: 10px;
+      border: 2px solid #004d40;
+      border-radius: 8px;
+      background-color: #ffffff;
+      display: inline-block;
+    }
+    .qr-code-container img {
+      display: block;
+      margin: auto;
+      border-radius: 8px;
+      width: 150px; /* Adjust the size if needed */
+      height: 150px; /* Adjust the size if needed */
+    }
+    .footer {
+      color: #666;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+    .eco-logo {
+      width: 100px;
+      height: auto;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Hi ${record.paxName},</h2>
+    <p>Your QR code for the event <strong>${event.eventName}</strong> is included below:</p>
+    <div class="qr-code-container">
+      <img src="${record.paxQrCodeUrl}" alt="QR Code">
+    </div>
+    <p class="footer">Please show this QR code on the actual day. Thank you!</p>
+  </div>
+</body>
+</html>
+
+
           `
         });
         console.log(`QR code email sent to ${record.paxEmail}`);

@@ -81,7 +81,7 @@ const BookNowPage = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     return (
-      <Box sx={{ p: 2 }}>
+      <Box>
         {isMobile ? (
           <Box
             sx={{
@@ -227,14 +227,17 @@ const BookNowPage = () => {
                     alt={event.eventName}
                     style={{ width: '100%', height: 200, objectFit: 'cover', borderRadius: 10 }}
                   />
-<Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: 2, textAlign: 'left', color: 'black' }}>
-                    Location:{event.location}
-                  </Typography>
                   <Typography variant="body1" color="black" sx={{ fontWeight: 'bold', marginTop: 2, textAlign: 'left' }}>
                     Date: {formatDateRange(event.startDate, event.endDate)}
                   </Typography>
-                   <Typography variant="h6" sx={{ fontWeight: 'bold', marginBottom: 2, textAlign: 'left', color: 'black' }}>
+                   <Typography variant="body1" sx={{ fontWeight: 'bold', textAlign: 'left', color: 'black' }}>
                     Time: {event.time}
+                  </Typography>
+                  <Typography variant="body1" sx={{ fontWeight: 'bold',  textAlign: 'left', color: 'black' }}>
+                    Location:{event.location}
+                  </Typography>
+<Typography variant="body1" sx={{ textAlign: 'left', marginTop: 2 ,fontWeight:'bold'}}>
+                    {event.status === 'Paid' ? `Admission: $${event.amount}` : 'Free Admission'}
                   </Typography>
                   <Button
                     variant="contained"

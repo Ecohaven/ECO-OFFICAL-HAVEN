@@ -3,6 +3,7 @@ const router = express.Router();
 const { Booking, Event } = require('../models'); 
 const { Op } = require("sequelize");
 
+///search
 // Search bookings endpoint: GET /search?search=query
 router.get("/", async (req, res) => {
     const { search } = req.query;
@@ -65,5 +66,7 @@ router.get("/events/search", async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+
 
 module.exports = router;
