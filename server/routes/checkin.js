@@ -202,9 +202,9 @@ router.post('/checkin', async (req, res) => {
     }
 
     // Update check-in record status
-    await CheckIn.update(
+    await checkInRecord.update(
       { qrCodeStatus: 'Checked-In', qrCodeChecked: true },
-      { where: { id: checkInRecord.id }, transaction }
+      { transaction }
     );
 
     // Update the associated account with leaf points if available
@@ -215,23 +215,28 @@ router.post('/checkin', async (req, res) => {
       });
 
       if (account) {
-        await Account.update(
+        await account.update(
           { leaf_points: (account.leaf_points || 0) + (checkInRecord.leafPoints || 0) },
-          { where: { name: checkInRecord.Name }, transaction }
+          { transaction }
         );
       } else {
         console.warn('Account not found for name:', checkInRecord.Name);
       }
     }
 
-    // Update booking status based on QR code or paxName check-in
-    if (checkInRecord.bookingId) {
-      await Booking.update(
-        { status: 'Attended' }, // Changed status to 'Attended'
-        { where: { id: checkInRecord.bookingId }, transaction }
+    // Update booking status to Attended
+    if (checkInRecord.associatedBookingId) {
+      const bookingUpdateResult = await Booking.update(
+        { status: 'Attended' },
+        { where: { id: checkInRecord.associatedBookingId }, transaction }
       );
+
+      console.log('Booking update result:', bookingUpdateResult);
+      if (bookingUpdateResult[0] === 0) {
+        console.error('Booking update failed, no rows affected.');
+      }
     } else {
-      console.warn('Booking ID not found for check-in record:', checkInRecord.id);
+      console.warn('Associated booking ID not found for check-in record:', checkInRecord.id);
     }
 
     // Commit the transaction

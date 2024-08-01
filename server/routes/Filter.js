@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Booking, events, CheckIn } = require('../models'); // Ensure your model imports are correct
+const { Booking, events, CheckIn, ProductDetail } = require('../models'); // Ensure your model imports are correct
 const { Op } = require("sequelize");
 
 // Filter bookings
@@ -76,4 +76,54 @@ router.get('/filter-records', async (req, res) => {
     }
 });
 
+// Route to filter products
+// Example URL: http://localhost:3001/api/filter-products?category=Electronics&itemName=Smartphone
+router.get('/filter-products', async (req, res) => {
+    const { category, itemName } = req.query;
+
+    try {
+        // Construct condition object for products
+        let condition = {};
+        if (category) {
+            condition.category = category; // Filter by exact category match
+        }
+        if (itemName) {
+            condition.itemName = { [Op.like]: `%${itemName}%` }; // Partial match, case-insensitive
+        }
+
+        // Fetch products
+        const products = await ProductDetail.findAll({
+            where: condition
+        });
+
+        res.json(products);
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        res.status(500).json({ error: 'Failed to fetch products', details: error.message });
+    }
+});
+
+// Route to filter events
+// Example URL: http://localhost:3001/api/filter-events?eventName=EventName
+router.get('/filter-events', async (req, res) => {
+    const { eventName } = req.query;
+
+    try {
+        // Construct condition object for events
+        let condition = {};
+        if (eventName) {
+            condition.eventName = { [Op.like]: `%${eventName}%` }; // Partial match, case-insensitive
+        }
+
+        // Fetch events
+        const eventsData = await events.findAll({
+            where: condition
+        });
+
+        res.json(eventsData);
+    } catch (error) {
+        console.error('Error fetching events:', error);
+        res.status(500).json({ error: 'Failed to fetch events', details: error.message });
+    }
+});
 module.exports = router;

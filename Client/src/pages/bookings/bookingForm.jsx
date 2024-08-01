@@ -321,13 +321,21 @@ const currentDate = new Date().toISOString().split('T')[0];
     }
   };
 
-  const sendPaxEmails = async (paxQrCodeRecords) => {
-    try {
-      await Promise.all(paxQrCodeRecords.map(async (record) => {
-        await axios.post('http://localhost:3001/send-email', {
-          to: [record.paxEmail],
-          subject: `Your QR Code for ${event.eventName}`,
-          html: `
+ const sendPaxEmails = async (paxQrCodeRecords) => {
+  try {
+    // Collecting all pax details in one HTML template
+    const paxDetailsHtml = paxQrCodeRecords.map(record => `
+      <div>
+        <div class="qr-code-container">
+          <img src="${record.paxQrCodeUrl}" alt="QR Code">
+        </div>
+      </div>
+    `).join('');
+
+    await axios.post('http://localhost:3001/send-email', {
+      to: paxQrCodeRecords.map(record => record.paxEmail),
+      subject: `Your QR Codes for ${event.eventName}`,
+      html: `
 <!DOCTYPE html>
 <html>
 <head>
@@ -349,7 +357,7 @@ const currentDate = new Date().toISOString().split('T')[0];
       text-align: center;
     }
     h2 {
-      color: white;
+      color: black;
       margin-bottom: 20px;
       font-size: 24px;
       font-weight: bold;
@@ -371,8 +379,8 @@ const currentDate = new Date().toISOString().split('T')[0];
       display: block;
       margin: auto;
       border-radius: 8px;
-      width: 150px; /* Adjust the size if needed */
-      height: 150px; /* Adjust the size if needed */
+      width: 150px;
+      height: 150px; 
     }
     .footer {
       color: #666;
@@ -384,29 +392,30 @@ const currentDate = new Date().toISOString().split('T')[0];
       height: auto;
       margin-top: 20px;
     }
+    .eco-text {
+      color: #004d40;
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Hi ${record.paxName},</h2>
-    <p>Your QR code for the event <strong>${event.eventName}</strong> is included below:</p>
-    <div class="qr-code-container">
-      <img src="${record.paxQrCodeUrl}" alt="QR Code">
-    </div>
-    <p class="footer">Please show this QR code on the actual day. Thank you!</p>
+    <h2>Your QR Codes for ${event.eventName}</h2>
+    <p>Hi,</p>
+    <p>Your QR codes for the event <strong>${event.eventName}</strong> are included below:</p>
+    ${paxDetailsHtml}
+    <p class="footer">Please show these QR codes on the actual day. Thank you!</p>
   </div>
 </body>
 </html>
-
-
-          `
-        });
-        console.log(`QR code email sent to ${record.paxEmail}`);
-      }));
-    } catch (error) {
-      console.error('Error sending pax emails:', error);
-    }
-  };
+      `
+    });
+  } catch (error) {
+    console.error("Failed to send pax emails:", error);
+  }
+};
 
 
   return (

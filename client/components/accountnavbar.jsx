@@ -4,7 +4,7 @@ import {
   Box, Container, AppBar, Toolbar, Typography, Button, Icon, IconButton, Popover, Input,
   List, ListItem, ListItemText, Divider, Drawer, Badge
 } from '@mui/material';
-import { AccessTime, Search, Clear, Edit, Notifications, Style } from '@mui/icons-material';
+import { AccessTime, Search, Clear, Edit, Notifications, Style, Margin } from '@mui/icons-material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -15,6 +15,7 @@ import { useLocation } from 'react-router-dom';
 import http from '/src/http';
 import AccountContext from '/src/contexts/AccountContext';
 import axios from 'axios';
+import SearchComponent from '../components/search';
 
 function AccountNavbar() {
   const navigate = useNavigate();
@@ -291,24 +292,7 @@ const [leafPointsMessage, setLeafPointsMessage] = useState('');
           </Box>
           {/* Elements on right side of appbar */}
           <Box sx={{ display: 'flex', ml: 'auto', alignItems: 'center' }}>
-            {search ? (
-              <Box>
-                <Input
-                  id="search"
-                  placeholder="Search"
-                  sx={{ width: { xs: '9rem', sm: '10rem', md: '10rem', lg: '17rem' }, marginRight: '0.5rem' }}
-                  endAdornment={
-                    <IconButton onClick={closeSearch}>
-                      <Clear />
-                    </IconButton>
-                  }
-                />
-              </Box>
-            ) : (
-              <IconButton onClick={openSearch}>
-                <SearchIcon />
-              </IconButton>
-            )}
+                 <SearchComponent search={search} openSearch={openSearch} closeSearch={closeSearch} />
             <IconButton
               color="inherit"
               onClick={handleNotificationClick}

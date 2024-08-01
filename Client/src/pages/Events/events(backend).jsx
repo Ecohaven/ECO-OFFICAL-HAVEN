@@ -308,7 +308,7 @@ const handleUpdateEvent = async (e) => {
         {
             field: 'checkIn',
             headerName: 'Check In',
-            width: isMobile ? 250:265,
+            width: isMobile ? 600:600,
             renderCell: (params) => (
                 <Button
                     variant="contained"
