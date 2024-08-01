@@ -23,7 +23,7 @@ const CollectionProduct = () => {
     name: '',
     email: '',
     phoneNumber: '',
-    status: 'Not Collected'
+    status: 'Not collected'
   });
 
   useEffect(() => {
@@ -151,7 +151,7 @@ const CollectionProduct = () => {
         name: selected.name,
         email: selected.email,
         phoneNumber: selected.phoneNumber,
-        status: selected.status === 'Collected' ? 'Collected' : 'Not Collected'
+        status: selected.status === 'Collected' ? 'Collected' : 'Not collected'
       });
       setEditDialogOpen(true);
     }
@@ -317,7 +317,7 @@ const CollectionProduct = () => {
             >
               <MenuItem value="All">All</MenuItem>
               <MenuItem value="Collected">Collected</MenuItem>
-              <MenuItem value="Not Collected">Not Collected</MenuItem>
+              <MenuItem value="Not collected">Not collected</MenuItem>
             </Select>
           </FormControl>
         </div>
@@ -384,7 +384,7 @@ const CollectionProduct = () => {
               label="Status"
               name="status" // Make sure the name attribute is set
             >
-              <MenuItem value="Not Collected">Not Collected</MenuItem>
+              <MenuItem value="Not collected">Not collected</MenuItem>
               <MenuItem value="Collected">Collected</MenuItem>
             </Select>
           </FormControl>
