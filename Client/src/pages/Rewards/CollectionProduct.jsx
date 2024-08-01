@@ -278,7 +278,7 @@ const CollectionProduct = () => {
   return (
     <div className="rewardshopback">
       <div className="header">
-        <h2>Collection Items</h2>
+        <h2 className='collectionitem'>Collection Items</h2>
         <div className="header-controls">
           <TextField
             variant="outlined"
@@ -346,7 +346,7 @@ const CollectionProduct = () => {
             fontSize: '40px',
             fontWeight: 'bold'
 
-          }}>Edit Row</DialogTitle>
+          }}>Edit Collection</DialogTitle>
         <hr style={{ border: '1px solid #ddd', margin: '0 20px' }} />
         <DialogContent>
           <TextField

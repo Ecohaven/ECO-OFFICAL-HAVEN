@@ -434,7 +434,7 @@ const RewardTable = () => {
 
 
       <div className='header'>
-        <h2>Reward Products</h2>
+        <h2 className='rewardproducts'>Reward Products</h2>
 
         {/* Search bar */}
         <TextField
@@ -500,6 +500,10 @@ const RewardTable = () => {
             <MenuItem value="highest-stock">Highest Stock</MenuItem>
           </Select>
         </FormControl>
+
+        <Button variant="contained" onClick={handleOpenAdd} className='addnewproductbutton'>
+          Add New Item
+        </Button>
       </div>
 
       {searchError && (
@@ -526,12 +530,9 @@ const RewardTable = () => {
           pageSize={5}
           checkboxSelection
           className="data-grid"
-          sx = {{ textAlign: 'left' }}
+          sx={{ textAlign: 'left' }}
         />
       </div>
-      <Button variant="contained" onClick={handleOpenAdd} className='addnewproductbutton'>
-        Add New Item
-      </Button>
 
       {/* Add popup modal */}
       <Modal

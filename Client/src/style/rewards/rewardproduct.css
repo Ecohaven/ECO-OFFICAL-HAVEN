@@ -14,11 +14,10 @@
 /* button */
 .addnewproductbutton {
   position: absolute;
-  left: 480px;
+  left: 20px;
   background-color: #14772B !important;
   color: white !important;
-  margin-top: 20px !important;
-  margin-bottom: 20px !important;
+  margin-top: 10px !important;
 }
 
 .addbutton,
@@ -76,7 +75,7 @@
 }
 
 @media (max-width: 960px) {
-  h2, .search {
+  .rewardproducts, .search {
     margin-left: -240px !important;
   }
 
@@ -84,25 +83,23 @@
     width: 95% !important;
     margin-left: 20px !important;
   }
-
-  .addnewproductbutton {
-    left: 380px;
-  }
 }
 
 @media (max-width: 500px) {
   .data-grid {
     width: 95% !important;
     margin-left: 10px !important;
-  }
-
-  .addnewproductbutton {
-    left: 155px;
+    margin-top: -10px !important;
   }
   
   .filter-dropdown {
     display: block !important;
     margin-top: 20px !important;
     margin-left: -240px !important;
+  }
+
+  .addnewproductbutton {
+    margin-left: -80px !important;
+    margin-top: -100px !important;
   }
 }
