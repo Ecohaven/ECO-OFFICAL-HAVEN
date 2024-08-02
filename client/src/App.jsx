@@ -83,6 +83,9 @@ import FaqBackend from './pages/FAQ/faqbackend';
 
 import VolunteerList from './pages/volunteerList/VolunteerList';
 
+{/* Reviews Part  */}
+import reviews from './pages/Review/review';
+
 
 function App() {
   const location = useLocation();
@@ -196,6 +199,7 @@ function App() {
        {/* End of check-In part */}
 
        <Route path="/faq" element={<UserAndGuestRoute element={Faq} />} />
+       <Route path="/review" element={<UserAndGuestRoute element={reviews} />} />
  
 
 

@@ -101,7 +101,9 @@ app.use('/pay/', paymentRoutes);
 const refundRoutes = require('./routes/refund');
 app.use('/refund/', refundRoutes);
 
-
+//review 
+const ReviewRoutes = require('./routes/review');
+app.use('/review', ReviewRoutes);
 //faq
 const faqRoutes = require('./routes/faq');
 app.use('/api/faqs', faqRoutes);
