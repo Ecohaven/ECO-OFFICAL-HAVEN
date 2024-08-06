@@ -304,18 +304,18 @@ const handleUpdateEvent = async (e) => {
         { field: 'endDate', headerName: 'End Date', width: isMobile ? 90 : 120 },
         { field: 'time', headerName: 'Time', width: isMobile ? 90 : 120 },
         { field: 'location', headerName: 'Location', width:  isMobile ? 70 : 90 },
-        { field: 'status', headerName: 'Status', width:  isMobile ? 60 : 70 },
+        { field: 'status', headerName: 'Type', width:  isMobile ? 60 : 70 },
         {
             field: 'checkIn',
             headerName: 'Check In',
-            width: isMobile ? 600:600,
+            width: isMobile ? 200:160,
             renderCell: (params) => (
                 <Button
                     variant="contained"
                     style={{ backgroundColor: 'green', color: 'white', cursor: 'pointer' }}
                     onClick={() => handleCheckIn(params.row.eventName)}
                 >
-                    Check In {params.row.eventName}
+                    Check In 
                 </Button>
             ),
         },
@@ -367,10 +367,21 @@ const handleUpdateEvent = async (e) => {
     return (
         <div className="event-list-container">
             <div className="event-table">
-               <Typography variant="h4" style={{textAlign:'left',fontWeight:'bold',marginTop:'30px'}}gutterBottom>
+               <Typography variant="h4" style={{ textAlign: isMobile ? 'left' : 'left',fontWeight:'bold',marginTop:'30px'}}gutterBottom>
                 Event List
             </Typography>
-<EventCountList />
+ <Typography
+      variant="h5"
+      style={{
+        textAlign: isMobile ? 'left' : 'center', 
+        fontWeight: '800',
+        marginTop: '30px'
+      }}
+      gutterBottom
+    >
+      Top 5 recent event bookings
+      <EventCountList />
+    </Typography>
                 <div className="event-filter">
                     <TextField
                         label="Event Name"

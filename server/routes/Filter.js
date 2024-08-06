@@ -11,7 +11,6 @@ router.get('/filter', async (req, res) => {
     // Construct condition object
     let condition = {};
 
-
     if (eventName) {
         condition.eventName = { [Op.like]: `%${eventName}%` }; // Partial match, case-insensitive
     }
@@ -20,9 +19,9 @@ router.get('/filter', async (req, res) => {
         condition.status = status;
     }
 
-
     if (numberOfPax) {
-        condition.numberOfPax = parseInt(numberOfPax, 5); // Ensure it is an integer
+        const paxCount = parseInt(numberOfPax, 10); // Ensure it is an integer
+        condition.numberOfPax = paxCount;
     }
 
     try {
@@ -35,6 +34,12 @@ router.get('/filter', async (req, res) => {
             }
         });
 
+        // Check if numberOfPax was provided and no bookings match
+        if (numberOfPax && bookings.length === 0) {
+            return res.status(404).json({ message: `No data for ${numberOfPax} pax` });
+        }
+
+        // Handle case where no bookings are found at all
         if (bookings.length === 0) {
             return res.status(404).json({ message: 'No bookings found with the specified filters' });
         }
@@ -45,7 +50,6 @@ router.get('/filter', async (req, res) => {
         res.status(500).send('Server error');
     }
 });
-
 
 // Example URL: http://localhost:3001/api/filter-records?eventName=EventName&date=2024-07-15&eventId=123
 // for check in

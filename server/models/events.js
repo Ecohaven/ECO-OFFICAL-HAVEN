@@ -54,7 +54,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     status: {
-      type: DataTypes.ENUM('Paid', 'Free'),
+      type: DataTypes.ENUM('Paid','Free'),
       allowNull: false
     },
     amount: {

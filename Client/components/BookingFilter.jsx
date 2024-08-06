@@ -11,52 +11,54 @@ const FilterDropdown = ({ handleFilter, handleReset }) => {
     const [noDataMessages, setNoDataMessages] = useState([]);
 
     const applyFilters = async () => {
-        if (!status && !numberOfPax && !eventName) {
-            setSelectFilterMessage(true);
-            return;
+    if (!status && !numberOfPax && !eventName) {
+        setSelectFilterMessage(true);
+        return;
+    }
+
+    setLoading(true);
+    setFiltersApplied(true);
+    setSelectFilterMessage(false);
+    setNoDataMessages([]);
+
+    try {
+        const params = {
+            status: status || '',
+            numberOfPax: numberOfPax || '',
+            eventName: eventName || ''
+        };
+        const result = await handleFilter(params);
+
+        const noDataMessages = [];
+
+        // Check if results contain the specific filter criteria
+        if (status && !result.some(item => item.status === status)) {
+            noDataMessages.push("No data available for the selected status.");
+        }
+        if (numberOfPax && !result.some(item => item.numberOfPax === numberOfPax)) {
+            noDataMessages.push(`No data available for ${numberOfPax} pax.`);
+        }
+        if (eventName && !result.some(item => item.eventName === eventName)) {
+            noDataMessages.push("No data available for the selected event name.");
         }
 
-        setLoading(true);
-        setFiltersApplied(true);
-        setSelectFilterMessage(false);
-        setNoDataMessages([]);
+        setNoDataMessages(noDataMessages);
 
-        try {
-            const params = {
-                status: status || '',
-                numberOfPax: numberOfPax || '',
-                eventName: eventName || ''
-            };
-            const result = await handleFilter(params);
+        const isDataAvailable = result.some(item =>
+            (!status || item.status === status) &&
+            (!numberOfPax || item.numberOfPax === numberOfPax) &&
+            (!eventName || item.eventName === eventName)
+        );
 
-            const noDataMessages = [];
+        setDataLoaded(isDataAvailable);
+    } catch (error) {
+        handleShowAlert('No Available data for the filter selected:', error);
+        setDataLoaded(false);
+    } finally {
+        setLoading(false);
+    }
+};
 
-            if (status && !result.some(item => item.status === status)) {
-                noDataMessages.push("No data available for the selected status.");
-            }
-            if (numberOfPax && !result.some(item => item.numberOfPax === numberOfPax)) {
-                noDataMessages.push("No data available for the selected number of pax.");
-            }
-            if (eventName && !result.some(item => item.eventName === eventName)) {
-                noDataMessages.push("No data available for the selected event name.");
-            }
-
-            setNoDataMessages(noDataMessages);
-
-            const isDataAvailable = result.some(item =>
-                (!status || item.status === status) &&
-                (!numberOfPax || item.numberOfPax === numberOfPax) &&
-                (!eventName || item.eventName === eventName)
-            );
-
-            setDataLoaded(isDataAvailable);
-        } catch (error) {
-            console.error('Error filtering bookings:', error);
-            setDataLoaded(false);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const resetFilters = () => {
         setStatus('');
@@ -86,7 +88,6 @@ const FilterDropdown = ({ handleFilter, handleReset }) => {
                                 height: '56px',
                             }}
                         >
-                            <MenuItem value="">All</MenuItem>
                             <MenuItem value="Active">Active</MenuItem>
                             <MenuItem value="Cancelled">Cancelled</MenuItem>
                             <MenuItem value="Attended">Attended</MenuItem>

@@ -321,7 +321,12 @@ const currentDate = new Date().toISOString().split('T')[0];
     }
   };
 
- const sendPaxEmails = async (paxQrCodeRecords) => {
+const sendPaxEmails = async (paxQrCodeRecords) => {
+  if (paxQrCodeRecords.length === 0) {
+    console.log("No pax records available to send emails.");
+    return; // Exit early if no pax records
+  }
+
   try {
     // Collecting all pax details in one HTML template
     const paxDetailsHtml = paxQrCodeRecords.map(record => `
@@ -332,8 +337,16 @@ const currentDate = new Date().toISOString().split('T')[0];
       </div>
     `).join('');
 
+    // Collect email addresses
+    const emailAddresses = paxQrCodeRecords.map(record => record.paxEmail);
+
+    if (emailAddresses.length === 0) {
+      console.log("No pax emails available.");
+      return; // Exit early if no email addresses
+    }
+
     await axios.post('http://localhost:3001/send-email', {
-      to: paxQrCodeRecords.map(record => record.paxEmail),
+      to: emailAddresses,
       subject: `Your QR Codes for ${event.eventName}`,
       html: `
 <!DOCTYPE html>

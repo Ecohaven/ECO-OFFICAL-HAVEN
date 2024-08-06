@@ -234,21 +234,39 @@ router.get('/events/:id', async (req, res) => {
     }
 });
 
-// Route to count bookings by event name
+// Route to count bookings by the latest 5 events, including events with zero bookings
 router.get('/countByEvent', async (req, res) => {
     try {
+        // Fetch the latest 5 events
+        const latestEvents = await events.findAll({
+            attributes: ['eventName'],
+            order: [['createdAt', 'DESC']],  // Order by the latest event creation date
+            limit: 5  // Limit to the top 5 latest events
+        });
+
+        // Get the names of the latest 5 events
+        const eventNames = latestEvents.map(event => event.eventName);
+
+        // Fetch booking counts for the latest 5 events
         const bookingCounts = await Booking.findAll({
             attributes: [
                 'eventName',
                 [sequelize.fn('COUNT', sequelize.col('eventName')), 'count']
             ],
+            where: {
+                eventName: eventNames
+            },
             group: ['eventName']
         });
 
-        const formattedCounts = bookingCounts.map(booking => ({
-            eventName: booking.eventName,
-            count: booking.get('count')
-        }));
+        // Format the booking counts
+        const formattedCounts = eventNames.map(eventName => {
+            const eventCount = bookingCounts.find(booking => booking.eventName === eventName);
+            return {
+                eventName: eventName,
+                count: eventCount ? eventCount.get('count') : 0
+            };
+        });
 
         res.json({ counts: formattedCounts });
     } catch (error) {
@@ -256,6 +274,7 @@ router.get('/countByEvent', async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 });
+
 
 // DELETE event by id
 router.delete('/events/:eventId', async (req, res) => {

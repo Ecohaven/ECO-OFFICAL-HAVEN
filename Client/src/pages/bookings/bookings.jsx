@@ -21,31 +21,35 @@ const BookingList = () => {
     const [filter, setFilter] = useState('');
     const [selectedEvent, setSelectedEvent] = useState('');
 
-    const fetchBookings = async () => {
-        try {
-            const bookingsResponse = await axios.get('http://localhost:3001/api/bookings');
-            const totalResponse = await axios.get('http://localhost:3001/api/booking-summary/totalbookings');
-            const newBookingsTodayResponse = await axios.get('http://localhost:3001/api/booking-summary/new-bookings-today');
-            const totalRevenueResponse = await axios.get('http://localhost:3001/api/booking-summary/totalRevenue');
-            const eventsResponse = await axios.get('http://localhost:3001/api/events'); // Fetch event names
+   const fetchBookings = async () => {
+    try {
+        const bookingsResponse = await axios.get('http://localhost:3001/api/bookings');
+        const totalResponse = await axios.get('http://localhost:3001/api/booking-summary/totalbookings');
+        const newBookingsTodayResponse = await axios.get('http://localhost:3001/api/booking-summary/new-bookings-today');
+        const totalRevenueResponse = await axios.get('http://localhost:3001/api/booking-summary/totalRevenue');
+        const eventsResponse = await axios.get('http://localhost:3001/api/events'); // Fetch event names
 
-            const updatedBookings = bookingsResponse.data.map(booking => ({
-                ...booking,
-                status: booking.status || 'Active',
-                eventStatus: booking.eventStatus === 'Free' ? 'Free' : 'Paid'
-            }));
+        // Create a map of event IDs to their deletion status
+        const eventDeletionStatus = new Map(eventsResponse.data.map(event => [event.id, event.isDeleted]));
 
-            setBookings(updatedBookings);
-            setSummaryData({
-                newBookingsToday: newBookingsTodayResponse.data.newBookingsToday,
-                totalBookings: totalResponse.data.totalBookings,
-                totalRevenue: totalRevenueResponse.data.totalRevenue
-            });
-        } catch (error) {
-            console.error('Error fetching data:', error);
-            handleShowAlert('Error fetching data. Please try again later.', 'error');
-        }
-    };
+        const updatedBookings = bookingsResponse.data.map(booking => ({
+            ...booking,
+            status: booking.status || 'Active', // Ensure status is set
+            isEventNameDeleted: eventDeletionStatus.get(booking.eventId) || false // Assuming booking.eventId refers to event IDs
+        }));
+
+        setBookings(updatedBookings);
+        setSummaryData({
+            newBookingsToday: newBookingsTodayResponse.data.newBookingsToday,
+            totalBookings: totalResponse.data.totalBookings,
+            totalRevenue: totalRevenueResponse.data.totalRevenue
+        });
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        handleShowAlert('Error fetching data. Please try again later.', 'error');
+    }
+};
+
 
     useEffect(() => {
         fetchBookings();
@@ -92,7 +96,7 @@ const BookingList = () => {
             setBookings(response.data);
         } catch (error) {
             console.error('Error filtering bookings:', error);
-            handleShowAlert('Error filtering bookings. Please try again later.', 'error');
+            handleShowAlert('No Available data for the filter selected.', 'error');
         } finally {
             setLoading(false);
         }
@@ -121,22 +125,7 @@ const BookingList = () => {
                 </div>
             ),
         },
-        {
-            field: 'eventStatus',
-            headerName: 'Event Admission',
-            width: 130,  // Adjust width as needed
-            renderCell: (params) => (
-                <div style={{
-                    borderRadius: '4px',
-                    color: params.row.eventStatus === 'Paid' ? 'blue' :
-                          (params.row.eventStatus === 'Free' ? 'green' : 'inherit'),
-                    fontWeight: 'bold',
-                    textAlign: 'center'
-                }}>
-                    {params.row.eventStatus}
-                </div>
-            ),
-        },
+     { field: 'id', headerName: 'Booking ID', width: 100 },
         {
             field: 'bookingDate',
             headerName: 'Booking Date',
@@ -153,28 +142,39 @@ const BookingList = () => {
                 }
             },
         },
-        { field: 'Name', headerName: 'Name', width: 130 },
-        { field: 'id', headerName: 'Booking ID', width: 100 },
-        { field: 'eventName', headerName: 'Event Name', width: 120 },
+        { field: 'Name', headerName: 'Name', width: 100 },
+        { field: 'eventName', headerName: 'Event Name', width: 200 },
         { field: 'numberOfPax', headerName: 'No.of Pax', width: 80 },
-        { field: 'phoneNumber', headerName: 'Phone Number', width: 150 },
+        { field: 'phoneNumber', headerName: 'Phone Number', width: 120 },
         { field: 'email', headerName: 'Email', width: 200 },
-        { field: 'leafPoints', headerName: 'Leaf Points', width: 30 },
-        { field: 'amount', headerName: 'Amount', width: 30 },
-        { field: 'qrCodeText', headerName: 'QRCode-Text', width: 150 },
-        {
-            field: 'cancel',
-            headerName: 'Cancel Booking',
-            width: 150,
-            renderCell: (params) => (
-                <Tooltip title="Cancel Booking">
-                    <Button onClick={() => handleCancelBooking(params.row.id)}
-                        style={{ backgroundColor: "red", fontWeight: "bold", color: "white" }}>
-                        Cancel
-                    </Button>
-                </Tooltip>
-            ),
-        },
+        // { field: 'leafPoints', headerName: 'Leaf Points', width: 30 },
+        { field: 'amount', headerName: 'Event Amount', width: 110 },
+        { field: 'qrCodeText', headerName: 'QRCode-Text', width: 120 },
+       {
+        field: 'cancel',
+        headerName: 'Cancel Booking',
+        width: 150,
+        renderCell: (params) => (
+            <Tooltip title={params.row.isEventNameDeleted ? "Event is deleted" : params.row.status === 'Cancelled' ? "Booking is already cancelled" : "Cancel Booking"}>
+                <Button
+                    onClick={() => {
+                        if (!params.row.isEventNameDeleted && params.row.status !== 'Cancelled') {
+                            handleCancelBooking(params.row.id);
+                        }
+                    }}
+                    style={{
+                        backgroundColor: params.row.isEventNameDeleted || params.row.status === 'Cancelled' ? 'grey' : 'red',
+                        fontWeight: 'bold',
+                        color: 'white',
+                        cursor: params.row.isEventNameDeleted || params.row.status === 'Cancelled' ? 'not-allowed' : 'pointer',
+                    }}
+                    disabled={params.row.isEventNameDeleted || params.row.status === 'Cancelled'} // Disable button if event is deleted or booking is cancelled
+                >
+                    Cancel
+                </Button>
+            </Tooltip>
+        ),
+    },
     ];
 
     return (

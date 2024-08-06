@@ -196,6 +196,7 @@ const AddEventForm = () => {
                         name="eventName"
                         fullWidth
                         required
+                        InputLabelProps={{ sx: labelStyle }}
                         sx={{ marginBottom: 2 }}
                         error={touched.eventName && Boolean(errors.eventName)}
                         helperText={touched.eventName && errors.eventName}
@@ -209,6 +210,7 @@ const AddEventForm = () => {
                         name="description"
                         fullWidth
                         required
+                        InputLabelProps={{ sx: labelStyle }}
                         sx={{ marginBottom: 2 }}
                         error={touched.description && Boolean(errors.description)}
                         helperText={touched.description && errors.description}
@@ -221,6 +223,7 @@ const AddEventForm = () => {
                         name="category"
                         fullWidth
                         required
+                        InputLabelProps={{ sx: labelStyle }}
                         sx={{ marginBottom: 2 }}
                         error={touched.category && Boolean(errors.category)}
                         helperText={touched.category && errors.category}
@@ -241,6 +244,7 @@ const AddEventForm = () => {
                         name="leafPoints"
                         fullWidth
                         required
+                        InputLabelProps={{ sx: labelStyle }}
                         sx={{ marginBottom: 2 }}
                         error={touched.leafPoints && Boolean(errors.leafPoints)}
                         helperText={touched.leafPoints && errors.leafPoints}
@@ -252,6 +256,7 @@ const AddEventForm = () => {
                         name="organiser"
                         fullWidth
                         required
+                        InputLabelProps={{ sx: labelStyle }}
                         sx={{ marginBottom: 2 }}
                         error={touched.organiser && Boolean(errors.organiser)}
                         helperText={touched.organiser && errors.organiser}
@@ -274,6 +279,7 @@ const AddEventForm = () => {
                                     variant="outlined"
                                     fullWidth
                                     required
+                                    InputLabelProps={{ sx: labelStyle }}
                                     sx={{ marginBottom: 2, marginTop: 2 }}
                                     error={touched.startDate && Boolean(errors.startDate)}
                                     helperText={touched.startDate && errors.startDate}
@@ -306,6 +312,7 @@ const AddEventForm = () => {
                                     variant="outlined"
                                     fullWidth
                                     required
+                                    InputLabelProps={{ sx: labelStyle }}
                                     sx={{ marginBottom: 4 }}
                                     error={touched.endDate && Boolean(errors.endDate)}
                                     helperText={touched.endDate && errors.endDate}
@@ -327,6 +334,7 @@ const AddEventForm = () => {
                         name="time"
                         fullWidth
                         required
+                        InputLabelProps={{ sx: labelStyle }}
                         sx={{ marginTop:2,marginBottom: 2 }}
                         error={touched.time && Boolean(errors.time)}
                         helperText={touched.time && errors.time}
@@ -335,11 +343,12 @@ const AddEventForm = () => {
                       <Field
                         as={TextField}
                         select
-                        label="Status"
+                        label="Type"
                         variant="outlined"
                         name="status"
                         fullWidth
                         required
+                        InputLabelProps={{ sx: labelStyle }}
                         sx={{ marginBottom: 2 }}
                         error={touched.status && Boolean(errors.status)}
                         helperText={touched.status && errors.status}
@@ -360,6 +369,7 @@ const AddEventForm = () => {
                         fullWidth
                         disabled={values.status === 'Free'}
                         required={values.status === 'Paid'}
+                        InputLabelProps={{ sx: labelStyle }}
                         sx={{ marginBottom: 2 }}
                         error={touched.amount && Boolean(errors.amount)}
                         helperText={touched.amount && errors.amount}
@@ -371,8 +381,9 @@ const AddEventForm = () => {
                         variant="outlined"
                         name="location"
                         fullWidth
-                        required
-                        sx={{ marginBottom: 2 }}
+                        required 
+                          InputLabelProps={{ sx: labelStyle }}
+                        sx={{ marginBottom: 2,'& .MuiInputBase-input': { color: 'black' } }}
                         error={touched.location && Boolean(errors.location)}
                         helperText={touched.location && errors.location}
                       />
@@ -408,6 +419,17 @@ const AddEventForm = () => {
 export default AddEventForm;
 
 // Styles
+const labelStyle = {
+  '&.MuiInputLabel-root': {
+    color: 'black',
+    '&.Mui-required::after': {
+  content:'none', // Add the asterisk
+     color: 'red',
+    },
+    
+  },
+};
+
 const containerStyle = {
   padding: '2rem',
   maxWidth: '100%',

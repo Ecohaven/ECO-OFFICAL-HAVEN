@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Typography, Modal, Box, Button, useMediaQuery } from '@mui/material';
+import { Grid, Typography, Modal, Box, Button, useMediaQuery, Link } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import axios from 'axios';
 import { format, isSameDay, isBefore, startOfDay, parseISO } from 'date-fns';
 import bannerImage from '../../assets/images/eventbanner.jpg';
 import mobileBannerImage from '../../assets/images/eventbanner.jpg'; 
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const EventDataTable = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const navigate = useNavigate(); // Initialize navigate
 
   const [events, setEvents] = useState([]);
   const [openEventModal, setOpenEventModal] = useState(false);
@@ -153,7 +155,7 @@ const EventDataTable = () => {
                   </Typography>
                 ) : (
                   <Typography variant="body1" color="black">
-                    <strong>Amount: </strong> ${event.amount}
+                    <strong>Amount:${event.amount} </strong> 
                   </Typography>
                 )}
                 {expired && (
@@ -214,31 +216,33 @@ const EventDataTable = () => {
                 <Typography variant="body1" color="black">
                   <strong>Time: {selectedEvent.time}</strong>
                 </Typography>
-                <Typography variant="body1" color="black">
-                  <strong>Description: </strong> {selectedEvent.description}
-                </Typography>
-                <Typography variant="body1" color="black">
-                  <strong>Location: </strong> {selectedEvent.location}
-                </Typography>
                 {selectedEvent.status === 'Free' ? (
                   <Typography variant="body1" color="black">
-                    <strong>Admission: Free</strong> 
+                    <strong>Admission: Free</strong>
                   </Typography>
                 ) : (
                   <Typography variant="body1" color="black">
                     <strong>Amount: </strong> ${selectedEvent.amount}
                   </Typography>
                 )}
-                <Box sx={{ mt: 2 }}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleCloseEventModal}
-                    sx={{ mr: 2 }}
-                  >
-                    Close
-                  </Button>
-                </Box>
+                <Typography variant="body1" color="black">
+                  <strong>Description: </strong> {selectedEvent.description}
+                </Typography>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{ mt: 2 }}
+                  disabled={isEventExpired(selectedEvent.endDate)}
+                  onClick={() => {
+                    navigate('/bookingform', { state: { event: selectedEvent } }); 
+                    handleCloseEventModal();
+                  }}
+                >
+                  Book
+                </Button>
+                <Button variant="outlined" sx={{ mt: 2,marginLeft:'10px' }} onClick={handleCloseEventModal}>
+                  Close
+                </Button>
               </Box>
             </>
           )}
