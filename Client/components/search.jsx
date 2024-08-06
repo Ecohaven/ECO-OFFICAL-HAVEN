@@ -93,7 +93,7 @@ const SearchComponent = () => {
   }, [scrollBlocked]);
 
   return (
-    <div style={{ position: 'relative', width: '60%', marginTop: '10px' }}>
+    <div style={{ position: 'relative' }}>
       <Input
         placeholder="Search..."
         value={search}
@@ -104,7 +104,9 @@ const SearchComponent = () => {
             <IconButton onClick={closeSearch}><Clear /></IconButton>
           )
         }
-        style={{ marginBottom: '1rem', width: '100%' }}
+        sx={{ marginBottom: '1rem', marginTop: '10px',
+          maxWidth: { xs: '150px', sm: '250px', md: '170px', lg: '200px'}
+        }}
       />
       {results.length > 0 && !noResults && (
         <Paper style={{ maxHeight: 400, overflow: 'auto', width: '100%', position: 'absolute', top: '100%', left: 0, zIndex: 10 }}>

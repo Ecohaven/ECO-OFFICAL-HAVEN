@@ -25,10 +25,9 @@ function AccountNavbar() {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [notificationAnchorEl, setNotificationAnchorEl] = useState(null); // Anchor element for notifications popover
   const [notifications, setNotifications] = useState([]); // Notifications state
- const [showNotificationIcon, setShowNotificationIcon] = useState(true);
-const [leafPointsMessage, setLeafPointsMessage] = useState('');
+  const [showNotificationIcon, setShowNotificationIcon] = useState(true);
+  const [leafPointsMessage, setLeafPointsMessage] = useState('');
   const location = useLocation();
-  // const showAppBarAndFooter = !['/get_started', '/register', '/login', '/account_deleted'].includes(location.pathname); // Hide AppBar & Footer on these pages 
 
   const open = Boolean(anchorEl);
   const openNotifications = Boolean(notificationAnchorEl);
@@ -292,61 +291,65 @@ const [leafPointsMessage, setLeafPointsMessage] = useState('');
           </Box>
           {/* Elements on right side of appbar */}
           <Box sx={{ display: 'flex', ml: 'auto', alignItems: 'center' }}>
-                 <SearchComponent search={search} openSearch={openSearch} closeSearch={closeSearch} />
-            <IconButton
-              color="inherit"
-              onClick={handleNotificationClick}
-              sx={{ marginLeft: { xs: '0.5rem', md: '1rem', color: 'grey' } }}
-            >
-              <Badge badgeContent={notifications ? notifications.length : 0} color="black" >
-                <Notifications />
-              </Badge>
-            </IconButton>
-            <Popover
-              open={openNotifications}
-              anchorEl={notificationAnchorEl}
-              onClose={handleNotificationClose}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-
-              }}
-              PaperProps={{ sx: { minWidth: '300px' } }}
-            >
-              <Box sx={{ p: 2 }} >
-      <Typography variant="h6" color="textPrimary">Notifications</Typography>
-      {leafPointsMessage && <Typography style={{textWrap:'wrap',width:'280px',textAlign:'left',color:'grey',fontStyle:'italic'}} color="textSecondary">{leafPointsMessage}</Typography>} {/* Display the leafPointsMessage if it exists */}
-      {notifications && notifications.length > 0 ? (
-        <List>
-          {notifications.map((event) => (
-            <ListItem key={event.id}>
-              <ListItemText 
-                primary={
-                  <Typography sx={{ color: 'green', fontWeight: 'bold', textAlign: 'left' }}>
-                    {`A Reminder for ${event.eventName} `}
-                  </Typography>
-                }
-                secondary={
-                  <Typography sx={{ color: 'black', textAlign: 'left' }}>
-                    {`Upcoming event on: ${formatDate(event.startDate)}`}
-                  </Typography>
-                }
-              />
-            </ListItem>
-          ))}
-        </List>
-                ) : (
-                  <Typography variant="body1">No new notifications</Typography>
-                )}
-
-              </Box>
-            </Popover>
+            <SearchComponent search={search} openSearch={openSearch} closeSearch={closeSearch} />
+            {/* If logged in */}
             {account ? (
               <>
+
+                {/* Notification Bell Icon + Popup */}
+                <IconButton
+                  color="inherit"
+                  onClick={handleNotificationClick}
+                  sx={{ marginLeft: { xs: '0.5rem', md: '1rem', color: 'grey' } }}
+                >
+                  <Badge badgeContent={notifications ? notifications.length : 0} color="black" >
+                    <Notifications />
+                  </Badge>
+                </IconButton>
+                <Popover
+                  open={openNotifications}
+                  anchorEl={notificationAnchorEl}
+                  onClose={handleNotificationClose}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+
+                  }}
+                  PaperProps={{ sx: { minWidth: '300px' } }}
+                >
+                  <Box sx={{ p: 2 }} >
+                    <Typography variant="h6" color="textPrimary">Notifications</Typography>
+                    {leafPointsMessage && <Typography style={{textWrap:'wrap',width:'280px',textAlign:'left',color:'grey',fontStyle:'italic'}} color="textSecondary">{leafPointsMessage}</Typography>} {/* Display the leafPointsMessage if it exists */}
+                      {notifications && notifications.length > 0 ? (
+                        <List>
+                          {notifications.map((event) => (
+                            <ListItem key={event.id}>
+                              <ListItemText 
+                                primary={
+                                  <Typography sx={{ color: 'green', fontWeight: 'bold', textAlign: 'left' }}>
+                                    {`A Reminder for ${event.eventName} `}
+                                  </Typography>
+                                }
+                                secondary={
+                                  <Typography sx={{ color: 'black', textAlign: 'left' }}>
+                                    {`Upcoming event on: ${formatDate(event.startDate)}`}
+                                  </Typography>
+                                }
+                              />
+                            </ListItem>
+                          ))}
+                        </List>
+                      ) : (
+                        <Typography variant="body1">No new notifications</Typography>
+                      )}
+
+                  </Box>
+                </Popover>
+
                 {profilePic ? (
                   <Box className="aspect-ratio-container-profile-pic-nav" sx={{ mt: 2 }} onClick={handleOpen}>
                     <img alt="profile-pic" className="aspect-ratio-item-profile-pic-nav"
@@ -403,16 +406,18 @@ const [leafPointsMessage, setLeafPointsMessage] = useState('');
                 </Popover>
               </>
             ) : (
-              <Link to="/get_started">
-                <Button id='get_started_button' variant='contained'
-                  sx={{
-                    fontSize: { xs: '0.9rem', sm: '0.9rem', md: '1rem', },
-                    padding: { xs: '0.5rem 0.5rem', sm: '0.5rem 0.7rem', md: '0.5rem 1rem' },
-                  }}
-                >
-                  Get Started
-                </Button>
-              </Link>
+              <>
+                <Link to="/get_started">
+                  <Button id='get_started_button' variant='contained'
+                    sx={{
+                      fontSize: { xs: '0.9rem', sm: '0.9rem', md: '1rem', },
+                      padding: { xs: '0.5rem 0.5rem', sm: '0.5rem 0.7rem', md: '0.5rem 1rem' },
+                    }}
+                  >
+                    Get Started
+                  </Button>
+                </Link>
+              </>
             )}
           </Box>
         </Toolbar>
