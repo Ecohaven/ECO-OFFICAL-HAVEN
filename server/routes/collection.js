@@ -1,6 +1,76 @@
 const express = require('express');
 const router = express.Router();
 const { CollectInformation, User } = require('../models'); // Adjust path as needed
+const nodemailer = require('nodemailer');
+
+
+// Your existing email function might look like this
+function sendConfirmationEmail(email, collectionId, itemName, itemImage) {
+  const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+      },
+  });
+
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: 'Your Collection Confirmation',
+    html: `
+        <div style="font-family: Arial, sans-serif; color: #333;">
+            <h1 style="background-color: #f8f8f8; padding: 10px; text-align: center; border-bottom: 1px solid #ccc;">EcoHaven Redemption Confirmation</h1>
+            <div style="padding: 20px;">
+                <p>Dear Valued Customer,</p>
+                <p>Thank you for your redemption! Here are the details of your collection:</p>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #ccc;">Collection ID:</td>
+                        <td style="padding: 10px; border: 1px solid #ccc;">${collectionId}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #ccc;">Item Name:</td>
+                        <td style="padding: 10px; border: 1px solid #ccc;">${itemName}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #ccc;">Item Image:</td>
+                        <td style="padding: 10px; border: 1px solid #ccc;">
+                            <img src="${itemImage}" alt="Item Image" style="max-width: 100%; height: auto;" />
+                        </td>
+                    </tr>
+                </table>
+                <p style="margin-top: 20px;">We appreciate your commitment to eco-friendly practices. If you have any questions or need further assistance, please don't hesitate to contact us at <a href="mailto:ecohaven787@gmail.com">ecohaven787@gmail.com</a>.</p>
+                <p>Best regards,</p>
+                <p>EcoHaven Team</p>
+            </div>
+            <footer style="background-color: #f8f8f8; padding: 10px; text-align: center; border-top: 1px solid #ccc;">
+                <p>&copy; 2024 EcoHaven. All rights reserved.</p>
+            </footer>
+        </div>
+    `,
+  };
+
+  transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+          console.log('Error sending email:', error);
+      } else {
+          console.log('Email sent: ' + info.response);
+      }
+  });
+}
+
+// Route to send email
+router.post('/send-email', async (req, res) => {
+  const { email, collectionId, itemImage } = req.body; // Include itemImage here
+  try {
+      sendConfirmationEmail(email, collectionId, itemImage);
+      res.status(200).json({ message: 'Email sent successfully' });
+  } catch (error) {
+      console.error('Error sending email:', error);
+      res.status(500).json({ message: 'Error sending email', error: error.message });
+  }
+});
 
 //For backend 
 

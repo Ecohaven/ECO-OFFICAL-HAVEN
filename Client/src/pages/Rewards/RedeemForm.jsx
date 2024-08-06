@@ -61,20 +61,38 @@ function RewardForm() {
 
     const handleSubmit = async (values, { setSubmitting }) => {
         try {
-            // Post data to backend
+            // Redeem product
             await axios.post('http://localhost:3001/eco/redeem', {
                 accountId: account.id,
-                email:account.email,
+                email: account.email,
                 phoneNumber: account.phone_no,
-                productName: product.itemName,
+                productName: product.itemName
             });
-
-            // Store all necessary values in localStorage
+    
+            // Fetch latest collectionId
+            const response = await axios.get('http://localhost:3001/collect/collectionIds');
+            const latestCollectionId = response.data[response.data.length - 1]?.collectionId;
+    
+            if (latestCollectionId) {
+                // Fetch item details
+                const itemResponse = await axios.get(`http://localhost:3001/eco/product-detail?search=${product.itemName}`);
+                const item = itemResponse.data[0]; // Assuming the item is in the first position
+                
+                // Send confirmation email
+                await axios.post('http://localhost:3001/collect/send-email', {
+                    email: account.email,
+                    collectionId: latestCollectionId,
+                    itemName: item.itemName,
+                    itemImage: `http://localhost:3001/eco/product-images/${item.itemimg}`
+                });
+            }
+    
+            // Store user and product information
             localStorage.setItem('name', values.name);
             localStorage.setItem('phoneNumber', account.phone_no);
             localStorage.setItem('email', values.email);
             localStorage.setItem('product', product.itemName);
-
+    
             setIsSubmitted(true);
         } catch (error) {
             console.error('Error submitting form:', error);
@@ -82,7 +100,7 @@ function RewardForm() {
             setSubmitting(false);
         }
     };
-
+    
     useEffect(() => {
         if (isSubmitted) {
             setTimeout(() => {

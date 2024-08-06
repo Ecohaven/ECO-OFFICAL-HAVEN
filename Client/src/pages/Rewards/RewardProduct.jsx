@@ -540,7 +540,7 @@ const RewardTable = () => {
         onClose={handleCloseAdd}
       >
         <Box sx={{ ...style, width: 400 }}>
-          <h2 className='popup'>Add New Product</h2>
+          <h2 className='popup'>Add New Item</h2>
           <hr />
 
           {/* Form Fields */}
