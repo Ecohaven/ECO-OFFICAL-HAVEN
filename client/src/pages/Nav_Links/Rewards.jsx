@@ -44,13 +44,11 @@ function Rewards() {
       <div className='greenreward'>
         <h1>Green rewards</h1>
         <p>Earn leaves and exchange them for rewards! It takes less than 2 minutes to create an account. Sign up with us now!</p>
-        <button
-          className='signupbutton'
-          disabled={!!account}
-          style={{ cursor: account ? 'not-allowed' : 'pointer', color: 'white'}}
-        >
-          <a href='/get_started' style={{ textDecoration: 'none', color: 'inherit' }}>Sign up now!</a>
-        </button>
+        {account ? (
+          <button className='signupbutton' disabled style={{ cursor: 'not-allowed' }}>Sign up now</button>
+        ) : (
+          <button className='signupbutton'><a href='/get_started' style={{color: 'white', textDecoration: 'none'}}>Sign up now</a></button>
+        )}
       </div>
 
       {/* divider */}
@@ -114,13 +112,11 @@ function Rewards() {
       <div className='greenreward2'>
         <h1>Green rewards</h1>
         <p>Earn leaves and exchange them for rewards! It takes less than 2 minutes to create an account. Sign up with us now!</p>
-        <button
-          className='signupbutton'
-          disabled={!!account}
-          style={{ cursor: account ? 'not-allowed' : 'pointer', color: '#14772B'}}
-        >
-          <a href='/get_started' style={{ textDecoration: 'none', color: 'inherit' }}>Sign up now!</a>
-        </button>
+        {account ? (
+          <button className='signupbutton' disabled style={{ cursor: 'not-allowed' }}>Sign up now</button>
+        ) : (
+          <button className='signupbutton'> <a href='/get_started'>Sign up now</a></button>
+        )}
         <p className='qn'>Any questions? Check out our <a href='/faq'>FAQ</a> here</p>
       </div>
     </div>

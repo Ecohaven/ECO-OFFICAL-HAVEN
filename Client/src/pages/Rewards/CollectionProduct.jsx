@@ -19,6 +19,7 @@ const CollectionProduct = () => {
   const [filteredRows, setFilteredRows] = useState([]);
   const [itemFilter, setItemFilter] = useState('All');
   const [uniqueItems, setUniqueItems] = useState([]);
+  const [totalCollection, setTotalCollection] = useState(0);
   const [editFormData, setEditFormData] = useState({
     id: '',
     name: '',
@@ -58,6 +59,10 @@ const CollectionProduct = () => {
 
         const items = Array.from(new Set(response.data.map(row => row.product)));
         setUniqueItems(['All', ...items]);
+
+        // Calculate initial total collection count
+        const total = response.data.filter(row => row.product === itemFilter).length;
+        setTotalCollection(total);
       } else {
         console.error('Expected an array from the API response');
       }
@@ -103,6 +108,10 @@ const CollectionProduct = () => {
     }
 
     setFilteredRows(filtered);
+
+    // Update total collection count based on the selected item
+    const total = filtered.filter(row => row.product === item).length;
+    setTotalCollection(total);
 
     if (filtered.length === 0 && search.trim() !== '') {
       setSearchError(true);
@@ -278,7 +287,7 @@ const CollectionProduct = () => {
       <div className="header">
         <h2 className='collectionitem'>Collection Items</h2>
         <div className="header-controls">
-          
+
           {/* search */}
           <TextField
             variant="outlined"
@@ -348,6 +357,11 @@ const CollectionProduct = () => {
           </FormControl>
 
         </div>
+        {itemFilter !== 'All' && (
+          <div className="totalcollection" style={{marginTop: '30px', marginBottom: '-20px'}}>
+            <h3>Total {itemFilter} collections: <span style={{color: '#14772B', fontSize: '24px'}}>{totalCollection}</span></h3>
+          </div>
+        )}
       </div>
 
       {searchError && (
