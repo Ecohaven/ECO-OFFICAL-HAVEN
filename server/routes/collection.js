@@ -2,73 +2,81 @@ const express = require('express');
 const router = express.Router();
 const { CollectInformation, User } = require('../models'); // Adjust path as needed
 const nodemailer = require('nodemailer');
+const path = require('path');
 
 
-// Your existing email function might look like this
 function sendConfirmationEmail(email, collectionId, itemName, itemImage) {
   const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-      },
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
   });
+
+  // Extract the filename from the itemImage path
+  const filename = path.basename(itemImage);
 
   const mailOptions = {
     from: process.env.EMAIL_USER,
     to: email,
     subject: 'Your Collection Confirmation',
     html: `
-        <div style="font-family: Arial, sans-serif; color: #333;">
-            <h1 style="background-color: #f8f8f8; padding: 10px; text-align: center; border-bottom: 1px solid #ccc;">EcoHaven Redemption Confirmation</h1>
-            <div style="padding: 20px;">
-                <p>Dear Valued Customer,</p>
-                <p>Thank you for your redemption! Here are the details of your collection:</p>
-                <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-                    <tr>
-                        <td style="padding: 10px; border: 1px solid #ccc;">Collection ID:</td>
-                        <td style="padding: 10px; border: 1px solid #ccc;">${collectionId}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 10px; border: 1px solid #ccc;">Item Name:</td>
-                        <td style="padding: 10px; border: 1px solid #ccc;">${itemName}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 10px; border: 1px solid #ccc;">Item Image:</td>
-                        <td style="padding: 10px; border: 1px solid #ccc;">
-                            <img src="${itemImage}" alt="Item Image" style="max-width: 100%; height: auto;" />
-                        </td>
-                    </tr>
-                </table>
-                <p style="margin-top: 20px;">We appreciate your commitment to eco-friendly practices. If you have any questions or need further assistance, please don't hesitate to contact us at <a href="mailto:ecohaven787@gmail.com">ecohaven787@gmail.com</a>.</p>
-                <p>Best regards,</p>
-                <p>EcoHaven Team</p>
-            </div>
-            <footer style="background-color: #f8f8f8; padding: 10px; text-align: center; border-top: 1px solid #ccc;">
-                <p>&copy; 2024 EcoHaven. All rights reserved.</p>
-            </footer>
-        </div>
+       <div style="font-family: Arial, sans-serif; color: #white;">
+    <h1 style="background-color: #14772B; padding: 10px; text-align: center; border-bottom: 1px solid #ccc;">
+        EcoHaven Reward Confirmation
+    </h1>
+    <div style="padding: 20px;">
+        <p style="color: black;">Dear Valued Customer,</p>
+        <p style="color: black;">Thank you for your redemption! Here are the details of your collection:</p>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+            <tr>
+                <td style="padding: 10px; background-color: #55d171; font-weight: bold;">Collection ID:</td>
+                <td style="padding: 10px; background-color: #55d171;">${collectionId}</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid black; color: black; background-color: #b9ecc5; font-weight: bold;">Item Name:</td>
+                <td style="padding: 10px; border: 1px solid black; color: black; background-color: #b9ecc5;">${itemName}</td>
+            </tr>
+        </table>
+        <p style="margin-top: 20px; color: black;">
+            We appreciate your commitment to eco-friendly practices. If you have any questions or need further assistance, please don't hesitate to contact us at <a href="mailto:ecohaven787@gmail.com" style="color: #14772B; font-weight: bold;">ecohaven787@gmail.com</a>.
+        </p>
+        <p style="color: black;">Best regards,</p>
+        <p style="color: black;">EcoHaven Team</p>
+    </div>
+    <footer style="background-color: #14772B; padding: 10px; text-align: center; border-top: 1px solid #ccc;">
+        <p style="color: white;">&copy; 2024 EcoHaven. All rights reserved.</p>
+    </footer>
+</div>
     `,
+    attachments: [
+      {
+        filename: filename,
+        path: itemImage,
+        cid: 'productImage'
+      }
+    ]
   };
 
   transporter.sendMail(mailOptions, function (error, info) {
-      if (error) {
-          console.log('Error sending email:', error);
-      } else {
-          console.log('Email sent: ' + info.response);
-      }
+    if (error) {
+      console.log('Error sending email:', error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
   });
 }
 
 // Route to send email
 router.post('/send-email', async (req, res) => {
-  const { email, collectionId, itemImage } = req.body; // Include itemImage here
+  const { email, collectionId, itemName, itemImage } = req.body; // Include itemName and itemImage here
   try {
-      sendConfirmationEmail(email, collectionId, itemImage);
-      res.status(200).json({ message: 'Email sent successfully' });
+    sendConfirmationEmail(email, collectionId, itemName, itemImage);
+    res.status(200).json({ message: 'Email sent successfully' });
   } catch (error) {
-      console.error('Error sending email:', error);
-      res.status(500).json({ message: 'Error sending email', error: error.message });
+    console.error('Error sending email:', error);
+    res.status(500).json({ message: 'Error sending email', error: error.message });
   }
 });
 

@@ -213,10 +213,10 @@ const HomePage = () => {
       {/* Why Us? Section */}
       <Box sx={{
   position: 'relative',
-  backgroundImage: 'url("../../src/assets/images/whyUs_bg.jpeg")',
+  backgroundImage: 'url("../../src/assets/images/whyus.png")',
   backgroundSize: 'cover',
   backgroundPosition: 'center',
-  py: 5,
+  py: 8,
   mb: 6
 }}>
   <Box sx={{
