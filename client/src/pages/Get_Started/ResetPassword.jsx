@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { TextField, Button, Typography, Box, Grid, Stepper, Step, StepLabel } from '@mui/material';
+import { TextField, Button, Typography, Box, Grid, Stepper, Step, StepLabel, CircularProgress } from '@mui/material';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import http from '/src/http';
@@ -10,6 +10,7 @@ import '../../style/loginandregister.css';
 function ResetPassword() {
   const navigate = useNavigate();
   const storedToken = localStorage.getItem('resetToken');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!storedToken) {
@@ -41,6 +42,7 @@ function ResetPassword() {
         "Password must have a mix of lower and uppercase letters and at least 1 number")
     }),
     onSubmit: (data) => {
+      setLoading(true);
       // Include the reset token in the request body
 
       const storedToken = localStorage.getItem('resetToken');
@@ -65,6 +67,7 @@ function ResetPassword() {
 
       http.post('/reset_password/reset', payload)
       .then(response => {
+        setLoading(false);
         alert("Password updated successfully. You can now login with your new password.");
         localStorage.removeItem('resetToken');
         navigate('/login');
@@ -85,6 +88,7 @@ function ResetPassword() {
             handleResetPassword.setFieldError('newPassword', errorMessage);
         }
         console.log(errorMessage);
+        setLoading(false);
       });
     }
   });

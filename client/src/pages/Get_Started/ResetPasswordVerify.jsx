@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, TextField, Button, Grid, Typography, Stepper, Step, StepLabel } from '@mui/material';
+import { Box, TextField, Button, Grid, Typography, Stepper, Step, StepLabel, CircularProgress } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
@@ -11,6 +11,7 @@ import http from '/src/http';
 function ResetPasswordVerify() {
     const navigate = useNavigate();
     const storedToken = localStorage.getItem('resetToken');
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         // if there is no reset token in the local storage, redirect to the reset password request page
@@ -27,6 +28,8 @@ function ResetPasswordVerify() {
           verificationCode: yup.string().required("This is a required field")
         }),
         onSubmit: (data) => {
+          setLoading(true);
+
             if (!storedToken) {
                 navigate('/reset_password/request');
                 return;
@@ -63,6 +66,8 @@ function ResetPasswordVerify() {
                 else {
                     handleVerifyCode.setFieldError('verificationCode', errorMessage);
                 }
+
+                setLoading(false);
             });
         }
     });
@@ -108,9 +113,19 @@ function ResetPasswordVerify() {
                 />
               </Box>  
               <Box sx={{ mt: '5rem', textAlign: 'center', display: 'flex', justifyContent: 'flex-end' }}>
+              {loading && (
+                <Button variant="contained" className='login-register-button'>
+                  <CircularProgress size={24} color='inherit' />
+                  <Typography variant="button" sx={{ ml: 1 }}>  
+                    Verifying
+                  </Typography>
+                </Button>
+              )}
+              {!loading && (
                 <Button variant="contained" type="submit" className='login-register-button'>
                   Verify Code
                 </Button>
+              )}
               </Box>
             </Box>
           </div>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, TextField, Button, Grid, Typography, Stepper, Step, StepLabel } from '@mui/material';
+import { Box, TextField, Button, Grid, Typography, Stepper, Step, StepLabel, CircularProgress } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
@@ -11,6 +11,7 @@ import http from '/src/http';
 function ResetPasswordRequest() {
   const navigate = useNavigate();
   const storedToken = localStorage.getItem('resetToken');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (storedToken) {
@@ -37,6 +38,7 @@ function ResetPasswordRequest() {
       email: yup.string().trim().email("Invalid email format").required("This is a required field")
     }),
     onSubmit: (data) => {
+      setLoading(true);
       data.email = data.email.trim();
       http.post('/reset_password/request', data)
       .then(response => {
@@ -55,6 +57,7 @@ function ResetPasswordRequest() {
         else {
           console.log(err.response.data);
         }
+        setLoading(false);
       });
     }
   });
@@ -103,9 +106,19 @@ function ResetPasswordRequest() {
                 />
               </Box>  
               <Box sx={{ mt: '5rem', textAlign: 'center', display: 'flex', justifyContent: 'flex-end' }}>
+                {loading && (
+                  <Button variant="contained" className='login-register-button'>
+                    <CircularProgress size={24} color='inherit' />
+                    <Typography variant="button" sx={{ ml: 1 }}>  
+                      Sending
+                    </Typography>
+                  </Button>
+                )}
+                {!loading &&
                 <Button variant="contained" type="submit" className='login-register-button'>
                   Send Verification Code
                 </Button>
+                }
               </Box>
             </Box>
           </div>

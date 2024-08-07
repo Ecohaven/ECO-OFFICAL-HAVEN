@@ -235,7 +235,7 @@ const sendVerificationCodeStaff = async (req, res) => {
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: email,
-            subject: 'EcoHaven: Password Reset',
+            subject: 'EcoHaven: Verification Code',
             html: `
                 <html>
                 <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; background-color: #f4f4f9; margin: 0; padding: 0;">

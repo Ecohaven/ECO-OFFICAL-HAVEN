@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Typography, TextField, Button, Stepper, Step, StepLabel } from '@mui/material';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 function StaffResetPassword() {
   const navigate = useNavigate();
   const storedToken = localStorage.getItem('resetTokenStaff');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!storedToken) {
@@ -34,6 +35,7 @@ function StaffResetPassword() {
     }),
     onSubmit: (data) => {
       // Include the reset token in the request body
+      setLoading(true);
 
       const storedToken = localStorage.getItem('resetTokenStaff');
       if (!storedToken) {
@@ -76,6 +78,7 @@ function StaffResetPassword() {
           formik.setFieldError('newPassword', errorMessage);
         }
         console.log(errorMessage);
+        setLoading(false);
       });
     }
   });
@@ -138,10 +141,18 @@ function StaffResetPassword() {
                             />
                         </Box>
                         <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
+                            {loading && (
+                              <Button variant="contained" type="submit" sx={{ backgroundColor: 'white', color: '#19682c',
+                                  "&:hover": { backgroundColor: 'grey', color: 'white' } }}>
+                                  Reset Password
+                              </Button>
+                            )}
+                            {!loading && (
                             <Button variant="contained" type="submit" sx={{ backgroundColor: 'white', color: '#19682c',
                                 "&:hover": { backgroundColor: 'grey', color: 'white' } }}>
                                 Reset Password
                             </Button>
+                            )}
                         </Box>
                     </Box>
                 </Box>
