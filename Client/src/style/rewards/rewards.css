@@ -7,18 +7,15 @@ body {
     position: relative;
     width: 100%;
     height: 400px;
-    /* Fixed height for the banner */
     text-align: center;
     margin-bottom: 50px;
     overflow: hidden;
-    /* Hides any overflowed parts of the image */
 }
 
 .headbanner img {
     width: 100%;
     height: 110%;
     object-fit: cover;
-    /* Ensures the image covers the entire container */
 }
 
 .headbanner h1 {
@@ -29,10 +26,8 @@ body {
     font-size: 40px;
     font-weight: bold;
     color: black;
-    /* Ensure the text is readable on the banner */
     margin: 0;
     padding: 0 10px;
-    /* Optional: Adds some padding to prevent text from touching edges */
 }
 
 .headbanner h1 {
@@ -44,17 +39,17 @@ body {
 /* banner FOR REWARD */
 .rewardbanner {
     position: relative;
-    width: 100%; /* Change to 100% to make it responsive */
-    height: auto; /* Set height to auto to maintain aspect ratio */
+    width: 100%;
+    height: auto;
     text-align: center;
     margin-bottom: 50px;
     overflow: hidden;
-    max-width: 1520.4px; /* Set the max-width to the original width */
+    max-width: 1520.4px;
 }
 
 .rewardbanner img {
     width: 100%;
-    height: auto; /* Set height to auto to maintain aspect ratio */
+    height: auto;
     object-fit: cover;
 }
 
@@ -65,14 +60,12 @@ body {
     text-align: center;
     margin-bottom: 50px;
     overflow: hidden;
-    /* Hides any overflowed parts of the image */
 }
 
 .aboutbanner img {
     width: 100%;
     height: 110%;
     object-fit: cover;
-    /* Ensures the image covers the entire container */
 }
 
 /* greenreward */
@@ -254,11 +247,11 @@ h1 {
 /* Responsive design for mobile devices */
 @media (max-width: 960px) {
     .rewardbanner {
-        height: 200px; /* Adjust height for better fit */
+        height: 200px;
     }
 
     .rewardbanner img {
-        height: 100%; /* Maintain the cover fit */
+        height: 100%;
     }
 
     .greenreward h1,
@@ -302,14 +295,12 @@ h1 {
 
     .rewards h1 {
         font-size: 2.5vw;
-        /* Adjust font size for smaller screens */
         width: 90%;
     }
 
     .rewards p,
     .greenreward2 .qn {
         font-size: 1.5vw;
-        /* Adjust font size for smaller screens */
         width: 90%;
     }
 
@@ -323,11 +314,11 @@ h1 {
 
 @media (max-width: 500px) {
     .rewardbanner {
-        height: 150px; /* Adjust height for smaller screens */
+        height: 150px;
     }
 
     .rewardbanner img {
-        height: 100%; /* Maintain the cover fit */
+        height: 100%;
     }
 
     .greenreward h1,
@@ -369,7 +360,6 @@ h1 {
     .rewards p,
     .greenreward2 .qn {
         font-size: 2.5vw;
-        /* Adjust font size for smaller screens */
         width: 90%;
     }
 

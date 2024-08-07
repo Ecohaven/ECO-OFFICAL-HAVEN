@@ -64,7 +64,7 @@ const Backend = () => {
     doc.text('EcoHaven', doc.internal.pageSize.width / 2, 20, { align: 'center' });
 
     doc.setFontSize(12);
-    doc.setTextColor(0, 0, 0); // Black color
+    doc.setTextColor(0, 0, 0);
 
     // Add payment details
     autoTable(doc, {
@@ -91,7 +91,7 @@ const Backend = () => {
         body: payment.refunds.map(refund => [refund.id, refund.status, refund.reason]),
         theme: 'striped',
         styles: { fontSize: 10, cellPadding: 4 },
-        headStyles: { fillColor: [22, 160, 133] }, // Custom header color
+        headStyles: { fillColor: [22, 160, 133] }, // Header color
       });
     } else {
       doc.setFontSize(12);

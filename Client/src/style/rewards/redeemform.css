@@ -69,9 +69,7 @@
 .rewardform .MuiInputBase-input:focus {
     outline: 0 !important;
     border-color: #2196f3 !important;
-    /* Replace with your desired focus border color */
     box-shadow: 0 0 0 1px #14772B !important;
-    /* Replace with your desired focus box-shadow */
 }
 
 .asterisk {
@@ -86,7 +84,7 @@
 }
 
 .product-details, .form-fields {
-    flex: 1 1 45%; /* Adjust the width as needed */
+    flex: 1 1 45%;
     margin: 10px;
 }
 

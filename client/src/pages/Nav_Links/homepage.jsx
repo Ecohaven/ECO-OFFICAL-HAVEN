@@ -212,116 +212,116 @@ const HomePage = () => {
 
       {/* Why Us? Section */}
       <Box sx={{
-  position: 'relative',
-  backgroundImage: 'url("../../src/assets/images/whyus.png")',
-  backgroundSize: 'cover',
-  backgroundPosition: 'center',
-  py: 8,
-  mb: 6
-}}>
-  <Box sx={{
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'rgba(255, 255, 255, 0.6)',
-    zIndex: 1
-  }} />
+        position: 'relative',
+        backgroundImage: 'url("../../src/assets/images/whyus.png")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        py: 8,
+        mb: 6
+      }}>
+        <Box sx={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'rgba(255, 255, 255, 0.6)',
+          zIndex: 1
+        }} />
 
-  <Box sx={{ position: 'relative', zIndex: 2 }}>
-    <Typography variant="h4" align="center" gutterBottom sx={{ fontWeight: 'bold', color: 'black', mb: 2 }}>
-      Why Us?
-    </Typography>
+        <Box sx={{ position: 'relative', zIndex: 2 }}>
+          <Typography variant="h4" align="center" gutterBottom sx={{ fontWeight: 'bold', color: 'black', mb: 2 }}>
+            Why Us?
+          </Typography>
 
-    <Grid container spacing={4} sx={{ p: 3, justifyContent: 'center', flexWrap: 'wrap' }}>
-      <Grid item xs={12} sm={6} md={3} sx={{ flexShrink: 0, textAlign: 'center' }}>
-        <Box sx={{
-          width: '140px',
-          height: '140px',
-          backgroundColor: 'green',
-          borderRadius: '50%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          margin: '0 auto'
-        }}>
-          <img src="../../src/assets/images/opportunity.png" alt="Reason 1" style={{ width: '100px', height: '100px' }} />
+          <Grid container spacing={4} sx={{ p: 3, justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Grid item xs={12} sm={6} md={3} sx={{ flexShrink: 0, textAlign: 'center' }}>
+              <Box sx={{
+                width: '140px',
+                height: '140px',
+                backgroundColor: 'green',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto'
+              }}>
+                <img src="../../src/assets/images/opportunity.png" alt="Reason 1" style={{ width: '100px', height: '100px' }} />
+              </Box>
+              <Typography variant="h6" sx={{ fontWeight: 'bold', mt: 2, color: 'black' }}>
+                Exclusive Event's opportunities
+              </Typography>
+              <Typography variant="body1" sx={{ mt: 1 }}>
+                Join our sustainable event and workshop, where you'll discover innovative solutions for sustainable practices
+                and connect individuals passionate about the environment.
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3} sx={{ flexShrink: 0, textAlign: 'center' }}>
+              <Box sx={{
+                width: '140px',
+                height: '140px',
+                backgroundColor: 'green',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto'
+              }}>
+                <img src="../../src/assets/images/user-friendly.png" alt="Reason 2" style={{ width: '100px', height: '100px' }} />
+              </Box>
+              <Typography variant="h6" sx={{ fontWeight: 'bold', mt: 2, color: 'black' }}>
+                User-Friendly Interface
+              </Typography>
+              <Typography variant="body1" sx={{ mt: 1 }}>
+                Introducing our eco-conscious event platform! Seamlessly book sustainable workshops and events online with our
+                user-friendly interface, making choices easier than ever.
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3} sx={{ flexShrink: 0, textAlign: 'center' }}>
+              <Box sx={{
+                width: '140px',
+                height: '140px',
+                backgroundColor: 'green',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto'
+              }}>
+                <img src="../../src/assets/images/surprise.png" alt="Reason 3" style={{ width: '100px', height: '100px' }} />
+              </Box>
+              <Typography variant="h6" sx={{ fontWeight: 'bold', mt: 2, color: 'black' }}>
+                Enticing rewards
+              </Typography>
+              <Typography variant="body1" sx={{ mt: 1 }}>
+                Earn points by attending our sustainable events and workshops, and redeem them for exciting rewards to make a
+                positive impact.
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3} sx={{ flexShrink: 0, textAlign: 'center' }}>
+              <Box sx={{
+                width: '140px',
+                height: '140px',
+                backgroundColor: 'green',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto'
+              }}>
+                <img src="../../src/assets/images/best-candidate.png" alt="Reason 4" style={{ width: '100px', height: '100px' }} />
+              </Box>
+              <Typography variant="h6" sx={{ fontWeight: 'bold', mt: 2, color: 'black' }}>
+                Affordable Community Networking
+              </Typography>
+              <Typography variant="body1" sx={{ mt: 1 }}>
+                Your eco-conscious hub for events and workshops, fostering sustainability and community engagement. Book your
+                next green event online and join us in making a positive impact on the planet.
+              </Typography>
+            </Grid>
+          </Grid>
         </Box>
-        <Typography variant="h6" sx={{ fontWeight: 'bold', mt: 2, color: 'black' }}>
-          Exclusive Event's opportunities
-        </Typography>
-        <Typography variant="body1" sx={{ mt: 1 }}>
-          Join our sustainable event and workshop, where you'll discover innovative solutions for sustainable practices
-          and connect individuals passionate about the environment.
-        </Typography>
-      </Grid>
-      <Grid item xs={12} sm={6} md={3} sx={{ flexShrink: 0, textAlign: 'center' }}>
-        <Box sx={{
-          width: '140px',
-          height: '140px',
-          backgroundColor: 'green',
-          borderRadius: '50%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          margin: '0 auto'
-        }}>
-          <img src="../../src/assets/images/user-friendly.png" alt="Reason 2" style={{ width: '100px', height: '100px' }} />
-        </Box>
-        <Typography variant="h6" sx={{ fontWeight: 'bold', mt: 2, color: 'black' }}>
-          User-Friendly Interface
-        </Typography>
-        <Typography variant="body1" sx={{ mt: 1 }}>
-          Introducing our eco-conscious event platform! Seamlessly book sustainable workshops and events online with our
-          user-friendly interface, making choices easier than ever.
-        </Typography>
-      </Grid>
-      <Grid item xs={12} sm={6} md={3} sx={{ flexShrink: 0, textAlign: 'center' }}>
-        <Box sx={{
-          width: '140px',
-          height: '140px',
-          backgroundColor: 'green',
-          borderRadius: '50%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          margin: '0 auto'
-        }}>
-          <img src="../../src/assets/images/surprise.png" alt="Reason 3" style={{ width: '100px', height: '100px' }} />
-        </Box>
-        <Typography variant="h6" sx={{ fontWeight: 'bold', mt: 2, color: 'black' }}>
-          Enticing rewards
-        </Typography>
-        <Typography variant="body1" sx={{ mt: 1 }}>
-          Earn points by attending our sustainable events and workshops, and redeem them for exciting rewards to make a
-          positive impact.
-        </Typography>
-      </Grid>
-      <Grid item xs={12} sm={6} md={3} sx={{ flexShrink: 0, textAlign: 'center' }}>
-        <Box sx={{
-          width: '140px',
-          height: '140px',
-          backgroundColor: 'green',
-          borderRadius: '50%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          margin: '0 auto'
-        }}>
-          <img src="../../src/assets/images/best-candidate.png" alt="Reason 4" style={{ width: '100px', height: '100px' }} />
-        </Box>
-        <Typography variant="h6" sx={{ fontWeight: 'bold', mt: 2, color: 'black' }}>
-          Affordable Community Networking
-        </Typography>
-        <Typography variant="body1" sx={{ mt: 1 }}>
-          Your eco-conscious hub for events and workshops, fostering sustainability and community engagement. Book your
-          next green event online and join us in making a positive impact on the planet.
-        </Typography>
-      </Grid>
-    </Grid>
-  </Box>
-</Box>
+      </Box>
 
 
       {/* Our partners */}

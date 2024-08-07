@@ -8,16 +8,13 @@
 
 .content {
     flex: 1;
-    /* Take remaining width */
     padding: 20px;
 }
 
 .data-grid-container {
     width: calc(100% - 250px);
-    /* Adjust width based on sidebar width */
     padding: 20px;
     overflow-x: auto;
-    /* Enable horizontal scroll if needed */
 }
 
 .rewardshopback .table-container {
@@ -27,13 +24,7 @@
 
 .MuiDataGrid-root {
     width: calc(100% - 250px);
-    /* Adjust width based on sidebar width */
 }
-
-/* .filtercollection {
-    margin-top: -55px !important;
-    margin-left: -200px !important;
-} */
 
 @media (max-width: 960px) {
     .collectionitem, .search {
@@ -42,7 +33,7 @@
 
     .rewardshopback .table-container {
         width: 120% !important;
-        margin-left: 20px !important; /* Move the table to the left */
+        margin-left: 20px !important;
     }
 }
 

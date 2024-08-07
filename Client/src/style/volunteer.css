@@ -1,17 +1,17 @@
 /* banner FOR VOLUNTEER */
 .volunteerbanner {
   position: relative;
-  width: 100%; /* Change to 100% to make it responsive */
-  height: auto; /* Set height to auto to maintain aspect ratio */
+  width: 100%;
+  height: auto;
   text-align: center;
   margin-bottom: 50px;
   overflow: hidden;
-  max-width: 1520.4px; /* Set the max-width to the original width */
+  max-width: 1520.4px;
 }
 
 .volunteerbanner img {
   width: 100%;
-  height: auto; /* Set height to auto to maintain aspect ratio */
+  height: auto;
   object-fit: cover;
 }
 
@@ -30,9 +30,9 @@
 
 /* Uniform styling for input fields */
 .form-input {
-  width: 100%; /* Take the full width of the container */
-  max-width: 600px; /* Set a maximum width for better control */
-  min-width: 300px; /* Optional: Set a minimum width */
+  width: 100%;
+  max-width: 600px; /* Set maximum width  */
+  min-width: 300px;
   padding: 10px;
   margin-left: 10px;
   margin-bottom: 15px;
@@ -127,12 +127,12 @@
 /* Specific button styles */
 .form-buttons button:first-child {
   background-color: #4caf50; /* Green background for Add Volunteer */
-  color: white; /* White text */
+  color: white;
 }
 
 .form-buttons button:last-child {
   background-color: #f44336; /* Red background for Clear */
-  color: white; /* White text */
+  color: white;
 }
 
 /* Error message styling */

@@ -175,7 +175,7 @@ const RefundForm = () => {
                 <Grid item xs={12}>
                   <Typography
                     variant="body1"
-                    style={{ color: 'black' }} // Set color to black explicitly
+                    style={{ color: 'black' }}
                   >
                     {status.message}
                   </Typography>

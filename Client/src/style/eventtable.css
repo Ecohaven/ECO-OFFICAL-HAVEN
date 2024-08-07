@@ -239,7 +239,7 @@ input[type="text"] {
     transform: scale(1.2);
 }
 .event-data-grid-container {
-    height: 400px; /* Adjust the height as needed */
+    height: 400px;
     width: 121.5%;
 }
 @media (min-width: 600px) {

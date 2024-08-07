@@ -24,15 +24,14 @@ const PaymentSuccess = () => {
     paxQrCodeRecords = []
   } = location.state || {};
 
- // Send email function
-// Send email function
-const sendEmail = async () => {
-  try {
-    // Send email to the main email address with full booking details
-    await axios.post('http://localhost:3001/send-email', {
-      to: ['ecohaven787@gmail.com', formData.email],
-      subject: `${eventName} Booking Successful`,
-      html: `
+  // Send email function
+  const sendEmail = async () => {
+    try {
+      // Send email to the main email address with full booking details
+      await axios.post('http://localhost:3001/send-email', {
+        to: ['ecohaven787@gmail.com', formData.email],
+        subject: `${eventName} Booking Successful`,
+        html: `
     <!DOCTYPE html>
 <html>
 <head>
@@ -138,15 +137,15 @@ const sendEmail = async () => {
 </body>
 </html>
       `
-    });
+      });
 
-    // Send a single email to all pax emails with only event name and QR code
-    const paxEmails = paxQrCodeRecords.map(record => record.paxEmail);
-    if (paxEmails.length > 0) {
-      await axios.post('http://localhost:3001/send-email', {
-        to: paxEmails,
-        subject: `${eventName} Booking Successful`,
-        html: `
+      // Send a single email to all pax emails with only event name and QR code
+      const paxEmails = paxQrCodeRecords.map(record => record.paxEmail);
+      if (paxEmails.length > 0) {
+        await axios.post('http://localhost:3001/send-email', {
+          to: paxEmails,
+          subject: `${eventName} Booking Successful`,
+          html: `
           <!DOCTYPE html>
 <html>
 <head>
@@ -241,14 +240,14 @@ const sendEmail = async () => {
 </body>
 </html>
         `
-      });
+        });
 
-    await Promise.all(paxEmailPromises);
+        await Promise.all(paxEmailPromises);
+      }
+    } catch (error) {
+      console.error('Error sending email:', error);
     }
-  } catch (error) {
-    console.error('Error sending email:', error);
-  }
-};
+  };
 
 
 
@@ -260,7 +259,7 @@ const sendEmail = async () => {
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
       <Paper elevation={3} sx={{ padding: 4 }}>
-        <Typography variant="h4" gutterBottom sx={{ color: 'green',textAlign:'center',fontWeight:'bold' }}>
+        <Typography variant="h4" gutterBottom sx={{ color: 'green', textAlign: 'center', fontWeight: 'bold' }}>
           Payment Successful!
         </Typography>
         <Typography variant="body1" align="center" gutterBottom>
@@ -320,7 +319,7 @@ const sendEmail = async () => {
           <Button variant="contained" color="primary" sx={{ mr: 2 }} href="/">
             Back to Home
           </Button>
-         
+
         </Box>
       </Paper>
     </Container>
