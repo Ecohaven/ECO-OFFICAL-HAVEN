@@ -12,10 +12,9 @@ import axios from 'axios';
 import { Alert, AlertTitle, Typography } from '@mui/material';
 
 import '../../style/rewards/rewardproduct.css';
-import Sidebar from '../../../components/sidebar';
 
 import ExclamationMarkIcon from '../../assets/icons/exclamation-mark.png';
-import { MenuItem, FormControl, InputLabel, Select } from '@mui/material'; // Import necessary MUI components
+import { MenuItem, FormControl, InputLabel, Select } from '@mui/material';
 
 const RewardTable = () => {
   const [rows, setRows] = useState([]);
@@ -27,13 +26,13 @@ const RewardTable = () => {
   const [file, setFile] = useState(null);
   const [productDetail, setProductDetail] = useState(null);
   const [errorAdding, setErrorAdding] = useState('');
-  const [deleteConfirmation, setDeleteConfirmation] = useState(null); // state for delete confirmation
+  const [deleteConfirmation, setDeleteConfirmation] = useState(null);
 
-  const [alertType, setAlertType] = useState('success'); // success, info, warning, error
+  const [alertType, setAlertType] = useState('success');
   const [alertMessage, setAlertMessage] = useState('');
   const [alertOpen, setAlertOpen] = useState(false);
 
-  // State for zoom modal
+
   const [openZoomModal, setOpenZoomModal] = useState(false);
   const [zoomedImageUrl, setZoomedImageUrl] = useState('');
 
@@ -49,10 +48,10 @@ const RewardTable = () => {
     if (alertOpen) {
       const timer = setTimeout(() => {
         handleCloseAlert();
-      }, 5000); // set timeout for 5 seconds
+      }, 5000);
 
       return () => {
-        clearTimeout(timer); // clean up timer on unmount or re-render
+        clearTimeout(timer);
       };
     }
   }, [alertOpen]);
@@ -188,9 +187,8 @@ const RewardTable = () => {
     formData.append('leaves', formValues.leaves);
     formData.append('stock', formValues.stock);
     formData.append('code', formValues.code);
-    formData.append('category', formValues.category); // Ensure category is appended
+    formData.append('category', formValues.category);
 
-    // Only append file if it's selected for update
     if (file) {
       formData.append('file', file);
     }
@@ -244,7 +242,7 @@ const RewardTable = () => {
 
   const handleSortChange = (event) => {
     setSortBy(event.target.value);
-    // Logic to sort rows based on selected option
+
     switch (event.target.value) {
       case 'highest-leaves':
         setRows([...rows].sort((a, b) => b.leaves - a.leaves));
@@ -284,8 +282,9 @@ const RewardTable = () => {
   };
 
   const handleResetClick = () => {
-    setSearchQuery(''); // Clear search input
-    setFilteredRows(rows); // Reset filtered rows to original rows
+    setSearchQuery('');
+    setSortBy('lowest-leaves');
+  setRows([...rows].sort((a, b) => a.leaves - b.leaves));
   };
 
   const filteredRows = rows.filter(row =>
@@ -488,11 +487,13 @@ const RewardTable = () => {
             },
           }}
         >
+          <InputLabel>Filter</InputLabel>
           <Select
             value={sortBy}
             onChange={handleSortChange}
             displayEmpty
             inputProps={{ 'aria-label': 'Sort by' }}
+            label="Filter"
           >
             <MenuItem value="lowest-leaves">Lowest Leaves</MenuItem>
             <MenuItem value="highest-leaves">Highest Leaves</MenuItem>
@@ -526,7 +527,7 @@ const RewardTable = () => {
         <DataGrid
           rows={filteredRows}
           columns={columns}
-          getRowId={(row) => row.id} // ensure each row has a unique id
+          getRowId={(row) => row.id}
           pageSize={5}
           checkboxSelection
           className="data-grid"
@@ -632,7 +633,7 @@ const RewardTable = () => {
               <MenuItem value="Others/Miscellaneous">Others/Miscellaneous</MenuItem>
             </Select>
           </FormControl>
-          <input type="file" onChange={handleFileChange} /> {/* Add file input */}
+          <input type="file" onChange={handleFileChange} />
           <Button variant="contained" className='savebutton' onClick={handleSaveEdit} style={{ marginTop: '10px', marginRight: '10px' }}>
             Save Changes
           </Button>

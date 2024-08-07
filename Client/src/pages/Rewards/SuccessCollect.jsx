@@ -11,11 +11,11 @@ function Rewards() {
     const fetchCollectionId = async () => {
       try {
         const response = await axios.get('http://localhost:3001/collect/collectionIds');
-        console.log('Response from backend:', response.data); // Log the response data
+        console.log('Response from backend:', response.data);
 
         if (response.data && response.data.length > 0) {
           const latestCollectionId = response.data[response.data.length - 1]?.collectionId; // Get the latest collectionId
-          console.log('Fetched Collection ID:', latestCollectionId); // Log fetched collectionId
+          console.log('Fetched Collection ID:', latestCollectionId);
 
           if (latestCollectionId) {
             setCollectionId(latestCollectionId.toString());
@@ -68,7 +68,7 @@ function Rewards() {
           <p>Monday - Friday: <span className='time'>11:00am - 8:00pm</span></p>
           <p>Saturday & Sunday: <span className='time'>12:00pm - 4:00pm</span></p>
           <p className='extra'>*please collect within a week</p>
-          <button className='backtohome'><a href='/home'>Back to home</a></button> {/* Adjust link as needed */}
+          <button className='backtohome'><a href='/home'>Back to home</a></button>
         </div>
       </Grid>
     </Grid>

@@ -141,7 +141,7 @@ function RewardForm() {
                     <Formik
                         initialValues={initialValues}
                         validationSchema={validationSchema}
-                        enableReinitialize // Ensures that form updates when initialValues change
+                        enableReinitialize
                         onSubmit={handleSubmit}
                     >
                         {({ errors, isSubmitting }) => (

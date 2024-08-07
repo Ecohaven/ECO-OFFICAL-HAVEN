@@ -17,7 +17,6 @@ import {
   Box,
   Modal,
 } from '@mui/material';
-import '../../style/payment/paymentform.css';
 import AccountContext from '../../contexts/AccountContext';
 
 const RefundForm = () => {

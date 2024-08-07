@@ -30,7 +30,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 function Account_Profile_Rewards() {
   const [collectionRows, setCollectionRows] = useState([]);
   const [collectionDetail, setCollectionDetail] = useState({});
-  const { account } = useContext(AccountContext); // Use context to get the account details
+  const { account } = useContext(AccountContext);
 
   useEffect(() => {
     if (account && account.name) {
@@ -65,7 +65,6 @@ function Account_Profile_Rewards() {
         setCollectionRows(updatedRows);
 
         if (response.data.length > 0) {
-          // Fetch details for the first collection in the list
           fetchCollectionDetail(accountName, response.data[0].collectionId);
         }
       } else {
@@ -92,7 +91,7 @@ function Account_Profile_Rewards() {
       });
 
       if (response.data) {
-        const detail = response.data; // Assuming only one collection detail is fetched
+        const detail = response.data;
         setCollectionDetail({
           collectionId: detail.collectionId,
           phoneNumber: detail.phoneNumber,
@@ -163,6 +162,14 @@ function Account_Profile_Rewards() {
           </div>
 
           {/* collection detail */}
+          <div className='collectiondetail' style={{marginTop: '-40px', marginBottom: '40px'}}>
+            <h2>Please remember the collection details</h2>
+            <p>Potong Pasir Community Club</p>
+            <p>6 Potong Pasir Ave 2, Singapore 358361</p>
+            <p>Monday - Friday: <span className='time'>11:00am - 8:00pm</span></p>
+            <p>Saturday & Sunday: <span className='time'>12:00pm - 4:00pm</span></p>
+            <p className='extra'>*please collect within a week</p>
+          </div>
 
         </Grid>
       </Grid>

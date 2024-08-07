@@ -3,9 +3,8 @@ import { DataGrid } from '@mui/x-data-grid';
 import axios from 'axios';
 import TextField from '@mui/material/TextField';
 import { Alert, AlertTitle, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
-import Sidebar from '../../../components/sidebar';
 import EditIcon from '@mui/icons-material/Edit';
-import '../../style/rewards/collectionproduct.css'; // Importing CSS file for styling
+import '../../style/rewards/collectionproduct.css';
 
 const CollectionProduct = () => {
   const [rows, setRows] = useState([]);
@@ -18,6 +17,8 @@ const CollectionProduct = () => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [statusFilter, setStatusFilter] = useState('All');
   const [filteredRows, setFilteredRows] = useState([]);
+  const [itemFilter, setItemFilter] = useState('All');
+  const [uniqueItems, setUniqueItems] = useState([]);
   const [editFormData, setEditFormData] = useState({
     id: '',
     name: '',
@@ -34,10 +35,10 @@ const CollectionProduct = () => {
     if (alertOpen) {
       const timer = setTimeout(() => {
         handleCloseAlert();
-      }, 5000); // set timeout for 5 seconds
+      }, 5000);
 
       return () => {
-        clearTimeout(timer); // clean up timer on unmount or re-render
+        clearTimeout(timer);
       };
     }
   }, [alertOpen]);
@@ -53,7 +54,10 @@ const CollectionProduct = () => {
       const response = await axios.get('http://localhost:3001/collect/collections');
       if (Array.isArray(response.data)) {
         setRows(response.data);
-        filterRows(response.data, searchQuery, statusFilter); // Ensure to filter with current filters
+        filterRows(response.data, searchQuery, statusFilter, itemFilter);
+
+        const items = Array.from(new Set(response.data.map(row => row.product)));
+        setUniqueItems(['All', ...items]);
       } else {
         console.error('Expected an array from the API response');
       }
@@ -63,26 +67,24 @@ const CollectionProduct = () => {
   };
 
 
+
   const handleResetSearch = () => {
     setSearchQuery('');
-    setFilteredRows([]); // Clear filtered rows to show all rows
-    fetchRows(); // Fetch rows again to reset the table to its original state
+    setStatusFilter('All');
+    setItemFilter('All');
+    fetchRows();
     setSearchError(false);
   };
 
   const handleSearchChange = (event) => {
     const query = event.target.value.toLowerCase();
     setSearchQuery(query);
-    filterRows(rows, query, statusFilter); // Pass updated search query and current status filter
+    filterRows(rows, query, statusFilter);
   };
 
-  const filterRows = (rowsToFilter, search = searchQuery, status = statusFilter) => {
+  const filterRows = (rowsToFilter, search = searchQuery, status = statusFilter, item = itemFilter) => {
     let filtered = rowsToFilter;
 
-    // Debugging: Log current status filter and rows
-    console.log('Filtering rows with status:', status);
-
-    // Filter based on search query
     if (search) {
       filtered = filtered.filter(
         (row) =>
@@ -92,15 +94,15 @@ const CollectionProduct = () => {
       );
     }
 
-    // Filter based on status
     if (status && status !== 'All') {
       filtered = filtered.filter(row => row.status === status);
     }
 
-    setFilteredRows(filtered);
+    if (item && item !== 'All') {
+      filtered = filtered.filter(row => row.product === item);
+    }
 
-    // Debugging: Log the number of filtered rows
-    console.log('Filtered rows count:', filtered.length);
+    setFilteredRows(filtered);
 
     if (filtered.length === 0 && search.trim() !== '') {
       setSearchError(true);
@@ -125,9 +127,9 @@ const CollectionProduct = () => {
 
   const handleStatusFilterChange = (event) => {
     const value = event.target.value;
-    console.log('Selected status:', value); // Debugging: Check the selected status
+    console.log('Selected status:', value);
     setStatusFilter(value);
-    filterRows(rows, searchQuery, value); // Pass updated status filter and current search query
+    filterRows(rows, searchQuery, value);
   };
 
   const getFilteredColumns = () => {
@@ -167,21 +169,17 @@ const CollectionProduct = () => {
 
   const handleEditFormSubmit = async () => {
     try {
-      // Perform update API call with editFormData
       await axios.put(`http://localhost:3001/collect/collections/${editFormData.id}`, {
         ...editFormData,
       });
 
-      // Update local state
       const updatedRows = rows.map(row =>
         row.id === editFormData.id ? { ...row, ...editFormData } : row
       );
       setRows(updatedRows);
 
-      // Close edit dialog after successful update
       setEditDialogOpen(false);
 
-      // Show success alert
       setAlertType('success');
       setAlertMessage('Collection updated successfully.');
       setAlertOpen(true);
@@ -280,6 +278,8 @@ const CollectionProduct = () => {
       <div className="header">
         <h2 className='collectionitem'>Collection Items</h2>
         <div className="header-controls">
+          
+          {/* search */}
           <TextField
             variant="outlined"
             className="search"
@@ -301,13 +301,18 @@ const CollectionProduct = () => {
               },
             }}
           />
-          <Button className='resetbutton'
+
+          {/* reset button */}
+          <Button
+            className='resetbutton'
             variant="contained"
             onClick={handleResetSearch}
             sx={{ marginRight: '1rem' }}
           >
             Reset
           </Button>
+
+          {/* status filter */}
           <FormControl variant="outlined" className="filtercollection" sx={{ minWidth: 120 }}>
             <InputLabel>Status</InputLabel>
             <Select
@@ -320,6 +325,28 @@ const CollectionProduct = () => {
               <MenuItem value="Not collected">Not collected</MenuItem>
             </Select>
           </FormControl>
+
+          {/* item filter */}
+          <FormControl
+            variant="outlined"
+            className="itemfilter"
+            sx={{ minWidth: 120, marginLeft: '20px' }}
+          >
+            <InputLabel>Item</InputLabel>
+            <Select
+              value={itemFilter}
+              onChange={(e) => {
+                setItemFilter(e.target.value);
+                filterRows(rows, searchQuery, statusFilter, e.target.value);
+              }}
+              label="Item"
+            >
+              {uniqueItems.map(item => (
+                <MenuItem key={item} value={item}>{item}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
         </div>
       </div>
 
@@ -382,7 +409,7 @@ const CollectionProduct = () => {
               value={editFormData.status}
               onChange={handleEditFormChange}
               label="Status"
-              name="status" // Make sure the name attribute is set
+              name="status"
             >
               <MenuItem value="Not collected">Not collected</MenuItem>
               <MenuItem value="Collected">Collected</MenuItem>
@@ -390,7 +417,7 @@ const CollectionProduct = () => {
           </FormControl>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleEditFormSubmit} color="primary" className='savebutton' style={{ color: 'white', marginRight: '10px'}}>
+          <Button onClick={handleEditFormSubmit} color="primary" className='savebutton' style={{ color: 'white', marginRight: '10px' }}>
             Save
           </Button>
           <Button onClick={handleEditDialogClose} color="primary" className='cancelbutton' style={{ color: 'white' }}>
@@ -407,7 +434,7 @@ const CollectionProduct = () => {
             pageSize={10}
             rowsPerPageOptions={[10]}
             disableSelectionOnClick
-            sx = {{ textAlign: 'left' }}
+            sx={{ textAlign: 'left' }}
           />
         </div>
       </div>
