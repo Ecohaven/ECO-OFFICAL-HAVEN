@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import { Box, Typography, TextField, Button, Stepper, Step, StepLabel } from '@mui/material';
+import React, { useEffect, useState } from 'react'
+import { Box, Typography, TextField, Button, Stepper, Step, StepLabel, CircularProgress } from '@mui/material';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import http from '/src/http';
@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 function StaffResetPasswordVerify() {
   const navigate = useNavigate();
   const storedToken = localStorage.getItem('resetTokenStaff');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     // if there is no reset token in the local storage, redirect to the reset password request page
@@ -25,6 +26,8 @@ function StaffResetPasswordVerify() {
         verificationCode: yup.string().required("This is a required field")
       }),
       onSubmit: (data) => {
+        setLoading(true);
+
           if (!storedToken) {
               navigate('/staff/staff_reset_password/request');
               return;
@@ -61,6 +64,7 @@ function StaffResetPasswordVerify() {
               else {
                   formik.setFieldError('verificationCode', errorMessage);
               }
+            setLoading(false);
           });
       }
   });
@@ -125,10 +129,20 @@ function StaffResetPasswordVerify() {
                             />
                         </Box>
                         <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
-                            <Button variant="contained" type="submit" sx={{ backgroundColor: 'white', color: '#19682c',
-                                "&:hover": { backgroundColor: 'grey', color: 'white' } }}>
-                                Verify Code
-                            </Button>
+                            {loading && (
+                                <Button variant="contained" sx={{ backgroundColor: 'white', color: '#19682c' }}>
+                                    <CircularProgress size={24} color='primary' />
+                                    <Typography variant="button" sx={{ ml: 1 }}>  
+                                        Verifying
+                                    </Typography>
+                                </Button>
+                            )}
+                            {!loading && (
+                                <Button variant="contained" type="submit" sx={{ backgroundColor: 'white', color: '#19682c',
+                                    "&:hover": { backgroundColor: 'grey', color: 'white' } }}>
+                                    Verify Code
+                                </Button>
+                            )}
                         </Box>
                     </Box>
                 </Box>
