@@ -27,19 +27,19 @@
 }
 
 /* product */
-.product-details {
+.productdetails {
     margin-left: auto;
     text-align: center;
     width: 300px;
 }
 
-.product-details h2 {
+.produc-details h2 {
     margin-top: 10px;
     text-align: center;
     font-size: 30px;
 }
 
-.product-details img {
+.productdetails img {
     width: 200px;
     height: 200px;
     display: block;
@@ -47,7 +47,7 @@
     border: 5px solid #14772B;
 }
 
-.product-details p {
+.productdetails p {
     margin: 10px 0;
 }
 
@@ -83,12 +83,22 @@
     padding: 20px;
 }
 
-.product-details, .form-fields {
+.productdetails h2 {
+    font-size: 2vw;
+    margin-left: 270px;
+}
+
+.productdetails, .form-fields {
     flex: 1 1 45%;
     margin: 10px;
 }
 
-.product-details img.product-image {
+.productdetails img.product-image {
+    width: 40%;
+    height: auto;
+}
+
+.productdetails img.product-image {
     width: 40%;
     height: auto;
 }
@@ -147,12 +157,17 @@ label {
 
 /* Responsive design for mobile devices */
 @media (max-width: 960px) {
-    .product-details h2 {
-        padding-left: 240px;
+    .productdetails h2 {
+        margin-left: 100px;
+        font-size: 3vw;
+    }
+
+    .productdetails img.product-image {
+        width: 60%;
+        height: auto;
     }
 
     .collection-detail h2 {
-        padding-left: 240px;
         font-size: 2vw;
     }
 
@@ -174,23 +189,23 @@ label {
         display: block;
     }
 
-    .product-details img.product-image {
-        width: 40%;
+    .productdetails img.product-image {
+        width: 60%;
         height: auto;
-        margin-left: 140px;
+        margin-left: 110px;
     }
 
-    .product-details h2 {
-        padding-left: 350px;
-        font-size: 4vw;
+    .productdetails h2 {
+        padding-left: 40px;
+        font-size: 5vw;
     }
 
-    .product-details p {
+    .productdetails p {
         padding-left: 120px;
     }
 
     .collection-detail h2 {
-        padding-left: 250px;
+        padding-left: 10px;
         font-size: 4vw;
     }
 
@@ -205,8 +220,8 @@ label {
     }
 
     .submitbutton {
-        font-size: 3vw;
-        margin-left: 150px;
+        font-size: 4vw;
+        margin-left: 130px;
         padding: 10px 20px;
     }
 }

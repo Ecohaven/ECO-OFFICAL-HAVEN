@@ -58,3 +58,31 @@ hr {
 .collectiondetail p {
   text-align: left;
 }
+
+@media (max-width: 960px) {
+  .leaf-points {
+    margin-left: 20px;
+  }
+}
+
+@media (max-width: 500px) {
+  .header {
+    font-size: 4vw !important;
+  }
+
+  .summary-rectangle-content .balance {
+    font-size: 7vw;
+  }
+
+  .summary-rectangle-content .leaf-points {
+    font-size: 8vw;
+  }
+
+  .collectiondetail h2 {
+    font-size: 4vw;
+  }
+
+  .collectiondetail .extra {
+    font-size: 2.5vw;
+  }
+}

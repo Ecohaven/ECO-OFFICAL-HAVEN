@@ -82,7 +82,7 @@ function Rewards() {
         <Grid container spacing={4} className='products'>
   {isMobile ? (
     latestProducts.slice(0, 1).map((product) => (
-      <Grid item key={product.id} xs={12} className='product-item'>
+      <Grid item key={product.id} xs={12} className='product_item'>
         <h2>{product.itemName}</h2>
         <img src={`http://localhost:3001/eco/product-images/${product.itemimg}`} alt={product.itemName} />
         <p className='leaves'><b>{product.leaves}</b> 🍃</p>
@@ -90,7 +90,7 @@ function Rewards() {
     ))
   ) : (
     latestProducts.map((product) => (
-      <Grid item key={product.id} xs={12} sm={6} md={4} className='product-item'>
+      <Grid item key={product.id} xs={12} sm={6} md={4} className='product_item'>
         <h2>{product.itemName}</h2>
         <img src={`http://localhost:3001/eco/product-images/${product.itemimg}`} alt={product.itemName} style={{ width: '200px', height: '200px' }} />
         <p className='leaves'><b>{product.leaves}</b> 🍃</p>

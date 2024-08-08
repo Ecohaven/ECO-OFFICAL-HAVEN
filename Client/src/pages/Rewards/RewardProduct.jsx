@@ -596,7 +596,7 @@ const RewardTable = () => {
           <input type="file" onChange={handleFileChange} />
 
           {/* Popup Buttons */}
-          <Button variant="contained" className='savebutton' onClick={handleSaveAdd} style={{ marginTop: '10px', marginRight: '10px' }}>
+          <Button variant="contained" className='savebutton' onClick={handleSaveAdd} style={{ marginTop: '10px', marginRight: '10px'}}>
             Save
           </Button>
           <Button variant="contained" className='cancelbutton' onClick={handleCloseAdd} style={{ marginTop: '10px' }}>
@@ -634,7 +634,7 @@ const RewardTable = () => {
             </Select>
           </FormControl>
           <input type="file" onChange={handleFileChange} />
-          <Button variant="contained" className='savebutton' onClick={handleSaveEdit} style={{ marginTop: '10px', marginRight: '10px' }}>
+          <Button variant="contained" className='savechangesbutton' onClick={handleSaveEdit} style={{ marginTop: '10px', marginRight: '10px' }}>
             Save Changes
           </Button>
           <Button variant="contained" className='cancelbutton' onClick={handleCloseEdit} style={{ marginTop: '10px' }}>

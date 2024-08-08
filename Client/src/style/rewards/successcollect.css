@@ -62,8 +62,7 @@
     }
 
     .detail-content h2 {
-        font-size: 2vw;
-        padding-left: 250px;
+        font-size: 3vw;
     }
 
     .detail-content p {
@@ -80,8 +79,7 @@
     }
 
     .backtohome {
-        font-size: 2vw;
-        margin-left: 385px;
+        font-size: 2.5vw;
         padding: 10px 20px;
     }
 }
@@ -89,7 +87,7 @@
 @media (max-width: 500px) {
     .collectionid h1,
     .idnumber {
-        font-size: 6vw;
+        font-size: 5vw;
         margin-left: -100px;
     }
 
@@ -101,12 +99,12 @@
     }
     
     .detail-content h2 {
-        font-size: 3vw;
+        font-size: 4vw;
         padding-right: 110px;
     }
 
     .detail-content p {
-        font-size: 2.5vw;
+        font-size: 3vw;
         padding-right: 120px;
     }
 
@@ -119,8 +117,12 @@
     }
 
     .backtohome {
-        font-size: 3vw;
-        margin-left: 185px;
+        font-size: 4vw;
+        margin-left: 160px;
         padding: 10px 20px;
+    }
+
+    .map-container {
+        margin-left: -110px;
     }
 }

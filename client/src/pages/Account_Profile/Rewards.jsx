@@ -126,7 +126,7 @@ function Account_Profile_Rewards() {
               <div className="summary-rectangle-content">
                 <h3 className="balance">Your balance:</h3>
                 <h3 className="leaf-points">
-                  <h1>{account?.leaf_points} 🍃</h1>
+                  {account?.leaf_points} 🍃
                 </h3>
                 <p className="total-leaves">Total leaves</p>
                 <p className="as-of-today">As of today</p>
@@ -173,7 +173,7 @@ function Account_Profile_Rewards() {
           </div>
 
           {/* Google Maps Embed */}
-          <div className="map-container" style={{ marginTop: '30px', height: '450px', marginBottom: '30px' }}>
+          <div className="mapcontainer" style={{ marginTop: '30px', height: '450px', marginBottom: '30px' }}>
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.7391384896086!2d103.864573974472!3d1.3326563616319074!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31da17788fd6578d%3A0xe39820494864ff1c!2sPotong%20Pasir%20Community%20Club!5e0!3m2!1sen!2ssg!4v1723039673994!5m2!1sen!2ssg"
               width="100%"

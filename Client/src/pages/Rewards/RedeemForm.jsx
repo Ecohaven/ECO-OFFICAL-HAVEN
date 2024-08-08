@@ -124,7 +124,7 @@ function RewardForm() {
 
             {/* product details & form */}
             <div className="form-section">
-                <div className='product-details'>
+                <div className='productdetails'>
                     {product && (
                         <>
                             <h2>{product.itemName}</h2>

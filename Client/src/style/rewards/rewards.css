@@ -163,7 +163,7 @@ h1 {
 }
 
 /* products */
-.rewards .product-item img {
+.rewards .product_item img {
     width: 200px;
     height: 200px;
     max-width: 100%;
@@ -174,15 +174,16 @@ h1 {
 
 }
 
-.rewards .product-item h2 {
+.rewards .product_item h2 {
     margin-top: 30px;
 
 }
 
-.rewards .product-item .leaves {
+.rewards .product_item .leaves {
     margin-top: -20px;
     margin-bottom: 20px;
     margin-left: -180px;
+    font-size: 1.3vw;
 }
 
 /* greenreward2 */
@@ -258,12 +259,7 @@ h1 {
     .stepsheader h1,
     .greenreward2 h1 {
         width: 90%;
-        font-size: 3vw;
-    }
-
-    .rewards h1 {
-        width: 90%;
-        font-size: 3vw;
+        font-size: 4vw;
     }
 
     .greenreward p,
@@ -276,14 +272,14 @@ h1 {
 
     .greenreward .signupbutton,
     .greenreward2 .signupbutton {
-        font-size: 2vw;
+        font-size: 2.5vw;
         padding: 10px 20px;
         margin: 0 auto;
         display: block;
     }
 
     .rewards .redeempagebutton {
-        font-size: 2vw;
+        font-size: 2.5vw;
         padding: 10px 20px;
         margin: 0 auto;
         display: block;
@@ -304,10 +300,15 @@ h1 {
         width: 90%;
     }
 
-    .rewards .product-item .leaves {
+    .rewards .product_item .leaves {
         margin-top: -20px;
         margin-bottom: 40px;
         margin-left: 20px;
+        font-size: 3vw;
+    }
+
+    .rewards .product_item h2 {
+        margin-left: 0px;
     }
 
 }
@@ -325,7 +326,7 @@ h1 {
     .stepsheader h1,
     .greenreward2 h1 {
         width: 90%;
-        font-size: 6vw;
+        font-size: 5vw;
     }
 
     .rewards h1 {
@@ -342,19 +343,13 @@ h1 {
 
     .greenreward .signupbutton,
     .greenreward2 .signupbutton {
-        font-size: 3vw;
+        font-size: 4vw;
         padding: 10px 20px;
-        margin-left: 180px;
     }
 
     .rewards .redeempagebutton {
-        font-size: 3vw;
+        font-size: 4vw;
         padding: 10px 20px;
-        margin-left: 160px;
-    }
-
-    .desc p {
-        margin-left: 10px;
     }
 
     .rewards p,
@@ -363,28 +358,15 @@ h1 {
         width: 90%;
     }
 
-    .rewards .product-item img {
-        width: 200px;
-        height: 200px;
-        max-width: 100%;
-        display: block;
-        margin: auto;
-        border: 5px solid #14772B;
-        border-radius: 15px;
-        margin-left: 130px;
-
+    .rewards .product_item h2 {
+        font-size: 5vw;
+        margin-left: -10px;
     }
 
-    .rewards .product-item h2 {
-        padding-left: 230px;
-        font-size: 4vw;
-
-    }
-
-    .rewards .product-item .leaves {
-        margin-top: -20px;
+    .rewards .product_item .leaves {
         margin-bottom: 30px;
-        margin-left: 25px;
+        margin-left: 30px;
+        font-size: 4vw;
     }
 
 }

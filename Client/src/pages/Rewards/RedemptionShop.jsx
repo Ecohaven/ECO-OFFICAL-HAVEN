@@ -100,7 +100,20 @@ function RedemptionShop() {
         <h1>Shop:</h1>
 
         {/* filter dropdown */}
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2, mr: 15 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            mb: 2,
+            mr: 15,
+            '@media (max-width: 960px)': {
+              mr: 10, // Adjust this value as needed
+            },
+            '@media (max-width: 500px)': {
+              mr: 18, // Adjust this value as needed
+            },
+          }}
+        >
           <FormControl
             variant="outlined"
             className="filter-dropdown"
