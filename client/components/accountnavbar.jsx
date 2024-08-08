@@ -177,25 +177,25 @@ function AccountNavbar() {
   const StyledLink = styled(Link)(({ selected }) => ({
     textDecoration: 'none',
     '@media (min-width: 900px)': {
-      marginLeft: '0.3rem', // Adjust margin for medium and larger breakpoints
-      marginRight: '0.13rem', // Adjust margin for medium and larger breakpoints
-      fontSize: '1.1rem', // Adjust font size for medium and larger breakpoints
+      marginLeft: '0.3rem',
+      marginRight: '0.13rem',
+      fontSize: '1.1rem', 
     },
     '@media (min-width: 1200px)': {
-      marginLeft: '0.7rem', // Adjust margin for large and larger breakpoints
-      marginRight: '0.7rem', // Adjust margin for large and larger breakpoints
-      fontSize: '1.25rem', // Adjust font size for large and larger breakpoints
+      marginLeft: '0.7rem', 
+      marginRight: '0.7rem', 
+      fontSize: '1.25rem', 
     },
     '@media (min-width: 1600px)': {
-      marginLeft: '1rem', // Adjust margin for extra large breakpoints
-      marginRight: '1rem', // Adjust margin for extra large breakpoints
-      fontSize: '1.3rem', // Adjust font size for extra large breakpoints
+      marginLeft: '1rem', 
+      marginRight: '1rem', 
+      fontSize: '1.3rem', 
     },
-    color: selected ? '#4CAF50' : 'black', // Green text color for active link
+    color: selected ? '#4CAF50' : 'black', 
     '&:hover': {
-      color: '#4CAF50', // Green text color on hover
-      transition: 'color 0.3s', // Smooth transition for color change
-      textDecoration: 'underline', // Remove underline on hover
+      color: '#4CAF50', 
+      transition: 'color 0.3s', 
+      textDecoration: 'underline', 
     },
   }));
 
@@ -300,7 +300,7 @@ function AccountNavbar() {
                 <IconButton
                   color="inherit"
                   onClick={handleNotificationClick}
-                  sx={{ marginLeft: { xs: '0.5rem', md: '1rem', color: 'grey' } }}
+                  sx={{ marginLeft: { xs: '0.5rem', md: '1rem', color: 'green' } }}
                 >
                   <Badge badgeContent={notifications ? notifications.length : 0} color="black" >
                     <Notifications />
@@ -344,7 +344,7 @@ function AccountNavbar() {
                           ))}
                         </List>
                       ) : (
-                        <Typography variant="body1">No new notifications</Typography>
+                        <Typography variant="body1" style={{color:'green'}}>No new notifications</Typography>
                       )}
 
                   </Box>

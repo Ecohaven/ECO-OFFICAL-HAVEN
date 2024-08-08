@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { Op } = require('sequelize'); // Import Sequelize operators
 const db = require('../models');
 const multer = require('multer');
 const path = require('path');
@@ -144,33 +145,52 @@ router.put('/events/:eventId', async (req, res) => {
     }
 });
 
+
 // Route to fetch booked events by account name
 router.get("/account/:accountName/events", async (req, res) => {
   const { accountName } = req.params;
 
   try {
     // Find events associated with the accountName
-    const event = await events.findAll({
+    const eventsList = await events.findAll({
       include: [{
         model: Booking,
         required: true, // Ensure only booked events are fetched
         where: { Name: accountName }
       }],
-      attributes: ['eventId', 'eventName', 'description','organiser','picture','leafPoints','amount'] // Specify event attributes to retrieve
+      attributes: ['eventId', 'eventName', 'description', 'organiser', 'picture', 'leafPoints', 'amount', 'startDate', 'endDate'] // Specify event attributes to retrieve
     });
 
-    if (!event || event.length === 0) {
+    if (!eventsList || eventsList.length === 0) {
       return res.status(404).json({ error: 'No booked events found for this account' });
     }
 
-    res.json(event); // Return events as JSON response
+    // Format the event dates
+    const formattedEvents = eventsList.map(event => {
+      const startDate = new Date(event.startDate);
+      const endDate = new Date(event.endDate);
+      let formattedDate;
+
+      if (startDate.toDateString() === endDate.toDateString()) {
+        // Dates are the same
+        formattedDate = `Event Date: ${startDate.toLocaleDateString()}`;
+      } else {
+        // Dates are different
+        formattedDate = `Event Date: ${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`;
+      }
+
+      return {
+        ...event.dataValues,
+        formattedDate
+      };
+    });
+
+    res.json(formattedEvents); // Return formatted events as JSON response
   } catch (error) {
     console.error('Error fetching booked events by accountName:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
-
-
 // GET event picture by event ID
 router.get('/event-picture/:eventId', async (req, res) => {
     const { eventId } = req.params;

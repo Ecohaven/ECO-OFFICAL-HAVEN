@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect ,useRef} from 'react';
 import axios from 'axios';
 import {
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
@@ -24,7 +24,13 @@ const CheckInPage = () => {
     const [totalNotCheckedIn, setTotalNotCheckedIn] = useState(0);
     const [totalCancelled, setTotalCancelled] = useState(0);
     const [searchTerm, setSearchTerm] = useState('');
- const [trackerText, setTrackerText] = useState('');
+const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
+const scannerRef = useRef(null);
+const [isScanning, setIsScanning] = useState(false);
+const SCAN_DELAY = 2000; // Delay in milliseconds (e.g., 2 seconds)
+
+
+
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -91,79 +97,83 @@ const CheckInPage = () => {
     };
 
 const handleScan = async (data) => {
-    if (!data || !data.text) {
-        setTrackerText('Please scan QR Code here');
+    if (isScanning) {
+        // If a scan is already in progress, ignore this scan
         return;
     }
 
-    // Reset tracker text at the beginning
-    setTrackerText(`Scanned QR Code: ${data.text}`);
+    if (!data || !data.text) {
+        setModalMessage('Please scan a QR Code.');
+        setModalType('');
+        setOpenConfirmationModal(false); 
+        return;
+    }
+
+    setIsScanning(true); // Set the scanning flag to true
 
     const qrCodeDataArray = data.text.split(','); // Assume QR codes are comma-separated
 
-    setTrackerText('');
     setModalMessage(''); // Clear the modal message
+    // Do not close the modal initially, wait for user action
+
+    const successMessages = [];
+    const alreadyCheckedInMessages = [];
+    const invalidQrCodes = [];
+    let anySuccessfulCheckIns = false;
 
     try {
-        // Process each QR code in the array
-        const responses = await Promise.all(qrCodeDataArray.map(qrCodeData =>
-            axios.post('http://localhost:3001/checkin/checkin', { data: qrCodeData })
-        ));
+        // Flag to determine if we have successfully checked in a QR code
+        let successfullyCheckedIn = false;
 
-        const successMessages = [];
-        const alreadyCheckedInMessages = [];
-        let hasCheckedIn = false;
+        // Process each QR code one by one
+        for (const qrCodeData of qrCodeDataArray) {
+            if (successfullyCheckedIn) break; // Stop processing if a successful check-in is already done
 
-        responses.forEach((response, index) => {
-            if (response.status === 200) {
-                const { qrCodeStatus } = response.data;
-                const qrCodeData = qrCodeDataArray[index];
+            try {
+                const response = await axios.post('http://localhost:3001/checkin/checkin', { data: qrCodeData });
+                if (response.status === 200) {
+                    const { qrCodeStatus } = response.data;
 
-                if (qrCodeStatus === 'Checked-In') {
-                    alreadyCheckedInMessages.push(`QR Code "${qrCodeData}" has already been checked in.`);
-                    hasCheckedIn = true;
+                    if (qrCodeStatus === 'Checked-In') {
+                        alreadyCheckedInMessages.push(`QR Code "${qrCodeData}" has already been checked in.`);
+                    } else {
+                        successMessages.push(`QR Code "${qrCodeData}" check-in successful.`);
+                        anySuccessfulCheckIns = true;
+                        successfullyCheckedIn = true; 
+                    }
                 } else {
-                    successMessages.push(`QR Code "${qrCodeData}" check-in successful.`);
+                    // If the QR code is invalid, push it to the list of invalid QR codes
+                    invalidQrCodes.push(qrCodeData);
                 }
-            } else {
-                successMessages.push(`Unexpected response for QR Code "${qrCodeDataArray[index]}".`);
+            } catch (error) {
+                console.error('Error during individual check-in:', error);
+                invalidQrCodes.push(qrCodeData); // Consider QR code invalid if there's an error
             }
-        });
+        }
 
-        // Display the first relevant message
         let messageToDisplay = '';
+        let modalType = '';
 
-        if (alreadyCheckedInMessages.length > 0) {
-            messageToDisplay = alreadyCheckedInMessages[0];
-            setModalType('warning'); // Use warning if some QR codes are already checked in
-        } else if (successMessages.length > 0) {
-            messageToDisplay = successMessages[0];
-            setModalType('success'); // Display success message
+        if (anySuccessfulCheckIns) {
+            messageToDisplay = successMessages.join('\n'); 
+            modalType = 'success';
+        } else if (invalidQrCodes.length > 0) {
+            messageToDisplay = invalidQrCodes.length === qrCodeDataArray.length
+                ? 'Invalid QR Codes. Please try scanning again.'
+                : 'Some QR Codes are invalid.';
+            modalType = 'error';
+        } else if (alreadyCheckedInMessages.length > 0) {
+            messageToDisplay = alreadyCheckedInMessages.join('\n'); // Combine all already checked-in messages
+            modalType = 'warning';
         } else {
-            // Handle no messages case
-            setModalType('');
+            messageToDisplay = 'No valid check-ins or unexpected responses.';
+            modalType = 'error';
         }
 
-        if (messageToDisplay) {
-            setTrackerText(messageToDisplay);
-            setModalMessage(messageToDisplay);
-            handleOpenModal('success');
-
-            const displayDuration = 40000; 
-            const delayBeforeReopening = 2000; // Additional delay before reopening the modal (5,000 ms = 5 seconds)
-
-            setTimeout(() => {
-                setModalMessage('');
-                setModalType(''); 
-                setTrackerText('');
-                handleCloseModal();
-
-                // Reopen the modal after the additional delay
-                setTimeout(() => {
-                    handleOpenModal('scan'); // Open the scanner modal
-                }, delayBeforeReopening);
-            }, displayDuration);
-        }
+        // Update the modal
+        setModalMessage(messageToDisplay);
+        setModalType(modalType);
+        setOpenConfirmationModal(true);
 
         // Fetch updated check-ins data
         fetchCheckIns(selectedEventName);
@@ -179,7 +189,7 @@ const handleScan = async (data) => {
                     errorMessage = 'Record not found. Please check the details.';
                     break;
                 case 400:
-                    errorMessage = 'Invalid QR-Code provided. Please ensure that it has not been checked in before.';
+                    errorMessage = 'Invalid QR Code provided. Please ensure that it has not been checked in before.';
                     break;
                 default:
                     errorMessage = 'An unexpected error occurred. Please try again later.';
@@ -189,19 +199,25 @@ const handleScan = async (data) => {
             errorMessage = 'Network error. Please check your connection and try again.';
         }
 
-        // Set tracker text for errors
-        setTrackerText(errorMessage);
-        setModalType('error'); // Optional: Set a type for error messages if needed
-
-        // Set a delay before closing the modal
-        const errorDisplayDuration = 5000; // Duration to display the error message (5 seconds)
+        // Update the modal for error
+        setModalMessage(errorMessage);
+        setModalType('error');
+        setOpenConfirmationModal(true);
+    } finally {
+        // Reset the scanning flag after a delay
         setTimeout(() => {
-            handleCloseModal(); // Close the modal in case of an error
-        }, errorDisplayDuration);
+            setIsScanning(false);
+        }, SCAN_DELAY);
     }
 };
 
 
+// Function to reset the QR scanner
+const resetScanner = () => {
+    if (scannerRef.current) {
+        scannerRef.current.reset();
+    }
+};
 
 
 
@@ -241,8 +257,6 @@ const handleScan = async (data) => {
     }
 };
 
-
-
     const handleOpenModal = (type) => {
         setError('');
         setModalType(type);
@@ -252,7 +266,11 @@ const handleScan = async (data) => {
     const handleCloseModal = () => {
         setModalOpen(false);
         setQrCodeText('');
+        resetScanner();
     };
+
+
+
 
     const handleDropdownChange = (event) => {
         const newEventName = event.target.value;
@@ -277,6 +295,11 @@ const handleScan = async (data) => {
                   <Typography variant="h4" style={{textAlign:'left',fontWeight:'bold'}}gutterBottom>
                 Check In (Attendance)
             </Typography>
+{!selectedEventName && (
+    <Typography variant="body1" sx={{ mt: 2, color: 'black',backgroundColor:'yellow',fontWeight:'bold',width:'50%', marginLeft: '230px',textAlign:'center',marginBottom:'20px' }}>
+        Please select an event before proceeding.
+    </Typography>
+)}
                     <div className="filter-controls" style={{ marginBottom: '20px' }}>
                         <FormControl variant="outlined" style={{ marginRight: '10px', width: '200px' }}>
                             <InputLabel id="eventNameFilter-label">Event Name</InputLabel>
@@ -297,14 +320,85 @@ const handleScan = async (data) => {
                         <IconButton onClick={() => fetchCheckIns(selectedEventName)} style={{ marginLeft: '10px',marginTop:'10px',color:'green' }}>
                             <RefreshIcon />
                         </IconButton>
-                        <Button variant="contained" onClick={() => handleOpenModal('text')} style={{ marginLeft: '10px',marginTop:'10px', backgroundColor: 'green', color: 'white' }}>
-                            Check-In by Text
-                        </Button>
-                        <Button variant="contained" onClick={() => handleOpenModal('scan')} style={{ marginLeft: '10px',marginTop:'10px', backgroundColor: 'darkgreen', color: 'white' }}>
-                            Scan QR Code
-                        </Button>
-        
+                        <Button
+    variant="contained"
+    onClick={() => handleOpenModal('text')}
+    style={{ marginLeft: '10px', marginTop: '10px', backgroundColor: 'green', color: 'white' }}
+    disabled={!selectedEventName}
+>
+    Check-In by Text
+</Button>
+<Button
+    variant="contained"
+    onClick={() => handleOpenModal('scan')}
+    style={{ marginLeft: '10px', marginTop: '10px', backgroundColor: 'darkgreen', color: 'white' }}
+    disabled={!selectedEventName}
+>
+    Scan QR Code
+</Button>
+
+
                     </div>
+
+ {/* Confirmation modal for QR code scanning */}
+<Modal
+    open={openConfirmationModal}
+    onClose={() => setOpenConfirmationModal(false)}
+    sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+>
+    <Box
+        sx={{
+            width: 350,
+            bgcolor: 'background.paper',
+            p: 4,
+            borderRadius: 2,
+            textAlign: 'center',
+            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+        }}
+    >
+        <Typography variant="h6" component="h2">
+            {modalType === 'success'
+                ? `QR Code "${successMessages[0]}" has been scanned successfully!`
+                : modalType === 'error'
+                ? modalMessage
+                : modalMessage}
+        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 3 }}>
+            {modalType === 'success' ? (
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                        // Close the modal and reopen the scanning modal
+                        setOpenConfirmationModal(false);
+                        handleCloseModal(); // Close any existing modals
+                        resetScanner(); // Open the scanning modal
+                    }}
+                    sx={{ backgroundColor: 'green', color: 'white' }}
+                >
+                    Close
+                </Button>
+            ) : (
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                        // Close the modal and reset the scanner
+                        setOpenConfirmationModal(false);
+                        handleCloseModal(); // Handle any other modal or UI changes
+                        resetScanner(); // Ensure the scanner is reset
+                    }}
+                    sx={{ backgroundColor: 'red', color: 'white' }}
+                >
+                    Close
+                </Button>
+            )}
+        </Box>
+    </Box>
+</Modal>
+
+
+
                     {alertMessage && (
                         <Typography variant="body1" color="textSecondary" style={{ textAlign: 'center', marginBottom: '20px' }}>
                             {alertMessage}
@@ -395,70 +489,100 @@ const handleScan = async (data) => {
         </TableBody>
     </Table>
 </TableContainer>
-
-
-
                 </div>
                 {/* QR CODE SCANNER */}
-                <Modal open={modalOpen} onClose={handleCloseModal}>
-                    <Box sx={{ width: 400, bgcolor: 'background.paper', p: 4, borderRadius: 2, margin: 'auto', marginTop: '100px', textAlign: 'center' }}>
-                        <Typography variant="h6" component="h2">
-                            {modalType === 'text' ? 'Check-In by Text' : 'Scan QR Code'}
-                        </Typography>
-                        {modalType === 'text' ? (
-                            <Box component="form" onSubmit={handleCheckInByText} sx={{ mt: 2 }}>
-                                <TextField
-                                    fullWidth
-                                    label="QR Code Text / Guest Name"
-                                    value={qrCodeText}
-                                    onChange={(e) => setQrCodeText(e.target.value)}
-                                    error={!!error}
-                                    helperText={error}
-                                />
-                                <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
-                                    Submit
-                                </Button>
-                            </Box>
-                        ) : (
-                         <Box sx={{ mb: 2, width: '100%', maxWidth: 600, textAlign: 'center' }}>
-    <QrScanner
-        onScan={handleScan}
-        onError={(error) => setError(`Scan Error: ${error.message}`)}
-        className="successMessages"
-        style={{
-            width: '100%',
-            borderRadius: 2,
-            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-            border: '1px solid rgba(0, 0, 0, 0.2)',
-            backgroundColor: 'background.paper',
-        }} 
-    />
-    
-    {/* Display the tracker text */}
-    <Typography
-        variant="h6"
+              <Modal open={modalOpen} onClose={handleCloseModal} >
+    <Box
         sx={{
-            mt: 2,
-            textAlign: 'center',
-            color: 'text.primary',
-            fontWeight: 'bold',
-            backgroundColor: 'background.default',
-            padding: 1,
-            borderRadius: 1,
-            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            width: 400,
+            bgcolor: 'background.paper',
+            p: 4,
+            borderRadius: 2,
+            margin: 'auto',
+            marginTop: '100px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
         }}
     >
-        {trackerText || 'Scan a QR code to see the result here'}
-    </Typography>
-</Box>
+        <Typography variant="h6" component="h2">
+            {modalType === 'text' ? 'Check-In by Text' : 'Scan QR Code'}
+        </Typography>
+        {modalType === 'text' ? (
+            <Box component="form" onSubmit={handleCheckInByText} sx={{ mt: 2, width: '100%' }}>
+                <TextField
+                    fullWidth
+                    label="QR Code Text / Guest Name"
+                    value={qrCodeText}
+                    onChange={(e) => setQrCodeText(e.target.value)}
+                    error={!!error}
+                    helperText={error}
+                    disabled={!selectedEventName}
+                />
+                <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    sx={{ mt: 2 }}
+                    disabled={!selectedEventName}
+                >
+                    Submit
+                </Button>
+           
+ <Button
+                variant="outlined"
+                onClick={handleCloseModal}
+                sx={{
+                    mt: 2,
+                    ml:2,
+                    backgroundColor: 'red',
+                    color: 'white',
+                    '&:hover': {
+                        backgroundColor: 'darkred',
+                    },
+                }}
+            >
+                Close
+            </Button>
+      </Box>
+        ) : (
+            <Box sx={{ mb: 2, width: '100%', maxWidth: 600, textAlign: 'center' }}>
+                <QrScanner
+                    onScan={handleScan}
+                    onError={(error) => setError(`Scan Error: ${error.message}`)}
+                    className="successMessages"
+                    style={{
+                        width: '100%',
+                        borderRadius: 2,
+                        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                        border: '1px solid rgba(0, 0, 0, 0.2)',
+                        backgroundColor: 'background.paper',
+                    }}
+                />
 
-                      
-                        )}
-                        <Button variant="outlined" onClick={handleCloseModal} sx={{ mt: 2 }} style={{ backgroundColor: 'red', color: 'white' }}>
-                            Close
-                        </Button>
-                    </Box>
-                </Modal>
+<Button
+                variant="outlined"
+                onClick={handleCloseModal}
+                sx={{
+                    mt: 2,
+                    ml:2,
+                    backgroundColor: 'red',
+                    color: 'white',
+                    '&:hover': {
+                        backgroundColor: 'darkred',
+                    },
+                }}
+            >
+                Close
+            </Button>
+
+            </Box>
+        )}
+      
+    </Box>
+</Modal>
+
+
             </div>
         </div>
     );

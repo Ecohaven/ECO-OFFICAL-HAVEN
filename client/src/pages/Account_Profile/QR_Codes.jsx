@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import { Container, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button } from '@mui/material';
+import { Container, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Account_Nav from './Account_Nav';
 import { tableCellClasses } from '@mui/material/TableCell';
@@ -35,7 +35,7 @@ const StyledTableRow = styled(TableRow)(({ theme, status }) => ({
 function Account_Profile_Bookings() {
   const [bookingRows, setBookingRows] = useState([]);
   const [bookingDetail, setBookingDetail] = useState({});
-  const { account } = useContext(AccountContext); // Use context to get the account details
+  const { account } = useContext(AccountContext);
 
   useEffect(() => {
     if (account && account.name) {
@@ -46,12 +46,10 @@ function Account_Profile_Bookings() {
   const fetchBookingRows = async (accountName) => {
     try {
       const token = localStorage.getItem('accessToken');
-
       if (!token) {
         console.error('Account Access token not found');
         return;
       }
-
       const response = await axios.get(`http://localhost:3001/api/bookings/account/${accountName}/bookings`, {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -60,25 +58,24 @@ function Account_Profile_Bookings() {
 
       if (Array.isArray(response.data)) {
         const updatedRows = response.data.map((booking, index) => ({
-          id: booking.id, // Use booking.id to sort by booking ID
+          id: booking.id,
           bookingId: booking.id,
           eventName: booking.eventName,
           qrCodeText: booking.qrCodeText,
           qrCodeUrl: booking.qrCodeUrl,
           status: booking.status,
+          startDate: booking.startDate,
+          endDate: booking.endDate,
         }));
 
-        // Sort the updatedRows array so that 'Cancelled' statuses appear after 'Active', 'Checked', and 'Attended' statuses
         updatedRows.sort((a, b) => {
           if (a.status === 'Cancelled' && b.status !== 'Cancelled') return 1;
           if (a.status !== 'Cancelled' && b.status === 'Cancelled') return -1;
-          return b.id - a.id; // Sort by booking ID in descending order
+          return b.id - a.id;
         });
 
         setBookingRows(updatedRows);
-
         if (response.data.length > 0) {
-          // Fetch details for the first booking in the list
           fetchBookingDetail(response.data[0].id);
         }
       } else {
@@ -92,12 +89,10 @@ function Account_Profile_Bookings() {
   const fetchBookingDetail = async (bookingId) => {
     try {
       const token = localStorage.getItem('accessToken');
-
       if (!token) {
         console.error('Access token not found');
         return;
       }
-
       const response = await axios.get(`http://localhost:3001/api/bookings/${bookingId}`, {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -121,15 +116,21 @@ function Account_Profile_Bookings() {
     }
   };
 
-  // Function to handle download of QR code image
   const handleDownloadQRCode = async (url) => {
     try {
       const response = await fetch(url);
       const blob = await response.blob();
-      fileSaver.saveAs(blob, 'qrcode.png'); // Save the blob as a file with name 'qrcode.png'
+      fileSaver.saveAs(blob, 'qrcode.png');
     } catch (error) {
       console.error('Error downloading QR code:', error);
     }
+  };
+
+  const handleAddToCalendar = (eventName, startDate, endDate) => {
+    const start = new Date(startDate).toISOString().replace(/-|:|\.\d{3}/g, '');
+    const end = new Date(endDate).toISOString().replace(/-|:|\.\d{3}/g, '');
+    const calendarUrl = `https://calendar.google.com/calendar/r/eventedit?text=${encodeURIComponent(eventName)}&dates=${start}/${end}`;
+    window.open(calendarUrl, '_blank');
   };
 
   return (
@@ -140,10 +141,30 @@ function Account_Profile_Bookings() {
         </Grid>
         <Grid item xs={12} md={9}>
           <div className="table-container" style={{ marginBottom: '80px' }}>
-            {/* Bookings */}
-            <h3 className='header'>Your Event bookings</h3>
-            <h4 style={{ textAlign: 'center' }}>Your Active bookings for events and history of past details for bookings</h4>
+            <h3 className='header'>Your Booking Records</h3>
+            <h4 style={{ textAlign: 'center' }}>Your Active & history of past details for bookings</h4>
             <hr />
+            {/* Legend and Add to Calendar Button */}
+            <Box display="flex" alignItems="center" justifyContent="space-between" marginBottom="20px">
+              <Box>
+                <h4 style={{ margin: 0 }}>Legend:</h4>
+                <p style={{ margin: 0 }}>Active - Ongoing bookings</p>
+                <p style={{ margin: 0 }}>Checked - Checked in bookings</p>
+                <p style={{ margin: 0 }}>Attended - Attended bookings</p>
+                <p style={{ margin: 0 }}>Cancelled - Cancelled bookings</p>
+              </Box>
+              <Box>
+                {bookingRows.length > 0 && bookingRows[0].startDate && bookingRows[0].endDate && (
+                  <Button
+                    variant="contained"
+                    onClick={() => handleAddToCalendar(bookingRows[0].eventName, bookingRows[0].startDate, bookingRows[0].endDate)}
+                  >
+                    Add to Calendar
+                  </Button>
+                )}
+              </Box>
+            </Box>
+            {/* Table */}
             <TableContainer component={Paper}>
               <Table sx={{ minWidth: 700, marginBottom: '30px', height: 'auto' }} aria-label="customized table">
                 <TableHead>
@@ -161,12 +182,11 @@ function Account_Profile_Bookings() {
                   {bookingRows.map((row, index) => (
                     <StyledTableRow key={row.id} status={row.status}>
                       <StyledTableCell component="th" scope="row">
-                        {index + 1} {/* Use index + 1 for the row number */}
+                        {index + 1}
                       </StyledTableCell>
                       <StyledTableCell align="center">{row.bookingId}</StyledTableCell>
                       <StyledTableCell align="center">{row.eventName}</StyledTableCell>
                       <StyledTableCell align="center">
-                        {/* Adjusted styling for QR code based on status */}
                         {row.status === 'Active' && (
                           <div style={{ opacity: 1 }}>
                             <img src={row.qrCodeUrl} alt="QR Code" style={{ width: '100px', height: '100px' }} />
@@ -174,29 +194,24 @@ function Account_Profile_Bookings() {
                         )}
                         {row.status === 'Checked' && (
                           <div style={{ opacity: 0.5 }}>
-                            <img src={row.qrCodeUrl} alt="QR Code" style={{ width: '100px', height: '100px', backgroundColor: 'transparent' }} />
+                            <img src={row.qrCodeUrl} alt="QR Code" style={{ width: '100px', height: '100px' }} />
+                          </div>
+                        )}
+                        {row.status === 'Attended' && (
+                          <div style={{ opacity: 0.7 }}>
+                            <img src={row.qrCodeUrl} alt="QR Code" style={{ width: '100px', height: '100px' }} />
+                          </div>
+                        )}
+                        {row.status === 'Cancelled' && (
+                          <div style={{ opacity: 0.3 }}>
+                            <img src={row.qrCodeUrl} alt="QR Code" style={{ width: '100px', height: '100px' }} />
                           </div>
                         )}
                       </StyledTableCell>
                       <StyledTableCell align="center">{row.qrCodeText}</StyledTableCell>
+                      <StyledTableCell align="center">{row.status}</StyledTableCell>
                       <StyledTableCell align="center">
-                        {/* Apply styles based on status */}
-                        <span
-                          style={{
-                            fontWeight: 'bold',
-                            color: row.status === 'Cancelled' ? 'white' : row.status === 'Attended' ? 'blue' : row.status === 'Active' ? 'green' : 'inherit',
-                          }}
-                        >
-                          {row.status}
-                        </span>
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {/* Conditional rendering for Download button */}
-                        {row.status !== 'Checked' && row.status !== 'Cancelled' && row.status !== 'Attended' && (
-                          <Button variant="contained" onClick={() => handleDownloadQRCode(row.qrCodeUrl)}>
-                            Download
-                          </Button>
-                        )}
+                        <Button onClick={() => handleDownloadQRCode(row.qrCodeUrl)}>Download QR</Button>
                       </StyledTableCell>
                     </StyledTableRow>
                   ))}

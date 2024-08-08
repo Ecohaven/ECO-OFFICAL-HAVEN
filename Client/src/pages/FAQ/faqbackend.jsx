@@ -13,7 +13,7 @@ const FAQBackend = () => {
 
   const fetchFAQs = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/faqs');
+      const response = await axios.get('http://localhost:3001/api/faqs');
       setFaqs(response.data);
     } catch (error) {
       console.error('Error fetching FAQs:', error);
@@ -48,7 +48,7 @@ const FAQBackend = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/faqs/${id}`);
+      await axios.delete(`http://localhost:3001/api/faqs/${id}`);
       fetchFAQs();
     } catch (error) {
       console.error('Error deleting FAQ:', error);
@@ -63,16 +63,24 @@ const FAQBackend = () => {
     <div className="faq-container">
       <h4>Frequently Asked Questions</h4>
       {faqs.map((item, index) => (
-        <div
-          className={`faq-item ${activeIndex === index ? 'active' : ''}`}
-          key={index}
-          onClick={() => toggleAccordion(index)}
-        >
-          <div className="faq-question">
-            {item.question}
+        <div className="faq-wrapper" key={index}>
+          <div className="faq-header">
+            <div className="faq-question" onClick={() => toggleAccordion(index)}>
+              {item.question}
+            </div>
             <div className="faq-actions">
-              <button onClick={(e) => { e.stopPropagation(); handleEdit(index); }}>Edit</button>
-              <button onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }}>Delete</button>
+              <button
+                className="edit-btn"
+                onClick={(e) => { e.stopPropagation(); handleEdit(index); }}
+              >
+                Edit
+              </button>
+              <button
+                className="delete-btn"
+                onClick={(e) => { e.stopPropagation(); handleDelete(item.id); }}
+              >
+                Delete
+              </button>
             </div>
           </div>
           <div className={`faq-answer ${activeIndex === index ? 'active' : ''}`}>
@@ -102,7 +110,9 @@ const FAQBackend = () => {
             onChange={handleChange}
           />
         </div>
-        <button onClick={handleSave}>{isEditing ? 'Update' : 'Add'}</button>
+        <button className={isEditing ? 'update-btn' : 'add-btn'} onClick={handleSave}>
+          {isEditing ? 'Update' : 'Add'}
+        </button>
       </div>
 
       <style jsx>{`
@@ -123,31 +133,32 @@ const FAQBackend = () => {
           font-size: 28px;
         }
 
-        .faq-item {
-          border: 1px solid #ddd;
-          border-radius: 8px;
+        .faq-wrapper {
           margin-bottom: 15px;
-          overflow: hidden;
-          transition: all 0.3s ease-in-out;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-          cursor: pointer;
-          background-color: #f9f9f9;
         }
 
-        .faq-question {
-          background-color: #4caf50;
-          color: #fff;
-          padding: 15px;
-          font-weight: bold;
-          font-size: 18px;
+        .faq-header {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          transition: background-color 0.3s;
+          border: 1px solid #ddd;
+          border-radius: 8px;
+          padding: 15px;
+          background-color: green;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          cursor: pointer;
+          transition: all 0.3s ease-in-out;
         }
 
-        .faq-question:hover {
-          background-color: #45a049;
+        .faq-header:hover {
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .faq-question {
+          font-weight: bold;
+          font-size: 18px;
+          color: white;
+          flex: 1;
         }
 
         .faq-answer {
@@ -166,45 +177,50 @@ const FAQBackend = () => {
           padding: 15px;
         }
 
-        .faq-item:hover {
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        .faq-question::after {
-          content: '+';
-          font-size: 18px;
-          transition: transform 0.3s;
-        }
-
-        .faq-item.active .faq-question::after {
-          transform: rotate(45deg);
-        }
-
         .faq-actions {
           display: flex;
           gap: 10px;
+          margin-left: 10px;
         }
 
         .faq-actions button {
-          background-color: #fff;
-          border: 1px solid #ddd;
+          border: none;
           border-radius: 4px;
-          padding: 5px 10px;
+          padding: 8px 15px;
           cursor: pointer;
           transition: background-color 0.3s;
+          color: white;
+          font-size: 14px;
+          font-weight: bold;
         }
 
-        .faq-actions button:hover {
-          background-color: #f1f1f1;
+        .edit-btn {
+          background-color: #4caf50;
+        }
+
+        .edit-btn:hover {
+          background-color: #45a049;
+        }
+
+        .delete-btn {
+          background-color: red;
+        }
+
+        .delete-btn:hover {
+          background-color: #2c6b2f;
         }
 
         .faq-form {
           margin-top: 20px;
+          border: 1px solid #ddd;
+          border-radius: 8px;
+          padding: 20px;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .faq-form h4 {
           text-align: center;
-          margin-bottom: 10px;
+          margin-bottom: 20px;
           color: #333;
           font-size: 24px;
         }
@@ -233,16 +249,29 @@ const FAQBackend = () => {
           display: block;
           width: 100%;
           padding: 10px;
-          background-color: #4caf50;
-          color: white;
           border: none;
           border-radius: 4px;
           cursor: pointer;
           transition: background-color 0.3s;
+          color: white;
+          font-size: 16px;
+          font-weight: bold;
         }
 
-        .faq-form button:hover {
+        .add-btn {
+          background-color: #4caf50;
+        }
+
+        .add-btn:hover {
           background-color: #45a049;
+        }
+
+        .update-btn {
+          background-color: #388e3c;
+        }
+
+        .update-btn:hover {
+          background-color: #2c6b2f;
         }
       `}</style>
     </div>

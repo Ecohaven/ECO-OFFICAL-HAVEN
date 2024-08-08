@@ -93,7 +93,6 @@ router.post('/checkin/text', async (req, res) => {
 });
 
 
-
 // Get all overall records of check-in
 // Test URL: http://localhost:3001/checkin/records
 router.get('/records', async (req, res) => {
