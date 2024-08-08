@@ -3,8 +3,42 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import axios from 'axios';
 import * as Yup from 'yup';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Container, Typography, Grid, TextField, Button, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
+import { Container, Typography, Grid, Button, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
+import { styled } from '@mui/system';
+import TextField from '@mui/material/TextField';
 
+// Styled TextField with error styles
+const StyledTextField = styled(TextField)(({ theme }) => ({
+  '& .MuiInputLabel-root': {
+    color: 'black', 
+  },
+  '& .MuiInputBase-input': {
+    color: 'black', 
+    '&.Mui-disabled': {
+      opacity: 1,
+      '-webkit-text-fill-color': 'black',
+    },
+  },
+  '& .MuiFormHelperText-root': {
+    color: 'red', // Error text color
+  },
+  '& .MuiInputBase-input.Mui-error': {
+    borderColor: 'red', // Border color for error state
+  },
+}));
+
+// Styled FormControl with error styles
+const StyledFormControl = styled(FormControl)(({ theme }) => ({
+  '& .MuiInputLabel-root': {
+    color: 'black', 
+  },
+  '& .MuiSelect-root': {
+    color: 'black', 
+  },
+  '& .MuiFormHelperText-root': {
+    color: 'red', // Error text color
+  },
+}));
 
 const PaymentForm = () => {
   const navigate = useNavigate();
@@ -48,7 +82,7 @@ const PaymentForm = () => {
 
   const handleSubmit = async (values, { setSubmitting, setStatus, resetForm }) => {
     try {
-      const finalAmount = amount + amount * (numberOfPax || '');
+      const finalAmount = amount * (numberOfPax || 1);
 
       const response = await axios.post('http://localhost:3001/pay', { ...values, amount: finalAmount });
       const result = response.data;
@@ -91,7 +125,7 @@ const PaymentForm = () => {
       <Typography variant="h4" component="h1" style={{ textAlign: 'left' }} gutterBottom>
         Payment Form
       </Typography>
-<i>Amount * No. of Additional guest (if applicable)</i>
+      <i>Amount * No. of Additional guest (if applicable)</i>
       <Formik
         initialValues={{
           eventName,
@@ -118,7 +152,7 @@ const PaymentForm = () => {
               <Grid item xs={12}>
                 <Field name="eventName">
                   {({ field, meta }) => (
-                    <TextField
+                    <StyledTextField
                       {...field}
                       label="Event Name"
                       type="text"
@@ -133,7 +167,7 @@ const PaymentForm = () => {
               <Grid item xs={12}>
                 <Field name="amount">
                   {({ field, meta }) => (
-                    <TextField
+                    <StyledTextField
                       {...field}
                       label="Amount"
                       type="number"
@@ -149,7 +183,7 @@ const PaymentForm = () => {
               <Grid item xs={12}>
                 <Field name="email">
                   {({ field, meta }) => (
-                    <TextField
+                    <StyledTextField
                       {...field}
                       label="Email"
                       type="email"
@@ -164,7 +198,7 @@ const PaymentForm = () => {
               <Grid item xs={12}>
                 <Field name="phoneNumber">
                   {({ field, meta }) => (
-                    <TextField
+                    <StyledTextField
                       {...field}
                       label="Phone Number"
                       type="text"
@@ -179,7 +213,7 @@ const PaymentForm = () => {
               <Grid item xs={12}>
                 <Field name="homeAddress">
                   {({ field, meta }) => (
-                    <TextField
+                    <StyledTextField
                       {...field}
                       label="Home Address"
                       type="text"
@@ -193,7 +227,7 @@ const PaymentForm = () => {
               <Grid item xs={12}>
                 <Field name="postalCode">
                   {({ field, meta }) => (
-                    <TextField
+                    <StyledTextField
                       {...field}
                       label="Postal Code"
                       type="text"
@@ -205,7 +239,7 @@ const PaymentForm = () => {
                 </Field>
               </Grid>
               <Grid item xs={12}>
-                <FormControl fullWidth error={Boolean(status?.message)}>
+                <StyledFormControl fullWidth error={Boolean(status?.message)}>
                   <InputLabel id="payment-method-label">Payment Method</InputLabel>
                   <Field name="paymentMethod">
                     {({ field, meta }) => (
@@ -215,6 +249,7 @@ const PaymentForm = () => {
                         label="Payment Method"
                         fullWidth
                         error={meta.touched && Boolean(meta.error)}
+                        style={{ color: 'black' }} // Ensure text color is black
                       >
                         <MenuItem value='Debit'>Debit</MenuItem>
                         <MenuItem value='Credit'>Credit</MenuItem>
@@ -222,12 +257,12 @@ const PaymentForm = () => {
                     )}
                   </Field>
                   <ErrorMessage name="paymentMethod" component="div" style={{ color: 'red' }} />
-                </FormControl>
+                </StyledFormControl>
               </Grid>
               <Grid item xs={12}>
                 <Field name="cardholderName">
                   {({ field, meta }) => (
-                    <TextField
+                    <StyledTextField
                       {...field}
                       label="Cardholder Name"
                       type="text"
@@ -238,10 +273,10 @@ const PaymentForm = () => {
                   )}
                 </Field>
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} md={6}>
                 <Field name="cardNumber">
                   {({ field, meta }) => (
-                    <TextField
+                    <StyledTextField
                       {...field}
                       label="Card Number"
                       type="text"
@@ -252,10 +287,10 @@ const PaymentForm = () => {
                   )}
                 </Field>
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} md={6}>
                 <Field name="expiryDate">
                   {({ field, meta }) => (
-                    <TextField
+                    <StyledTextField
                       {...field}
                       label="Expiry Date (MM/YY)"
                       type="text"
@@ -266,10 +301,10 @@ const PaymentForm = () => {
                   )}
                 </Field>
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} md={6}>
                 <Field name="cvv">
                   {({ field, meta }) => (
-                    <TextField
+                    <StyledTextField
                       {...field}
                       label="CVV"
                       type="text"
@@ -280,59 +315,25 @@ const PaymentForm = () => {
                   )}
                 </Field>
               </Grid>
-              <Grid item xs={12}>
-                <Field name="Name">
-                  {({ field, meta }) => (
-                    <TextField
-                      {...field}
-                      label="Name"
-                      type="text"
-                      fullWidth
-                      error={meta.touched && Boolean(meta.error)}
-                      helperText={<ErrorMessage name="Name" />}
-                      disabled
-                    />
-                  )}
-                </Field>
-              </Grid>
-              <Grid item xs={12}>
-                <Field name="numberOfPax">
-                  {({ field, meta }) => (
-                    <TextField
-                      {...field}
-                      label="Number of Pax"
-                      type="number"
-                      fullWidth
-                      error={meta.touched && Boolean(meta.error)}
-                      helperText={<ErrorMessage name="numberOfPax" />}
-                      disabled
-                    />
-                  )}
-                </Field>
-              </Grid>
-              <Typography variant="h6" component="h2" style={{ marginTop: 16 }}>
-                Additional Pax Details
-              </Typography>
-              {paxName.map((name, index) => (
-                <Grid item xs={12} key={index}>
-                  <Typography variant="body1" component="div">
-                    <strong>Pax Name:</strong> {name}
-                  </Typography>
-                  <Typography variant="body1" component="div">
-                    <strong>Pax Email:</strong> {paxEmail[index]}
-                  </Typography>
-                </Grid>
-              ))}
-              <Grid item xs={12}>
-                <Button type="submit" variant="contained" color="primary" disabled={isSubmitting}>
+              <Grid item xs={12} container justifyContent="center">
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  disabled={isSubmitting}
+                  sx={{ maxWidth: '300px',marginBottom:'20px' }} // Optional: Limit button width for better centering
+                >
                   {isSubmitting ? 'Processing...' : 'Submit Payment'}
                 </Button>
-                {status && (
-                  <Typography variant="body1" color={status.type === 'error' ? 'error' : 'success'}>
+              </Grid>
+              {status && status.message && (
+                <Grid item xs={12}>
+                  <Typography color={status.type === 'error' ? 'red' : 'green'}>
                     {status.message}
                   </Typography>
-                )}
-              </Grid>
+                </Grid>
+              )}
             </Grid>
           </Form>
         )}

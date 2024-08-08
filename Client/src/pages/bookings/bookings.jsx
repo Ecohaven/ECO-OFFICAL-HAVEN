@@ -147,7 +147,6 @@ const BookingList = () => {
         { field: 'numberOfPax', headerName: 'No.of Pax', width: 80 },
         { field: 'phoneNumber', headerName: 'Phone Number', width: 120 },
         { field: 'email', headerName: 'Email', width: 200 },
-        // { field: 'leafPoints', headerName: 'Leaf Points', width: 30 },
         { field: 'amount', headerName: 'Event Amount', width: 110 },
         { field: 'qrCodeText', headerName: 'QRCode-Text', width: 120 },
        {

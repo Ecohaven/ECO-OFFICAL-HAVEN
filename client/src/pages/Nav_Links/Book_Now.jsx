@@ -25,7 +25,7 @@ const BookNowPage = () => {
     filterEventsByCategory();
   }, [events, selectedCategory]);
 
-  const fetchEvents = async () => {
+   const fetchEvents = async () => {
     try {
       const response = await axios.get('http://localhost:3001/api/events');
       if (Array.isArray(response.data)) {
@@ -34,7 +34,11 @@ const BookNowPage = () => {
           id: event.eventId,
         }));
 
-        const sortedEvents = eventsWithIds.sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
+        // Filter out expired events
+        const today = new Date().setHours(0, 0, 0, 0);
+        const validEvents = eventsWithIds.filter(event => new Date(event.startDate).setHours(0, 0, 0, 0) >= today);
+
+        const sortedEvents = validEvents.sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
         setEvents(sortedEvents);
       } else {
         console.error('Expected an array from the API response');
@@ -43,6 +47,7 @@ const BookNowPage = () => {
       console.error('Error fetching events:', error);
     }
   };
+
 
   const filterEventsByCategory = () => {
     if (selectedCategory === 'All') {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import { Container, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Box } from '@mui/material';
+import { Container, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Box, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Account_Nav from './Account_Nav';
 import { tableCellClasses } from '@mui/material/TableCell';
@@ -8,6 +8,7 @@ import fileSaver from 'file-saver';
 import AccountContext from '../../contexts/AccountContext';
 import '../../style/rewards/rewardsprofile.css';
 
+// Styled components
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: '#14772B',
@@ -30,6 +31,29 @@ const StyledTableRow = styled(TableRow)(({ theme, status }) => ({
     border: 0,
   },
   backgroundColor: status === 'Cancelled' ? '#ff6666' : status === 'Attended' ? '#ADD8E6' : 'inherit',
+}));
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  backgroundColor: '#14772B',
+  color: theme.palette.common.white,
+  padding: '8px 16px',
+  fontSize: '1rem',
+  borderRadius: '4px',
+  '&:hover': {
+    backgroundColor: '#0c5e1a',
+  },
+}));
+
+const LegendContainer = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'center',
+  marginBottom: theme.spacing(2),
+}));
+
+const LegendItem = styled(Box)(({ color }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  marginRight: '20px',
 }));
 
 function Account_Profile_Bookings() {
@@ -126,13 +150,6 @@ function Account_Profile_Bookings() {
     }
   };
 
-  const handleAddToCalendar = (eventName, startDate, endDate) => {
-    const start = new Date(startDate).toISOString().replace(/-|:|\.\d{3}/g, '');
-    const end = new Date(endDate).toISOString().replace(/-|:|\.\d{3}/g, '');
-    const calendarUrl = `https://calendar.google.com/calendar/r/eventedit?text=${encodeURIComponent(eventName)}&dates=${start}/${end}`;
-    window.open(calendarUrl, '_blank');
-  };
-
   return (
     <Container>
       <Grid container spacing={3}>
@@ -141,29 +158,25 @@ function Account_Profile_Bookings() {
         </Grid>
         <Grid item xs={12} md={9}>
           <div className="table-container" style={{ marginBottom: '80px' }}>
-            <h3 className='header'>Your Booking Records</h3>
+            <h3 className='header'>Booking Records</h3>
             <h4 style={{ textAlign: 'center' }}>Your Active & history of past details for bookings</h4>
             <hr />
-            {/* Legend and Add to Calendar Button */}
-            <Box display="flex" alignItems="center" justifyContent="space-between" marginBottom="20px">
-              <Box>
-                <h4 style={{ margin: 0 }}>Legend:</h4>
-                <p style={{ margin: 0 }}>Active - Ongoing bookings</p>
-                <p style={{ margin: 0 }}>Checked - Checked in bookings</p>
-                <p style={{ margin: 0 }}>Attended - Attended bookings</p>
-                <p style={{ margin: 0 }}>Cancelled - Cancelled bookings</p>
-              </Box>
-              <Box>
-                {bookingRows.length > 0 && bookingRows[0].startDate && bookingRows[0].endDate && (
-                  <Button
-                    variant="contained"
-                    onClick={() => handleAddToCalendar(bookingRows[0].eventName, bookingRows[0].startDate, bookingRows[0].endDate)}
-                  >
-                    Add to Calendar
-                  </Button>
-                )}
-              </Box>
-            </Box>
+            {/* Legend */}
+            <LegendContainer>
+  <LegendItem color="#91E1A3">
+    <Box className="color-box" sx={{ width: '20px', height: '20px',marginRight:'12px', backgroundColor: '#91E1A3' }} />
+    <Typography style={{color:'black'}}>Active</Typography>
+  </LegendItem>
+  <LegendItem color="#ADD8E6">
+    <Box className="color-box" sx={{ width: '20px', height: '20px',marginRight:'12px',backgroundColor: '#ADD8E6' }} />
+    <Typography style={{color:'black'}}>Attended</Typography>
+  </LegendItem>
+  <LegendItem color="#ff6666">
+    <Box className="color-box" sx={{ width: '20px', height: '20px',marginRight:'12px', backgroundColor: '#ff6666' }} />
+    <Typography style={{color:'black'}}>Cancelled</Typography>
+  </LegendItem>
+</LegendContainer>
+
             {/* Table */}
             <TableContainer component={Paper}>
               <Table sx={{ minWidth: 700, marginBottom: '30px', height: 'auto' }} aria-label="customized table">
@@ -211,7 +224,9 @@ function Account_Profile_Bookings() {
                       <StyledTableCell align="center">{row.qrCodeText}</StyledTableCell>
                       <StyledTableCell align="center">{row.status}</StyledTableCell>
                       <StyledTableCell align="center">
-                        <Button onClick={() => handleDownloadQRCode(row.qrCodeUrl)}>Download QR</Button>
+                        {row.status === 'Active' && (
+                          <StyledButton onClick={() => handleDownloadQRCode(row.qrCodeUrl)}>Download</StyledButton>
+                        )}
                       </StyledTableCell>
                     </StyledTableRow>
                   ))}

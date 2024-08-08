@@ -10,7 +10,8 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Typography
+  Typography,
+  Button 
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Calendar from 'react-calendar';
@@ -19,10 +20,9 @@ import Account_Nav from './Account_Nav';
 import AccountContext from '../../contexts/AccountContext';
 import '../../style/rewards/rewardsprofile.css';
 
-// Styled components for table cells and rows
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   '&.MuiTableCell-head': {
-    backgroundColor: '#14772B',
+    backgroundColor: '#14772B', 
     color: theme.palette.common.white,
     fontSize: '1.2rem',
   },
@@ -67,42 +67,46 @@ const CustomCalendar = styled(Calendar)(({ theme }) => ({
     alignItems: 'center',
     justifyContent: 'center',
     cursor: 'pointer',
-    transition: 'background-color 0.2s',
+    transition: 'background-color 0.2s, color 0.2s',
+  },
+  '.react-calendar__tile:hover': {
+    backgroundColor: 'lightgreen', // Hover light green
+    color: '#ffffff',
   },
   '.react-calendar__tile--active': {
-    backgroundColor: '#14772B',
+    backgroundColor: '#FF5722', // Different color for active (orange example)
     color: '#ffffff',
   },
   '.react-calendar__tile--highlighted': {
-    backgroundColor: '#d0e8d0',
-    color: '#14772B',
+    backgroundColor: '#14772B', // Green for booked/clicked
+    color: 'white',
   },
   '.react-calendar__tile--today': {
-    backgroundColor: '#007BFF',
+    backgroundColor: 'navy',
     color: '#ffffff',
   },
   '.react-calendar__month-view__days__day': {
     fontSize: '0.9rem',
   },
   '.react-calendar__navigation button': {
-    backgroundColor: '#14772B',
+    backgroundColor: '#14772B', // Standardized green color for navigation buttons
     color: '#ffffff',
     border: 'none',
     borderRadius: '4px',
     padding: '10px',
     margin: '0 2px',
     cursor: 'pointer',
-    transition: 'background-color 0.2s',
+    transition: 'background-color 0.2s, color 0.2s',
   },
   '.react-calendar__navigation button:hover': {
-    backgroundColor: '#0a5c1f',
+    backgroundColor: 'lightgreen', // Hover light green for navigation buttons
   },
   '.react-calendar__navigation button:disabled': {
     backgroundColor: '#dcdcdc',
     color: '#888888',
   },
   '.react-calendar__navigation button:disabled:hover': {
-    backgroundColor: '#dcdcdc',
+    backgroundColor: '#dcdcdc', // Maintain disabled color on hover
   },
 }));
 
@@ -133,10 +137,12 @@ const LegendItem = styled('div')(({ color, theme }) => ({
   },
 }));
 
+
+
 function Account_Profile_Events() {
   const [events, setEvents] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [value, setValue] = useState(new Date()); // State for Calendar
+  const [value, setValue] = useState(new Date());
   const [highlightedDates, setHighlightedDates] = useState(new Set());
   const { account } = useContext(AccountContext);
 
@@ -193,6 +199,26 @@ function Account_Profile_Events() {
     new Date(event.startDate).toDateString() === new Date(selectedDate).toDateString()
   );
 
+//ADD to Google CALENDAR
+const addToGoogleCalendar = (event) => {
+  // Extract and format the start and end dates
+  const startDate = new Date(event.startDate).toISOString().slice(0, 10).replace(/-/g, '');
+  const endDate = new Date(event.endDate).toISOString().slice(0, 10).replace(/-/g, '');
+
+  // Use event.time directly for the time range (e.g., "9am - 4pm")
+  const eventTime = event.time;
+
+  // Construct the Google Calendar URL with the formatted date and time
+  const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
+    event.eventName
+  )}&dates=${startDate}/${endDate}&details=${encodeURIComponent(
+    `\nTime: ${eventTime}\n${event.description || ''}`
+  )}&location=${encodeURIComponent(event.location || '')}&sf=true&output=xml`;
+
+  window.open(googleCalendarUrl, '_blank');
+}
+
+
   return (
     <Container>
       <Grid container spacing={3}>
@@ -202,7 +228,7 @@ function Account_Profile_Events() {
         <Grid item xs={12} md={9}>
           <div className="table-container" style={{ marginBottom: '80px' }}>
             {/* Booked Events */}
-             <h3 className='header'>Your upcoming events</h3>
+            <h3 className='header'>Upcoming Events</h3>
             <hr />
             <Grid container spacing={2}>
               <Grid item xs={12} md={8}>
@@ -220,22 +246,33 @@ function Account_Profile_Events() {
               <Grid item xs={12} md={4}>
                 <LegendContainer>
                   <Typography variant="h6">Legend</Typography>
-                  <LegendItem color="#007BFF">
+                  <LegendItem color="navy">
                     <div className="color-box" />
                     Today
                   </LegendItem>
-                  <LegendItem color="#d0e8d0">
+                  <LegendItem color="green">
                     <div className="color-box" />
                     Booked Events
                   </LegendItem>
+                <LegendItem color="#3399ff">
+                    <div className="color-box" />
+                    Selected
+                  </LegendItem>
+                  {/* Add to Google Calendar Button */}
+                  {filteredEvents.length > 0 && (
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => addToGoogleCalendar(filteredEvents[0])} // Add the first event in the list to Google Calendar
+                      style={{ marginTop: '20px' }}
+                    >
+                      Add to Google Calendar
+                    </Button>
+                  )}
                 </LegendContainer>
               </Grid>
             </Grid>
-            <TableContainer
-              component={Paper}
-              sx={{ marginTop: '20px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}
-            >
-              <Table sx={{ minWidth: 700 }} aria-label="customized table">
+           <Table sx={{ minWidth: 700 }} aria-label="customized table">
                 <TableHead>
                   <TableRow>
                     <StyledTableCell align="center">No.</StyledTableCell>
@@ -277,7 +314,6 @@ function Account_Profile_Events() {
                   )}
                 </TableBody>
               </Table>
-            </TableContainer>
           </div>
         </Grid>
       </Grid>
@@ -286,3 +322,4 @@ function Account_Profile_Events() {
 }
 
 export default Account_Profile_Events;
+

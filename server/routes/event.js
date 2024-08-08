@@ -158,7 +158,7 @@ router.get("/account/:accountName/events", async (req, res) => {
         required: true, // Ensure only booked events are fetched
         where: { Name: accountName }
       }],
-      attributes: ['eventId', 'eventName', 'description', 'organiser', 'picture', 'leafPoints', 'amount', 'startDate', 'endDate'] // Specify event attributes to retrieve
+      attributes: ['eventId', 'eventName', 'description', 'organiser', 'picture', 'leafPoints', 'amount', 'startDate', 'endDate','location','time'] // Specify event attributes to retrieve
     });
 
     if (!eventsList || eventsList.length === 0) {

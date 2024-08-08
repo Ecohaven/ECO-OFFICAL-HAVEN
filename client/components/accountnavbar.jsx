@@ -287,6 +287,9 @@ function AccountNavbar() {
               <StyledLink to="/volunteer" selected={window.location.pathname === '/volunteer'} >
                 Volunteer
               </StyledLink>
+            <StyledLink to="/review" selected={window.location.pathname === '/review'} >
+                Review
+              </StyledLink>
             </Box>
           </Box>
           {/* Elements on right side of appbar */}

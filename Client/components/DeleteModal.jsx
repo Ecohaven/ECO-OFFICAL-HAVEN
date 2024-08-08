@@ -40,7 +40,6 @@ const DeleteConfirmationModal = ({ open, onClose, onDelete }) => {
             sx={{ 
               width: '100px', 
               borderColor: 'black', 
-              border: '2px solid black',
               backgroundColor: '#28a745', 
               color: 'white',
               '&:hover': {
@@ -56,7 +55,6 @@ const DeleteConfirmationModal = ({ open, onClose, onDelete }) => {
             sx={{ 
               width: '100px', 
               borderColor: 'black', 
-              border: '2px solid black',
               backgroundColor: '#dc3545', 
               color: 'white',
               '&:hover': {
