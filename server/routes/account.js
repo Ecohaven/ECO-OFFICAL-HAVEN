@@ -105,6 +105,11 @@ router.post("/login", async (req, res) => {
             res.status(400).json({ message: errorMsg });
             return;
         }
+        // Check status
+        if (account.status !== "Active") {
+            res.status(400).json({ message: "Your account has been deactivated. Please contact the administrator for support." });
+            return;
+        }
         let match = await bcrypt.compare(data.password, account.password); // Check password
         if (!match) {
             res.status(400).json({ message: errorMsg });
@@ -174,11 +179,6 @@ router.get("/:username", validateToken, checkRole(['User']), async (req, res) =>
     let username = req.params.username;
     console.log(username); // Debugging
 
-    // Check if the logged-in user is accessing their own account
-    // if (req.user.username !== username) {
-    //     return res.status(403).json({ message: "Access denied" });
-    // }
-
     let account = await Account.findOne({ where: { username: username } });
     console.log(account); // Debugging
     if (account) {
@@ -193,6 +193,11 @@ router.get("/:username", validateToken, checkRole(['User']), async (req, res) =>
             role: account.role,
             leaf_points: account.leaf_points
         };
+        // Check status
+        if (account.status !== "Active") {
+            res.status(400).json({ message: "Your account has been deactivated. Please contact the administrator for support." });
+            return;
+        }
         res.json({
             user: userInfo
         });
@@ -234,6 +239,11 @@ router.put("/:username", validateToken, checkRole(['User']), async (req, res) =>
             res.status(400).json({ message: "Username already exists." });
             return;
         }
+        // Check status
+        if (account.status !== "Active") {
+            res.status(400).json({ message: "Your account has been deactivated. Please contact the administrator for support." });
+            return;
+        }
 
         // Update account
         let data = req.body;
@@ -249,11 +259,6 @@ router.put("/:username", validateToken, checkRole(['User']), async (req, res) =>
 router.put("/:username/password", validateToken, checkRole(['User']), async (req, res) => {
     let username = req.params.username;
 
-    // Check if the logged-in user is accessing their own account
-    // if (req.user.username !== username) {
-    //     return res.status(403).json({ message: "Access denied" });
-    // }
-
     // Validate request body
     let validationSchema = yup.object({
         current_password: yup.string().trim().required("This is a required field"),
@@ -267,6 +272,12 @@ router.put("/:username/password", validateToken, checkRole(['User']), async (req
         let account = await Account.findOne({ where: { username: username } });
         if (!account) {
             res.status(400).json({ message: "Account not found" });
+            return;
+        }
+
+        // Check status
+        if (account.status !== "Active") {
+            res.status(400).json({ message: "Your account has been deactivated. Please contact the administrator for support." });
             return;
         }
         
@@ -313,10 +324,6 @@ async function deleteProfilePic(userId) {
 router.delete("/:username", validateToken, checkRole(['User']), async (req, res) => {
     let username = req.params.username;
 
-    // Check if the logged-in user is accessing their own account
-    // if (req.user.username !== username) {
-    //     return res.status(403).json({ message: "Access denied" });
-    // }
 
     // Validate request body
     let validationSchema = yup.object({
@@ -330,6 +337,13 @@ router.delete("/:username", validateToken, checkRole(['User']), async (req, res)
             res.status(400).json({ message: "Account not found" });
             return;
         }
+
+        // Check status
+        if (account.status !== "Active") {
+            res.status(400).json({ message: "Your account has been deactivated. Please contact the administrator for support." });
+            return;
+        }
+
         let match = await bcrypt.compare(req.body.password, account.password); // Check password
         if (!match) {
             res.status(400).json({ message: "Password is not correct" });

@@ -3,7 +3,7 @@ import { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import http from '/src/http';
 import dayjs from 'dayjs';
-import { Box, Grid, IconButton, Typography, Button, Link, Dialog, Alert, Snackbar, Divider, TextField, Select, MenuItem, FormControl } from '@mui/material';
+import { Box, Grid, IconButton, Typography, Button, Link, Dialog, Alert, Snackbar, Divider, TextField, Select, MenuItem, FormControl, Switch } from '@mui/material';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useFormik } from 'formik';
@@ -38,6 +38,11 @@ function StaffAccounts() {
     const [staffIdtoDelete, setStaffIdtoDelete] = useState('');
     const [deleteConfirmation, setDeleteConfirmation] = useState(false);
 
+    const [statusChangePopup, setStatusChangePopup] = useState(false);
+    const [statusChangeDetails, setStatusChangeDetails] = useState({ staffId: null, status: '' });
+    const [statusChangeConfirmation, setStatusChangeConfirmation] = useState(false);
+  
+
     const [search, setSearch] = useState('');
 
     // fetch all staff accounts
@@ -54,7 +59,7 @@ function StaffAccounts() {
                         phone_no: staff.phone_no,
                         birthdate: staff.birthdate? dayjs(staff.birthdate).format('DD/MM/YYYY') : 'NA',
                         role: staff.role,
-                        // status: staff.status,
+                        status: staff.status,
                         createdAt: staff.createdAt? dayjs(staff.createdAt).format('DD/MM/YYYY HH:mm:ss') : 'NA',
                         lastLogin: staff.last_login? dayjs(staff.last_login).format('DD/MM/YYYY HH:mm:ss') : 'NA',
                         updatedAt: staff.updatedAt? dayjs(staff.updatedAt).format('DD/MM/YYYY HH:mm:ss') : 'NA',
@@ -80,6 +85,8 @@ function StaffAccounts() {
                 return staff.name.toLowerCase().includes(query.toLowerCase()) ||
                     staff.email.toLowerCase().includes(query.toLowerCase()) ||
                     staff.phone_no.includes(query) ||
+                    staff.birthdate.includes(query) ||
+                    staff.status.toLowerCase().includes(query.toLowerCase()) ||
                     staff.role.toLowerCase().includes(query.toLowerCase())
 
             });
@@ -225,6 +232,39 @@ function StaffAccounts() {
         }
     }
 
+    // handle status change
+    const handleStatusChange = async (staffId, status) => {
+        try {
+            // check if account is active or inactive
+            if (staffId === loggedInAdminId) {
+                console.log("Cannot deactivate your own account!");
+                return;
+            }
+
+            if (status === 'Active') {
+                const response = await http.put(`/staff/deactivate_staff_account/${staffId}`);
+                console.log("API Response:", response.data); // Log API response
+
+            }
+            else if (status === 'Inactive') {
+                const response = await http.put(`/staff/activate_staff_account/${staffId}`);
+                console.log("API Response:", response.data); // Log API response
+            }
+            // Update the staff accounts list to reflect the status change
+            const updatedStaffAccounts = staffAccounts.map((staff) => {
+                if (staff.id === staffId) {
+                    staff.status = status === 'Active' ? 'Inactive' : 'Active';
+                }
+                return staff;
+            });
+            setStaffAccounts(updatedStaffAccounts);
+            setStatusChangePopup(false);
+            setStatusChangeConfirmation(true);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     const columns = [
         { field: 'id', headerName: 'ID', width: 70 },
         { field: 'name', headerName: 'Name', width: 150 },
@@ -232,10 +272,27 @@ function StaffAccounts() {
         { field: 'phone_no', headerName: 'Phone No', width: 110 },
         { field: 'birthdate', headerName: 'Birthdate', width: 150 },
         { field: 'role', headerName: 'Role', width: 100 },
-        // { field: 'status', headerName: 'Status', width: 150 },
         { field: 'createdAt', headerName: 'Created At', width: 190 },
         { field: 'lastLogin', headerName: 'Last Login', width: 190 },
         { field: 'updatedAt', headerName: 'Updated At', width: 190 },
+        { field: 'status', headerName: 'Status', width: 130, renderCell: (params) => (
+            // Do not allow staff to deactivate their own account
+            <>
+                <Switch disabled={params.row.id === loggedInAdminId}
+                checked={params.row.status === 'Active'}
+                onChange={() => {
+                    setStatusChangeDetails({ staffId: params.row.id, status: params.row.status });
+                    setStatusChangePopup(true);
+                }}
+                />
+                <Typography variant="body2" 
+                    color={params.row.status === 'Active' ? 'green' : 'text.secondary'}
+                    component="span">
+                    {params.row.status}
+                </Typography>
+            </>
+        )},
+
         { field: 'edit', headerName: 'Edit', width: 70, renderCell: (params) => (
             <IconButton sx={{ color: 'blue' }} onClick={() => openEditPopup(params.row.id)}><EditIcon /></IconButton>
         )},
@@ -289,6 +346,42 @@ function StaffAccounts() {
                     }}
                     />
                 </div>
+
+            {/* Status Change Confirmation popup */}
+            {statusChangePopup && (
+                <Dialog open={statusChangePopup} onClose={() => setStatusChangePopup(false)}
+                maxWidth="sm" // Set the desired maxWidth
+                PaperProps={{
+                sx: { borderRadius: '20px', boxShadow: 5, textAlign: 'center' }
+                }}>
+                <Box sx={{ width: 300, p: 3 }}>
+                    <img src={ExclamationMarkIcon} alt='Exclamation Mark' width={'70px'} height={'70px'} className='icon'
+                    style={{ display: 'flex', margin: 'auto' }} />
+                    <p>Are you sure you want to {staffAccounts.find((staff) => staff.id === statusChangeDetails.staffId).status === 'Active' ? 'deactivate' : 'activate'} ID #{statusChangeDetails.staffId}?</p>
+                    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+                    <Button variant="contained" className='deletebutton' onClick={() => handleStatusChange(statusChangeDetails.staffId, statusChangeDetails.status)}
+                        sx={{ paddingLeft: 3, paddingRight: 3 }}>
+                        Yes
+                    </Button>
+                    <Button variant="contained" className='cancelbutton' onClick={() => setStatusChangePopup(false)}>
+                        Cancel
+                    </Button>
+                    </div>
+                </Box>
+                </Dialog>
+            )}
+
+            {/* Status Change Confirmation Alert */}
+            <Snackbar
+                open={statusChangeConfirmation}
+                autoHideDuration={6000}
+                onClose={() => setStatusChangeConfirmation(false)}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+            >
+                <Alert onClose={() => setStatusChangeConfirmation(false)} severity="success" sx={{ width: '100%' }}>
+                    Staff account status changed successfully!
+                </Alert>
+            </Snackbar>
 
             {/* Edit Staff Account popup */}
             {editPopup && (

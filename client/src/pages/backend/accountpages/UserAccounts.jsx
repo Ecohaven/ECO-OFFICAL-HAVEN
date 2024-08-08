@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import http from '/src/http';
 import dayjs from 'dayjs';
-import { Box, Typography, Button, Grid, IconButton, TextField, Dialog, Alert, Snackbar, Divider } from '@mui/material';
+import { Box, Typography, Button, Grid, IconButton, TextField, Dialog, Alert, Snackbar, Divider, Switch } from '@mui/material';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -32,6 +32,10 @@ function UserAccounts() {
   const [userIdToDelete, setUserIdToDelete] = useState(null);
   const [deleteConfirmation, setDeleteConfirmation] = useState(false);
 
+  const [statusChangePopup, setStatusChangePopup] = useState(false);
+  const [statusChangeDetails, setStatusChangeDetails] = useState({ userId: null, status: '' });
+  const [statusChangeConfirmation, setStatusChangeConfirmation] = useState(false);
+
   // for search bar
   const [search, setSearch] = useState(''); // search keyword
   
@@ -48,6 +52,7 @@ function UserAccounts() {
             name: user.name,
             email: user.email,
             phone_no: user.phone_no,
+            status: user.status,
             createdAt: user.createdAt ? dayjs(user.createdAt).format(dateformat.date) : 'NA',
             last_login: user.last_login ? dayjs(user.last_login).format(dateformat.date) : 'NA',
             updatedAt: user.updatedAt ? dayjs(user.updatedAt).format(dateformat.date) : 'NA',
@@ -77,6 +82,7 @@ function UserAccounts() {
         return user.username.toLowerCase().includes(query.toLowerCase()) ||
           user.name.toLowerCase().includes(query.toLowerCase()) ||
           user.email.toLowerCase().includes(query.toLowerCase()) ||
+          user.status.toLowerCase().includes(query.toLowerCase()) ||
           user.phone_no.toLowerCase().includes(query.toLowerCase());
       });
 
@@ -202,6 +208,33 @@ function UserAccounts() {
     }
   }
 
+  const handleStatusChange = async (id, status) => {
+    try {
+      // check status
+      if (status === 'Active') {
+        const response = await http.put(`/staff/deactivate_user_account/${id}`);
+        console.log("API Response:", response.data);
+      }
+      else if (status === 'Inactive') {
+        const response = await http.put(`/staff/activate_user_account/${id}`);
+        console.log("API Response:", response.data);
+      }
+
+      // update the staff accounts list to reflect the status change
+      const updatedUserAccounts = userAccounts.map((user) => {
+        if (user.id === id) {
+          user.status = status === 'Active' ? 'Inactive' : 'Active';
+        }
+        return user;
+      });
+      setUserAccounts(updatedUserAccounts);
+      setStatusChangePopup(false);
+      setStatusChangeConfirmation(true);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
     { field: 'username', headerName: 'Username', width: 150 },
@@ -211,7 +244,20 @@ function UserAccounts() {
     { field: 'createdAt', headerName: 'Registration Date', width: 190 },
     { field: 'last_login', headerName: 'Last Login', width: 190 },
     { field: 'updatedAt', headerName: 'Last Updated', width: 190 },
-    // { field: 'status', headerName: 'Status', width: 150 },
+    { field: 'status', headerName: 'Status', width: 130, renderCell: (params) => (
+      <>
+        <Switch checked={params.row.status === 'Active'} 
+        onChange={() => {
+          setStatusChangeDetails({ userId: params.row.id, status: params.row.status });
+          setStatusChangePopup(true);
+        }}
+        />
+        <Typography variant="body2" component="span"
+          color = {params.row.status === 'Active' ? 'green' : 'text.secondary'}>
+          {params.row.status}
+        </Typography>
+      </>
+    )},
     { field: 'edit', headerName: 'Edit', width: 70, renderCell: (params) => (
       <IconButton sx={{ color: 'blue' }} onClick={() => openEditPopup(params.row.id)}><EditIcon /></IconButton>
     )},
@@ -256,6 +302,47 @@ function UserAccounts() {
           }}
         />
       </div>
+
+      {/* Status Change popup */}
+      {statusChangePopup && (
+        <Dialog open={statusChangePopup} onClose={() => setStatusChangePopup(false)}
+          maxWidth="sm" // Set the desired maxWidth
+          PaperProps={{
+            sx: { borderRadius: '20px', boxShadow: 5, textAlign: 'center' }
+          }}>
+          <Box sx={{ width: 300, p: 3 }}>
+            <img src={ExclamationMarkIcon} alt='Exclamation Mark' width={'70px'} height={'70px'} className='icon'
+              style={{ display: 'flex', margin: 'auto' }} />
+            {/* Check if account if being activated or deactivated */}
+            <p>
+              Are you sure you want to {userAccounts.find((user) => user.id === statusChangeDetails.userId).status === 'Active' ? 'deactivate' : 'activate'} ID #{statusChangeDetails.userId}?
+            </p>
+        
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+              <Button variant="contained" className='deletebutton' onClick={() => handleStatusChange(statusChangeDetails.userId, statusChangeDetails.status)}
+                sx={{ paddingLeft: 3, paddingRight: 3 }}>
+                Yes
+              </Button>
+              <Button variant="contained" className='cancelbutton' onClick={() => setStatusChangePopup(false)}>
+                Cancel
+              </Button>
+            </div>
+          </Box>
+        </Dialog>
+      )}
+
+
+      {/* Status Change Success Alert */}
+      <Snackbar
+        open={statusChangeConfirmation}
+        autoHideDuration={6000}
+        onClose={() => setStatusChangeConfirmation(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+      >
+        <Alert onClose={() => setStatusChangeConfirmation(false)} severity="success" sx={{ width: '100%' }}>
+          User account status changed successfully!
+        </Alert>
+      </Snackbar>
 
       {/* Edit User Account popup Form */}
       {editPopup && (

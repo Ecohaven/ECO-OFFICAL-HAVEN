@@ -75,6 +75,14 @@ function Staff_Account_Profile() {
           if (errorMessage === "Password is not correct") {
             passwordFormik.setFieldError('current_password', errorMessage);
           }
+          else if (errorMessage === "Your account has been deactivated. Please contact the administrator for support.") {
+            passwordFormik.setFieldError('confirmNewPassword', errorMessage);
+            setTimeout(() => {
+              localStorage.removeItem('accessToken');
+              localStorage.clear();
+              navigate('staff/staff_login');
+            }, 2000);
+          }
           else {
             passwordFormik.setFieldError('confirmNewPassword', errorMessage);
           }

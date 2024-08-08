@@ -45,6 +45,9 @@ function Account_Profile() {
           console.log("Account data fetched:", account);
         } catch (error) {
           console.error("Error fetching account:", error);
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('username');
+          localStorage.clear();
           navigate('/login'); // Navigate to login if there's an error fetching the account
         }
       } else {
@@ -120,14 +123,23 @@ function Account_Profile() {
           else if (errorMessage === "Username already exists.") {
             formik.setFieldError('username', errorMessage);
           }
+          else if (errorMessage === "Your account has been deactivated. Please contact the administrator for support.") {
+            formik.setFieldError('email', errorMessage);
+            // Redirect to login page after a short delay
+            setTimeout(() => {
+              localStorage.removeItem('accessToken');
+              localStorage.clear();
+              navigate('/login');
+            }, 2000);
+          }
           else {
             console.log(err.response.data);
-            formik.setFieldError('phone_no', errorMessage);
+            formik.setFieldError('email', errorMessage);
           }
         }
         else {
           console.log(err);
-          formik.setFieldError('phone_no', 'Server did not respond');
+          formik.setFieldError('email', 'Server did not respond');
         }
       }
     }
@@ -176,6 +188,15 @@ function Account_Profile() {
           else if (errorMessage === "New password cannot be the same as the old password") {
             passwordFormik.setFieldError('new_password', errorMessage);
           }
+          else if (errorMessage === "Your account has been deactivated. Please contact the administrator for support.") {
+            passwordFormik.setFieldError('confirm_new_password', errorMessage);
+            // Redirect to login page after a short delay
+            setTimeout(() => {
+              localStorage.removeItem('accessToken');
+              localStorage.clear();
+              navigate('/login');
+            }, 2000);
+          }
           else {
             console.log(errorMessage);
           }
@@ -217,7 +238,16 @@ function Account_Profile() {
         if (err.response) {
           // Server responded with an error
           const errorMessage = err.response.data.message; // Catch error response from backend API
-          if (err.response.status === 400) { // Error
+          if (errorMessage === 'Your account has been deactivated. Please contact the administrator for support.') {
+            handleDeleteAccount.setFieldError('password', errorMessage);
+            // Redirect to login page after a short delay
+            setTimeout(() => {
+              localStorage.removeItem('accessToken');
+              localStorage.clear();
+              navigate('/login');
+            }, 2000); 
+          }
+          else if (err.response.status === 400) { // Error
             handleDeleteAccount.setFieldError('password', errorMessage);
           }
           else { // Other errors

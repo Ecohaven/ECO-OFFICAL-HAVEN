@@ -89,6 +89,12 @@ router.post('/login', async (req, res) => {
         if (!staffAccount) {
             return res.status(404).json({ message: errorMsg });
         }
+        
+        // Check status of account
+        if (staffAccount.status !== 'Active') {
+            return res.status(404).json({ message: "Your account has been deactivated. Please contact the administrator for support." });
+        }
+
         // Check if password is correct
         let isPasswordValid = await bcrypt.compare(data.password, staffAccount.password);
         if (!isPasswordValid) {
@@ -161,6 +167,9 @@ router.get('/get_account', validateToken, checkRole(['Admin']),  async (req, res
         if (!staffAccount) {
             return res.status(404).json({ message: "Account not found" });
         }
+        if (staffAccount.status !== 'Active') {
+            return res.status(404).json({ message: "Your account has been deactivated. Please contact the administrator for support." });
+        }
         res.json({ account: staffAccount });
     } catch (err) {
         res.status(400).json({ message: "Error fetching account" });
@@ -182,6 +191,9 @@ router.put('/update_password/:id', validateToken, checkRole(['Admin']), async (r
         let staffAccount = await StaffAccount.findOne({ where: { id: id } });
         if (!staffAccount) {
             return res.status(404).json({ message: "Account not found" });
+        }
+        if (staffAccount.status !== 'Active') {
+            return res.status(404).json({ message: "Your account has been deactivated. Please contact the administrator for support." });
         }
         // Check if current password is correct
         let isPasswordValid = await bcrypt.compare(req.body.current_password, staffAccount.password); // Check passwords
@@ -372,5 +384,63 @@ router.delete('/delete_user_account/:id', validateToken, checkRole(['Admin']), a
         res.status(400).json({ message: "Error deleting account" });
     }
 });
+
+
+// make user account inactive (accessible by staff with Admin role)
+router.put('/deactivate_user_account/:id', validateToken, checkRole(['Admin']), async (req, res) => {
+    try {
+        let account = await Account.findByPk(req.params.id);
+        if (!account) {
+            return res.status(404).json({ message: "Account not found" });
+        }
+        await Account.update({ status: 'Inactive' }, { where: { id: req.params.id } });
+        res.json({ message: `Account ${account.id} was deactivated successfully` });
+    } catch (err) {
+        res.status(400).json({ message: "Error deactivating account" });
+    }
+});
+
+// make user account active (accessible by staff with Admin role)
+router.put('/activate_user_account/:id', validateToken, checkRole(['Admin']), async (req, res) => {
+    try {
+        let account = await Account.findByPk(req.params.id);
+        if (!account) {
+            return res.status(404).json({ message: "Account not found" });
+        }
+        await Account.update({ status: 'Active' }, { where: { id: req.params.id } });
+        res.json({ message: `Account ${account.id} was activated successfully` });
+    } catch (err) {
+        res.status(400).json({ message: "Error activating account" });
+    }
+});
+
+// make staff account inactive (accessible by staff with Admin role)
+router.put('/deactivate_staff_account/:id', validateToken, checkRole(['Admin']), async (req, res) => {
+    try {
+        let staffAccount = await StaffAccount.findByPk(req.params.id);
+        if (!staffAccount) {
+            return res.status(404).json({ message: "Account not found" });
+        }
+        await StaffAccount.update({ status: 'Inactive' }, { where: { id: req.params.id } });
+        res.json({ message: `Account ${staffAccount.id} was deactivated successfully` });
+    } catch (err) {
+        res.status(400).json({ message: "Error deactivating account" });
+    }
+});
+
+// make staff account active (accessible by staff with Admin role)
+router.put('/activate_staff_account/:id', validateToken, checkRole(['Admin']), async (req, res) => {
+    try {
+        let staffAccount = await StaffAccount.findByPk(req.params.id);
+        if (!staffAccount) {
+            return res.status(404).json({ message: "Account not found" });
+        }
+        await StaffAccount.update({ status: 'Active' }, { where: { id: req.params.id } });
+        res.json({ message: `Account ${staffAccount.id} was activated successfully` });
+    } catch (err) {
+        res.status(400).json({ message: "Error activating account" });
+    }
+});
+
 
 module.exports = router;
