@@ -51,4 +51,12 @@
     .rewardshopback .table-container {
         width: 140% !important;
     }
+
+    .itemfilter, .filtercollection {
+        margin-top: 80px !important;
+    }
+
+    .filtercollection {
+        margin-left: -320px !important;
+    }
 }

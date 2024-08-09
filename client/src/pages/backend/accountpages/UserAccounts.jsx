@@ -52,6 +52,7 @@ function UserAccounts() {
             name: user.name,
             email: user.email,
             phone_no: user.phone_no,
+            leaf_points: user.leaf_points,
             status: user.status,
             createdAt: user.createdAt ? dayjs(user.createdAt).format(dateformat.date) : 'NA',
             last_login: user.last_login ? dayjs(user.last_login).format(dateformat.date) : 'NA',
@@ -241,6 +242,7 @@ function UserAccounts() {
     { field: 'name', headerName: 'Name', width: 150 },
     { field: 'email', headerName: 'Email', width: 200 },
     { field: 'phone_no', headerName: 'Phone No', width: 110 },
+    { field: 'leaf_points', headerName: 'Leaf Points', width: 120 },
     { field: 'createdAt', headerName: 'Registration Date', width: 190 },
     { field: 'last_login', headerName: 'Last Login', width: 190 },
     { field: 'updatedAt', headerName: 'Last Updated', width: 190 },
@@ -319,7 +321,7 @@ function UserAccounts() {
             </p>
         
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-              <Button variant="contained" className='deletebutton' onClick={() => handleStatusChange(statusChangeDetails.userId, statusChangeDetails.status)}
+              <Button variant="contained" className='delete-button' onClick={() => handleStatusChange(statusChangeDetails.userId, statusChangeDetails.status)}
                 sx={{ paddingLeft: 3, paddingRight: 3 }}>
                 Yes
               </Button>

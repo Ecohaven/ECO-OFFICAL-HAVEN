@@ -22,7 +22,7 @@
 
 .addbutton,
 .editbutton,
-.savebutton,
+.save-button,
 .viewbutton,
 .closebutton,
 .deletebutton {
@@ -30,7 +30,7 @@
 }
 
 .addbutton,
-.savebutton {
+.save-button {
   margin-top: 20px !important;
   margin-left: 120px !important;
 }
@@ -49,7 +49,7 @@
   margin-left: 120px !important;
 }
 
-.cancelbutton {
+.cancel-button {
   background-color: red !important;
   margin-top: 20px !important;
   margin-left: 10px !important;

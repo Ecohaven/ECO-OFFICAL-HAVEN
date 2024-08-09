@@ -23,6 +23,13 @@ const StyledInput = styled(Input)({
     '&::before': {
         content: 'none',
     },
+    '& .MuiInputBase-input': {
+        color: 'black', 
+        '&.Mui-disabled': {
+            opacity: 1,
+            '-webkit-text-fill-color': 'black',
+        },
+    },
 });
 
 const validationSchema = Yup.object({

@@ -85,7 +85,7 @@
 
 .productdetails h2 {
     font-size: 2vw;
-    margin-left: 270px;
+    margin-left: 250px;
 }
 
 .productdetails, .form-fields {
@@ -128,7 +128,7 @@ label {
     border-radius: 15px;
     border: none;
     display: block;
-    margin-left: 200px;
+    margin-left: 160px;
     margin-bottom: 20px;
     margin-top: 20px;
 }
@@ -158,7 +158,7 @@ label {
 /* Responsive design for mobile devices */
 @media (max-width: 960px) {
     .productdetails h2 {
-        margin-left: 100px;
+        margin-left: 110px;
         font-size: 3vw;
     }
 

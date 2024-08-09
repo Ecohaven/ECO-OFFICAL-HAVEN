@@ -431,7 +431,7 @@ const CollectionProduct = () => {
           </FormControl>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleEditFormSubmit} color="primary" className='savebutton' style={{ color: 'white', marginRight: '10px' }}>
+          <Button onClick={handleEditFormSubmit} color="primary" className='save-button' style={{ color: 'white', marginRight: '-10px' }}>
             Save
           </Button>
           <Button onClick={handleEditDialogClose} color="primary" className='cancelbutton' style={{ color: 'white' }}>

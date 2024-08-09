@@ -596,10 +596,10 @@ const RewardTable = () => {
           <input type="file" onChange={handleFileChange} />
 
           {/* Popup Buttons */}
-          <Button variant="contained" className='savebutton' onClick={handleSaveAdd} style={{ marginTop: '10px', marginRight: '10px'}}>
+          <Button variant="contained" className='save-button' onClick={handleSaveAdd} style={{ marginTop: '10px', marginRight: '10px'}}>
             Save
           </Button>
-          <Button variant="contained" className='cancelbutton' onClick={handleCloseAdd} style={{ marginTop: '10px' }}>
+          <Button variant="contained" className='cancel-button' onClick={handleCloseAdd} style={{ marginTop: '10px' }}>
             Cancel
           </Button>
 
@@ -637,7 +637,7 @@ const RewardTable = () => {
           <Button variant="contained" className='savechangesbutton' onClick={handleSaveEdit} style={{ marginTop: '10px', marginRight: '10px' }}>
             Save Changes
           </Button>
-          <Button variant="contained" className='cancelbutton' onClick={handleCloseEdit} style={{ marginTop: '10px' }}>
+          <Button variant="contained" className='cancel-button' onClick={handleCloseEdit} style={{ marginTop: '10px' }}>
             Cancel
           </Button>
           {errorAdding && <p style={{ color: 'red' }}>{errorAdding}</p>}
@@ -653,7 +653,7 @@ const RewardTable = () => {
           <Button variant="contained" className='deletebutton' onClick={() => { handleDelete(deleteConfirmation); setDeleteConfirmation(null); }}>
             Delete
           </Button>
-          <Button variant="contained" className='cancelbutton' onClick={() => setDeleteConfirmation(null)}>
+          <Button variant="contained" className='cancel-button' onClick={() => setDeleteConfirmation(null)}>
             Cancel
           </Button>
         </Box>
