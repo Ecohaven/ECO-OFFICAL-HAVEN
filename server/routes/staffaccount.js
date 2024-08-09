@@ -10,7 +10,7 @@ const { validateToken, checkRole } = require('../middlewares/auth');
 
 router.post('/create_new_account', async (req, res) => {
     let data = req.body;
-    const allowedRoles = ['Admin']; // define allowed roles
+    const allowedRoles = ['Admin', 'Staff']; // define allowed roles
 
     // Validate request body
     let validationSchema = yup.object({
@@ -131,7 +131,7 @@ router.post('/login', async (req, res) => {
     }
 });
 
-router.get('/auth', validateToken, checkRole(['Admin']), async (req, res) => { // Validate token
+router.get('/auth', validateToken, checkRole(['Admin', 'Staff']), async (req, res) => { // Validate token
     try {
         let staffInfo = {
             id: req.user.id,
@@ -148,7 +148,7 @@ router.get('/auth', validateToken, checkRole(['Admin']), async (req, res) => { /
     }
 });
 
-router.post('/logout', validateToken, checkRole(['Admin']), async (req, res) => {
+router.post('/logout', validateToken, checkRole(['Admin', 'Staff']), async (req, res) => {
     try {
         req.user = null; // Invalidate token
         res.json({ message: "Logged out successfully" });
@@ -157,7 +157,7 @@ router.post('/logout', validateToken, checkRole(['Admin']), async (req, res) => 
     }
 });
 
-router.get('/get_account', validateToken, checkRole(['Admin']),  async (req, res) => {
+router.get('/get_account', validateToken, checkRole(['Admin', 'Staff']),  async (req, res) => {
     try {
         // Access account ID from the decoded token data
         const accountId = req.user.id;
@@ -177,7 +177,7 @@ router.get('/get_account', validateToken, checkRole(['Admin']),  async (req, res
 });
 
 // update password
-router.put('/update_password/:id', validateToken, checkRole(['Admin']), async (req, res) => {
+router.put('/update_password/:id', validateToken, checkRole(['Admin', 'Staff']), async (req, res) => {
     let id = req.params.id;
     let validationSchema = yup.object({
         current_password: yup.string().trim().required("This is a required field"),
@@ -239,7 +239,7 @@ router.get('/get_staff_account/:id', validateToken, checkRole(['Admin']), async 
 // update staff account (accessible by staff with Admin role)
 router.put('/update_staff_account/:id', validateToken, checkRole(['Admin']),  async (req, res) => {
     let data = req.body;
-    const allowedRoles = ['Admin']; // define allowed roles
+    const allowedRoles = ['Admin', 'Staff']; // define allowed roles
 
     let validationSchema = yup.object({
         name: yup.string().trim().min(3).max(50).required()

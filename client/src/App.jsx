@@ -14,6 +14,10 @@ import AccountNavbar from '../components/accountnavbar';
 import Footer from '../components/footer';
 import Sidebar from '../components/sidebar';
 
+{/* Error Pages */}
+import Unauthorized from './pages/NotFoundorUnauthorized/Unauthorized';
+import StaffUnauthorized from './pages/NotFoundorUnauthorized/StaffUnauthorized';
+
 import Get_Started from './pages/Get_Started/Get_Started';
 import Register from './pages/Get_Started/Register';
 import Login from './pages/Get_Started/Login';
@@ -95,12 +99,12 @@ function App() {
 
 
   // Define the paths where AppBar and Footer should not be rendered
-  const noAppBarFooterPaths = ['/get_started', '/login', '/register', '/account_deleted', '/reset_password/request', '/reset_password/verify', '/reset_password/reset'
+  const noAppBarFooterPaths = ['/get_started', '/login', '/register', '/account_deleted', '/reset_password/request', '/reset_password/verify', '/reset_password/reset', '/unauthorized'
                               ,'/collectionproduct', '/rewardproduct','/attendance','/bookings','/eventbackend','/AddEvent','/historypayment'];
   const shouldShowAppBarFooter = !noAppBarFooterPaths.includes(location.pathname);
 
   // Define the paths where Sidebar should not be rendered (Staff pages)
-  const noSideBarPaths = ['/staff/staff_login', '/staff/AddEvent', '/staff/addstaff', '/staff/staff_reset_password/request', '/staff/staff_reset_password/verify', '/staff/staff_reset_password/reset'];
+  const noSideBarPaths = ['/staff/staff_login', '/staff/AddEvent', '/staff/addstaff', '/staff/staff_reset_password/request', '/staff/staff_reset_password/verify', '/staff/staff_reset_password/reset', '/staff/unauthorized'];
   const shouldShowSideBar = !noSideBarPaths.includes(location.pathname);
 
   useEffect(() => { // Fetch user data when the app component mounts
@@ -133,7 +137,7 @@ function App() {
       localStorage.removeItem('username');
       localStorage.clear(); // Clear local storage
       setAccount(null); // Update account state in context
-      navigate('/login', { replace: true }); // Redirect to home page after logout 
+      navigate('/login', { replace: true }); // Redirect to login page
     }
   };
 
@@ -158,6 +162,8 @@ function App() {
       {/* ^ End of guests only ^ */}
       
       {/* Routes available for users and guests  */}
+      <Route path="/unauthorized" element={<UserAndGuestRoute element={Unauthorized} />} />
+
       <Route path="/about_us" element={<UserAndGuestRoute element={About_Us} />} />
       <Route path="/events" element={<UserAndGuestRoute element={Events} />} />
       <Route path="/book_now" element={<UserAndGuestRoute element={Book_Now} />} />
@@ -168,8 +174,8 @@ function App() {
         {/* ^ End of users and guests ^*/}
 
       {/* Rewards part */}
-      <Route path={"/redemptionshop"} element={<RedemptionShop/>} />
-      <Route path="/redeemform/:id" element={<RedeemForm />} />
+      <Route path="/redemptionshop" element={<WithAuthorization element={RedemptionShop} allowedRoles={['User']} />} />
+      <Route path="/redeemform/:id" element={<WithAuthorization element={RedeemForm} allowedRoles={['User']} />} />
       <Route path="/successcollect" element={<WithAuthorization element={SuccessCollect} allowedRoles={['User']} />} />
 
       {/* <Route path={"/rewardproduct"} element={<RewardProduct/>} /> */}
@@ -188,7 +194,7 @@ function App() {
 
       {/* Bookings  part */}
          {/* <Route path={"/bookings"} element={<Bookings/>} /> */}
-         <Route path={"/BookingForm"} element={<BookingForm/>} />
+         <Route path={"/BookingForm"} element={<WithAuthorization element={BookingForm} allowedRoles={['User']} />} />
 
       {/* ^ End of Bookings part ^*/}
 
@@ -209,38 +215,40 @@ function App() {
   const staffRoutes = ( // Staff routes are protected by StaffAuthorization HOC
     // Staff routes start with "/staff" e.g. "/staff/staff_login"
     <Routes>
+      <Route path="/unauthorized" element={<StaffAuthorization element={StaffUnauthorized} allowedRoles={['Admin', 'Staff']} />} />
+
       <Route path="*" element={<Navigate to="/staff/dashboard" />} /> {/* Redirect to dashboard if invalid path */}
       <Route path="/staff_login" element={<GuestRoute element={StaffLogin} />} />
       <Route path="/staff_reset_password/request" element={<GuestRoute element={StaffResetPasswordRequest} />} />
       <Route path="/staff_reset_password/verify" element={<GuestRoute element={StaffResetPasswordVerify} />} />
       <Route path="/staff_reset_password/reset" element={<GuestRoute element={StaffResetPassword} />} />
 
-      <Route path={"/account"} element={<StaffAuthorization element={Staff_Account_Profile} allowedRoles={['Admin']} />} />
+      <Route path={"/account"} element={<StaffAuthorization element={Staff_Account_Profile} allowedRoles={['Admin', 'Staff']} />} />
 
       <Route path={"/usersaccounts"} element={<StaffAuthorization element={UserAccounts} allowedRoles={['Admin']} />} />
       <Route path={"/staffaccounts"} element={<StaffAuthorization element={StaffAccounts} allowedRoles={['Admin']} />} />
       <Route path={"/addstaff"} element={<StaffAuthorization element={AddStaff} allowedRoles={['Admin']} />} />
 
-      <Route path={"/dashboard"} element={<StaffAuthorization element={dashboard} allowedRoles={['Admin']} />} />
+      <Route path={"/dashboard"} element={<StaffAuthorization element={dashboard} allowedRoles={['Admin', 'Staff']} />} />
 
-      <Route path={"/rewardproduct"} element={<StaffAuthorization element={RewardProduct} allowedRoles={['Admin']} />} />
-      <Route path={"/collectionproduct"} element={<StaffAuthorization element={CollectionProduct} allowedRoles={['Admin']} />} />
+      <Route path={"/rewardproduct"} element={<StaffAuthorization element={RewardProduct} allowedRoles={['Admin', 'Staff']} />} />
+      <Route path={"/collectionproduct"} element={<StaffAuthorization element={CollectionProduct} allowedRoles={['Admin', 'Staff']} />} />
 
-      <Route path={"/eventbackend"} element={<StaffAuthorization element={EventsBackend} allowedRoles={['Admin']} />} />
-      <Route path={"/AddEvent"} element={<StaffAuthorization element={AddEventBackend} allowedRoles={['Admin']} />} />
+      <Route path={"/eventbackend"} element={<StaffAuthorization element={EventsBackend} allowedRoles={['Admin', 'Staff']} />} />
+      <Route path={"/AddEvent"} element={<StaffAuthorization element={AddEventBackend} allowedRoles={['Admin', 'Staff']} />} />
 
-      <Route path={"/historypayment"} element={<StaffAuthorization element={Paymenthistory} allowedRoles={['Admin']} />} />
+      <Route path={"/historypayment"} element={<StaffAuthorization element={Paymenthistory} allowedRoles={['Admin', 'Staff']} />} />
 
-      <Route path={"/volunteerlist"} element={<StaffAuthorization element={VolunteerList} allowedRoles={['Admin']} />} />
+      <Route path={"/volunteerlist"} element={<StaffAuthorization element={VolunteerList} allowedRoles={['Admin', 'Staff']} />} />
 
 
-      <Route path={"/bookings"} element={<StaffAuthorization element={Bookings} allowedRoles={['Admin']} />} />
+      <Route path={"/bookings"} element={<StaffAuthorization element={Bookings} allowedRoles={['Admin', 'Staff']} />} />
 
-      <Route path={"/attendance"} element={<StaffAuthorization element={Attendance} allowedRoles={['Admin']} />} />
+      <Route path={"/attendance"} element={<StaffAuthorization element={Attendance} allowedRoles={['Admin', 'Staff']} />} />
 
-      <Route path={"/reviewlist"} element={<StaffAuthorization element={reviewlist} allowedRoles={['Admin']}/>} />
+      <Route path={"/reviewlist"} element={<StaffAuthorization element={reviewlist} allowedRoles={['Admin', 'Staff']} />} />
 
-      <Route path={"/faqbackend"} element={<StaffAuthorization element={FaqBackend} allowedRoles={['Admin']}/>} />
+      <Route path={"/faqbackend"} element={<StaffAuthorization element={FaqBackend} allowedRoles={['Admin', 'Staff']}/>} />
     </Routes>
   );
 

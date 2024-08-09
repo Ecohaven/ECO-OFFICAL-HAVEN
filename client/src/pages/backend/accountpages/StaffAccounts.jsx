@@ -320,11 +320,29 @@ function StaffAccounts() {
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
                     <Box  sx={{ display: 'flex', justifyContent: 'left' }}>
                         <TextField id="search" variant="outlined" 
-                            sx={{ width: 300, textAlign: 'left' }}
                             size="small"
                             placeholder="Search..."
                             value={search}
-                            onChange={searchStaffAccounts} className='searchbar'
+                            onChange={searchStaffAccounts} 
+                            sx={{
+                                width: 300, textAlign: 'left',
+                                '& .MuiOutlinedInput-root': {
+                                  '& fieldset': {
+                                    borderColor: 'green', // Default border color
+                                  },
+                                  '&:hover fieldset': {
+                                    borderColor: 'darkgreen', // Border color on hover
+                                  },
+                                  '&.Mui-focused fieldset': {
+                                    borderColor: 'green', // Border color when focused
+                                  },
+                                },
+                                '& .MuiOutlinedInput-input::placeholder': {
+                                  color: 'black', // Placeholder text color
+                                  opacity: 1, // Placeholder text opacity
+                                },
+                            }}
+                            className='searchbar'
                         />
                         <Button variant="contained" onClick={clearSearch}
                             sx={{ marginLeft: 2, paddingLeft: 4, paddingRight: 4 }}
@@ -447,12 +465,15 @@ function StaffAccounts() {
                             />
                             </LocalizationProvider>
                             <FormControl variant="outlined" error={handleEditStaffAccount.touched.role && Boolean(handleEditStaffAccount.errors.role)}>
+                            {/* Disable the role field if the staff account is the logged-in admin account */}
+                            {/* This prevents the admin from changing their own role */}
                             <Select
                                 labelId="role"
                                 id="role"
                                 name="role"
                                 label="Role"
                                 variant="outlined"
+                                disabled={staffIdtoEdit === loggedInAdminId}
                                 value={handleEditStaffAccount.values.role}
                                 onChange={handleEditStaffAccount.handleChange}
                                 error={handleEditStaffAccount.touched.role && Boolean(handleEditStaffAccount.errors.role)}
@@ -460,7 +481,7 @@ function StaffAccounts() {
                                 inputProps={{ sx: { textAlign: 'left' } }} // Ensures text is aligned to the left
                                 sx={{ display: 'absolute' }}
                             >
-                                {[ 'Admin' ].map((role) => (
+                                {[ 'Admin', 'Staff' ].map((role) => (
                                     <MenuItem key={role} value={role}>{role}</MenuItem>
                                 ))}
                             </Select>

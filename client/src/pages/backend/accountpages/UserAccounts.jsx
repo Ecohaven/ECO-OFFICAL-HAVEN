@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import http from '/src/http';
 import dayjs from 'dayjs';
 import { Box, Typography, Button, Grid, IconButton, TextField, Dialog, Alert, Snackbar, Divider, Switch } from '@mui/material';
@@ -8,7 +8,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { DataGrid } from '@mui/x-data-grid';
 import '../../../style/staffaccounts.css';
-
 import ExclamationMarkIcon from '../../../assets/icons/exclamation-mark.png';
 
 const dateformat = {
@@ -283,11 +282,29 @@ function UserAccounts() {
         <Typography variant="h4" sx={{ textAlign: 'left', marginBottom: 2, fontWeight: 'bold' }}>User Accounts</Typography>
         <Box sx={{ display: 'flex', justifyContent: 'left', marginBottom: 2 }}>
           <TextField id="search" variant="outlined"
-            sx={{ width: 300, textAlign: 'left' }}
             size='small'
             placeholder="Search..."
             value={search}
-            onChange={searchUserAccounts} className='searchbar'
+            onChange={searchUserAccounts} 
+            sx={{
+              width: 300, textAlign: 'left',
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderColor: 'green', // Default border color
+                },
+                '&:hover fieldset': {
+                  borderColor: 'darkgreen', // Border color on hover
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'green', // Border color when focused
+                },
+              },
+              '& .MuiOutlinedInput-input::placeholder': {
+                color: 'black', // Placeholder text color
+                opacity: 1, // Placeholder text opacity
+              },
+          }}
+            className='searchbar'
           />
           <Button variant="contained" color="secondary" onClick={clearSearch}
             sx={{ marginLeft: 2, paddingLeft: 4, paddingRight: 4 }}
@@ -321,7 +338,7 @@ function UserAccounts() {
             </p>
         
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-              <Button variant="contained" className='delete-button' onClick={() => handleStatusChange(statusChangeDetails.userId, statusChangeDetails.status)}
+              <Button variant="contained" className='deletebutton' onClick={() => handleStatusChange(statusChangeDetails.userId, statusChangeDetails.status)}
                 sx={{ paddingLeft: 3, paddingRight: 3 }}>
                 Yes
               </Button>

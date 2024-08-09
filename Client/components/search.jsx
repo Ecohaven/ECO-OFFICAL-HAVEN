@@ -105,7 +105,7 @@ const SearchComponent = () => {
           )
         }
         sx={{ marginBottom: '1rem', marginTop: '10px',
-          maxWidth: { xs: '150px', sm: '250px', md: '170px', lg: '200px'}
+          maxWidth: { xs: '150px', sm: '250px', md: '160px', lg: '200px'}
         }}
       />
       {results.length > 0 && !noResults && (

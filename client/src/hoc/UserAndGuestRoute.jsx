@@ -7,9 +7,9 @@ const UserAndGuestRoute = ({ element: Component, ...rest }) => {
     const { account } = useContext(AccountContext);
     const isStaff = account && account.role && account.role !== 'User';
 
-    // Redirect staff members to their homepage if they are logged in
+    // Redirect staff members to unauthorized page if they are logged in
     if (isStaff) {
-        return <Navigate to="/staff/staffhome" />;
+        return <Navigate to="/staff/unauthorized" />;
     }
 
     return <Component {...rest} />;

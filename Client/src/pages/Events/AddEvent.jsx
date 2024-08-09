@@ -227,6 +227,7 @@ const AddEventForm = () => {
                         sx={{ marginBottom: 2 }}
                         error={touched.category && Boolean(errors.category)}
                         helperText={touched.category && errors.category}
+                        inputProps={{ sx: { textAlign: 'left' } }} // Ensures text is aligned to the left
                       >
                         {['recycling', 'upcycling', 'workshop', 'garden-walk'].map(
                           (option) => (
@@ -352,6 +353,7 @@ const AddEventForm = () => {
                         sx={{ marginBottom: 2 }}
                         error={touched.status && Boolean(errors.status)}
                         helperText={touched.status && errors.status}
+                        inputProps={{ sx: { textAlign: 'left' } }} // Ensures text is aligned to the left
                       >
                         {['Free', 'Paid'].map((option) => (
                           <MenuItem key={option} value={option}>

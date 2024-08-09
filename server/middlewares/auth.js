@@ -23,7 +23,7 @@ const checkRole = (roles) => {
             return res.sendStatus(401); // unauthorized if no user
         }
         if (!roles.includes(req.user.role)) {
-            console.log(`User role ${req.user.role} is not authorized`);
+            console.log(`Role ${req.user.role} is not authorized`);
             return res.sendStatus(401); // unauthorized if role does not match
         }
         return next(); // Next middleware

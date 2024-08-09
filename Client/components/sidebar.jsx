@@ -129,6 +129,8 @@ const Sidebar = () => {
             <ListItemText primary="Overview" />
           </ListItem>
 
+        {account && account.role === 'Admin' && (
+          <>
           <ListItem button onClick={handleAccountClick}>
             <ListItemIcon style={{ color: 'white' }}>
               <AccountIcon />
@@ -146,6 +148,8 @@ const Sidebar = () => {
               </ListItem>
             </List>
           </Collapse>
+          </>
+        )}
 
           <ListItem button component={Link} to="/staff/eventbackend" selected={isActive('/staff/eventbackend')} style={isActive('/staff/eventbackend') ? activeStyle : {}}>
             <ListItemIcon style={{ color: 'white' }}>

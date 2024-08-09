@@ -3,17 +3,24 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { useContext, useState } from 'react';
 import http from '/src/http';
 import AccountContext from '/src/contexts/AccountContext';
+import { set } from 'date-fns';
 
 // This HOC is used to protect routes that require the user account to be authenticated
 const WithAuthorization = ({ element: Component, allowedRoles, ...rest }) => {
         const { account, setAccount } = useContext(AccountContext);
         const [loading, setLoading] = useState(true);
         const token = localStorage.getItem('accessToken');
+        const username = localStorage.getItem('username');
+        const [status, setStatus] = useState(null);
 
-        // If the user is not authenticated, redirect to login
+        // If the user is guest, redirect to login
         if (!token) {
             localStorage.clear(); // Clear local storage
             return <Navigate to="/login" />;
+        }
+        // if the user is authenticated, but does not have the required role (is a staff), redirect to unauthorized
+        if (token && !username) {
+            return <Navigate to="/staff/unauthorized" />;
         }
         useEffect(() => {
             if (token && !account) {
@@ -22,56 +29,35 @@ const WithAuthorization = ({ element: Component, allowedRoles, ...rest }) => {
             } else {
                 setLoading(false);
             }
-        }, [account, token]);
-
-        // else {
-        //     // Fetch user data when the app component mounts
-        //     useEffect(() => {
-        //         const validateTokenAndFetchUserData = async () => {
-        //             try {
-        //                 const response = await http.get(`/account/${account.username}`);
-        //                 setAccount(response.data.user);
-        //                 console.log("Account data fetched and set:", response.data.user);
-        //             } catch (error) {
-        //                 console.error("Error fetching account:", error);
-        //                 localStorage.clear(); // Clear local storage
-        //                 setAccount(null); // Update account state in context
-        //                 return <Navigate to="/login" />;
-        //             }
-        //         };
-
-        //         validateTokenAndFetchUserData();
-        //     }, [setAccount]);
-        // }
+        }, [account, token, setAccount, setStatus]);
 
         const fetchAccountData = async () => {
             try {
                 const storedUsername = localStorage.getItem('username');
                 const response = await http.get(`/account/${storedUsername}`);
                 setAccount(response.data.user);
+                setStatus(response.data.user.status);
             } catch (error) {
                 console.error("Error fetching account:", error);
-                handleLogout();
+                localStorage.clear(); // Clear local storage
+                setAccount(null);
+                setStatus(null);
             }
         };
     
-        const handleLogout = () => {
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('username');
-            setAccount(null);
-        };
-    
         if (loading) return <div>Loading...</div>;
-    
-        if (!token || !account) {
-            return <Navigate to="/login" />;
+
+        // If the user is authenticated, but does not have the required role (is a staff member), redirect to home
+        if (allowedRoles && !allowedRoles.includes(account.role)) {
+            setStatus(null);
+            return <Navigate to="/staff/unauthorized" />;
         }
 
-        console.log("Account role:", account);
-
-        // If the user is authenticated, but does not have the required role, redirect to home
-        if (allowedRoles && !allowedRoles.includes(account.role)) {
-            return <Navigate to="/" />;
+        // Check if user status is inactive
+        if (account.status !== 'Active') {
+            localStorage.clear(); // Clear local storage
+            setAccount(null);
+            return <Navigate to="/staff/staff_login" />;
         }
 
         // Render the wrapped component with the given props

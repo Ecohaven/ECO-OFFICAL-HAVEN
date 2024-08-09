@@ -177,18 +177,27 @@ function AccountNavbar() {
   const StyledLink = styled(Link)(({ selected }) => ({
     textDecoration: 'none',
     '@media (min-width: 900px)': {
-      marginLeft: '0.3rem',
-      marginRight: '0.13rem',
+      marginRight: '0.3rem',
+      fontSize: '1rem', 
+    },
+    '@media (min-width: 925px)': {
+      marginRight: '0.5rem',
+      fontSize: '1rem', 
+    },
+    '@media (min-width: 1000px)': {
+      marginRight: '0.8rem',
       fontSize: '1.1rem', 
     },
-    '@media (min-width: 1200px)': {
-      marginLeft: '0.7rem', 
-      marginRight: '0.7rem', 
+    '@media (min-width: 1050px)': {
+      marginRight: '0.57rem',
+      fontSize: '1.15rem', 
+    },
+    '@media (min-width: 1260px)': {
+      marginRight: '1.4rem', 
       fontSize: '1.25rem', 
     },
     '@media (min-width: 1600px)': {
-      marginLeft: '1rem', 
-      marginRight: '1rem', 
+      marginRight: '2rem', 
       fontSize: '1.3rem', 
     },
     color: selected ? '#4CAF50' : 'black', 
@@ -263,8 +272,8 @@ function AccountNavbar() {
             </Box>
             <Link to="/" style={{ textDecoration: 'none', margin: '0.5rem' }}>
               <Typography variant="h5" component="div" id='home_link' sx={{
-                fontWeight: 'bold', fontSize: { xs: '1.5rem', sm: '1.7rem', md: '2rem' },
-                marginRight: { xs: '0rem', sm: '0rem', md: '0.5rem', lg: '2.5rem', xl: '3rem' }
+                fontWeight: 'bold', fontSize: { xs: '1.5rem', sm: '1.7rem', md: '1.5rem', lg: '2rem', xl: '2rem' },
+                marginRight: { xs: '0rem', sm: '0rem', md: '0.3rem', lg: '2.5rem', xl: '3rem' }
               }}>
                 <span style={{ color: 'green' }}>Eco</span>
                 <span style={{ color: 'black' }}>Haven</span>
@@ -272,6 +281,9 @@ function AccountNavbar() {
             </Link>
             { /* Display this box when browser site is md */}
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+              <StyledLink to="/" selected={window.location.pathname === '/'} >
+                Home
+              </StyledLink>
               <StyledLink to="/about_us" selected={window.location.pathname === '/about_us'}>
                 About Us
               </StyledLink>
@@ -413,8 +425,8 @@ function AccountNavbar() {
                 <Link to="/get_started">
                   <Button id='get_started_button' variant='contained'
                     sx={{
-                      fontSize: { xs: '0.9rem', sm: '0.9rem', md: '1rem', },
-                      padding: { xs: '0.5rem 0.5rem', sm: '0.5rem 0.7rem', md: '0.5rem 1rem' },
+                      fontSize: { xs: '0.9rem', sm: '0.9rem', md: '0.85rem', lg: '1rem' },
+                      padding: { xs: '0.5rem 0.5rem', sm: '0.5rem 0.7rem', md: '0.5rem 0.7rem' },
                     }}
                   >
                     Get Started
