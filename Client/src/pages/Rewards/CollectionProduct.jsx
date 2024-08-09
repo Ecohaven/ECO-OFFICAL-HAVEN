@@ -289,27 +289,32 @@ const CollectionProduct = () => {
         <div className="header-controls">
 
           {/* search */}
-          <TextField
-            variant="outlined"
-            className="search"
-            placeholder="Search..."
-            value={searchQuery}
-            onChange={handleSearchChange}
-            sx={{
-              marginRight: '1rem',
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderColor: 'grey',
-                },
-                '&:hover fieldset': {
-                  borderColor: 'green',
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: 'green',
-                },
-              },
-            }}
-          />
+       <TextField
+  variant="outlined"
+  className="search"
+  placeholder="Search..."
+  value={searchQuery}
+  onChange={handleSearchChange}
+  sx={{
+    marginRight: '1rem',
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderColor: 'green',
+      },
+      '&:hover fieldset': {
+        borderColor: 'green',
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: 'green',
+      },
+      '& input::placeholder': {
+        color: 'black', 
+        opacity: 1, 
+      },
+    },
+  }}
+/>
+
 
           {/* reset button */}
           <Button
@@ -321,40 +326,79 @@ const CollectionProduct = () => {
             Reset
           </Button>
 
-          {/* status filter */}
-          <FormControl variant="outlined" className="filtercollection" sx={{ minWidth: 120 }}>
-            <InputLabel>Status</InputLabel>
-            <Select
-              value={statusFilter}
-              onChange={handleStatusFilterChange}
-              label="Status"
-            >
-              <MenuItem value="All">All</MenuItem>
-              <MenuItem value="Collected">Collected</MenuItem>
-              <MenuItem value="Not collected">Not collected</MenuItem>
-            </Select>
-          </FormControl>
 
-          {/* item filter */}
-          <FormControl
-            variant="outlined"
-            className="itemfilter"
-            sx={{ minWidth: 120, marginLeft: '20px' }}
-          >
-            <InputLabel>Item</InputLabel>
-            <Select
-              value={itemFilter}
-              onChange={(e) => {
-                setItemFilter(e.target.value);
-                filterRows(rows, searchQuery, statusFilter, e.target.value);
-              }}
-              label="Item"
-            >
-              {uniqueItems.map(item => (
-                <MenuItem key={item} value={item}>{item}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+{/* status filter */}
+<FormControl
+  variant="outlined"
+  className="filtercollection"
+  sx={{
+    minWidth: 120,
+    '& .MuiInputLabel-outlined': {
+      color: 'black', // Black label color
+    },
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderColor: 'green', // Green border for the Select component
+      },
+      '&:hover fieldset': {
+        borderColor: 'green',
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: 'green',
+      },
+    },
+  }}
+>
+  <InputLabel>Status</InputLabel>
+  <Select
+    value={statusFilter}
+    onChange={handleStatusFilterChange}
+    label="Status"
+  >
+    <MenuItem value="All">All</MenuItem>
+    <MenuItem value="Collected">Collected</MenuItem>
+    <MenuItem value="Not collected">Not collected</MenuItem>
+  </Select>
+</FormControl>
+
+{/* item filter */}
+<FormControl
+  variant="outlined"
+  className="itemfilter"
+  sx={{
+    minWidth: 120,
+    marginLeft: '20px',
+    '& .MuiInputLabel-outlined': {
+      color: 'black', // Black label color
+    },
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderColor: 'green', // Green border for the Select component
+      },
+      '&:hover fieldset': {
+        borderColor: 'green',
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: 'green',
+      },
+    },
+  }}
+>
+  <InputLabel>Item</InputLabel>
+  <Select
+    value={itemFilter}
+    onChange={(e) => {
+      setItemFilter(e.target.value);
+      filterRows(rows, searchQuery, statusFilter, e.target.value);
+    }}
+    label="Item"
+  >
+    {uniqueItems.map(item => (
+      <MenuItem key={item} value={item}>{item}</MenuItem>
+    ))}
+  </Select>
+</FormControl>
+
 
         </div>
         {itemFilter !== 'All' && (

@@ -76,6 +76,9 @@ input[type="text"] {
     margin-bottom: 20px;
     margin-right: 50px;
 }
+#eventNameFilter-label{
+color:black;
+}
 
 /* Mobile-only styles */
 @media (max-width: 768px) {

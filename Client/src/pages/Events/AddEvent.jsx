@@ -440,23 +440,22 @@ const containerStyle = {
 
 const bannerStyle = {
   width: '100%',
-  maxWidth: '1330px', // Maximum width for larger screens
+  maxWidth: '1330px', 
   height: 'auto',
-  maxHeight: '300px', // Maximum height
+  maxHeight: '300px', 
   objectFit: 'cover',
   borderRadius: '8px',
   marginBottom: '30px',
-  // Responsive adjustments
   '@media (max-width: 1200px)': {
     maxWidth: '1000px',
   },
   '@media (max-width: 900px)': {
     maxWidth: '700px',
-    maxHeight: '250px', // Adjust height for smaller screens
+    maxHeight: '250px', 
   },
   '@media (max-width: 600px)': {
     maxWidth: '100%',
-    maxHeight: '200px', // Further adjust height
+    maxHeight: '200px', 
   },
 };
 

@@ -331,6 +331,7 @@ const sendPaxEmails = async (paxQrCodeRecords) => {
     // Collecting all pax details in one HTML template
     const paxDetailsHtml = paxQrCodeRecords.map(record => `
       <div>
+<h3>${record.paxName}</h3> 
         <div class="qr-code-container">
           <img src="${record.paxQrCodeUrl}" alt="QR Code">
         </div>
@@ -419,8 +420,8 @@ const sendPaxEmails = async (paxQrCodeRecords) => {
     <p>Hi,</p>
     <p>Your QR codes for the event <strong>${event.eventName}</strong> are included below:</p>
     ${paxDetailsHtml}
-    <p class="footer">Please show these QR codes on the actual day. Thank you!</p>
   </div>
+ <p class="footer">Please show these QR codes on the actual day. Thank you!</p>
 </body>
 </html>
       `

@@ -435,28 +435,34 @@ const RewardTable = () => {
       <div className='header'>
         <h2 className='rewardproducts'>Reward Products</h2>
 
-        {/* Search bar */}
-        <TextField
-          variant="outlined"
-          className="search"
-          placeholder="Search..."
-          value={searchQuery}
-          onChange={handleSearchChange}
-          sx={{
-            marginRight: '1rem',
-            '& .MuiOutlinedInput-root': {
-              '& fieldset': {
-                borderColor: 'grey',
-              },
-              '&:hover fieldset': {
-                borderColor: 'green',
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: 'green',
-              },
-            },
-          }}
-        />
+{/* Search bar */}
+ <TextField
+  variant="outlined"
+  className="search"
+  placeholder="Search..."
+  value={searchQuery}
+  onChange={handleSearchChange}
+  sx={{
+    marginRight: '1rem',
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderColor: 'green',
+      },
+      '&:hover fieldset': {
+        borderColor: 'green',
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: 'green',
+      },
+      '& input::placeholder': {
+        color: 'black', 
+        opacity: 1, 
+      },
+    },
+  }}
+/>
+
+
 
         {/* Reset button added here */}
         <Button className='resetbutton'
@@ -476,7 +482,7 @@ const RewardTable = () => {
           sx={{
             '& .MuiOutlinedInput-root': {
               '& fieldset': {
-                borderColor: 'grey',
+                borderColor: 'green',
               },
               '&:hover fieldset': {
                 borderColor: 'green',

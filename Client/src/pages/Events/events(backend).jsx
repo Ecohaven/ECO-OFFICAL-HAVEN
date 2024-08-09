@@ -8,7 +8,7 @@ import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
-import { Alert, Snackbar, MenuItem,Typography } from '@mui/material';
+import { Alert, Snackbar, MenuItem, Typography } from '@mui/material';
 import Sidebar from '../../../components/sidebar';
 import DeleteConfirmationModal from '../../../components/DeleteModal';
 import '../../style/eventtable.css';
@@ -17,7 +17,7 @@ import { useMediaQuery } from '@mui/material';
 
 const EventDataTable = () => {
 
-const isMobile = useMediaQuery('(max-width:768px)');
+    const isMobile = useMediaQuery('(max-width:768px)');
 
     const navigate = useNavigate();
     const [events, setEvents] = useState([]);
@@ -194,43 +194,43 @@ const isMobile = useMediaQuery('(max-width:768px)');
         navigate('/staff/AddEvent');
     };
 
-const validateDates = (startDate, endDate) => {
-    // Convert dates to Date objects if they are strings
-    const start = new Date(startDate);
-    const end = new Date(endDate);
+    const validateDates = (startDate, endDate) => {
+        // Convert dates to Date objects if they are strings
+        const start = new Date(startDate);
+        const end = new Date(endDate);
 
-    // Check if the end date is before the start date
-    return end >= start;
-};
+        // Check if the end date is before the start date
+        return end >= start;
+    };
 
-const handleUpdateEvent = async (e) => {
-    e.preventDefault();
+    const handleUpdateEvent = async (e) => {
+        e.preventDefault();
 
-    if (!validateForm()) return;
+        if (!validateForm()) return;
 
-    // Extract dates from form values
-    const { startDate, endDate } = formValues;
+        // Extract dates from form values
+        const { startDate, endDate } = formValues;
 
-    // Validate the date range
-    if (!validateDates(startDate, endDate)) {
-        handleShowAlert('error', 'End date cannot be before start date.');
-        return;
-    }
+        // Validate the date range
+        if (!validateDates(startDate, endDate)) {
+            handleShowAlert('error', 'End date cannot be before start date.');
+            return;
+        }
 
-    try {
-        const response = await axios.put(`http://localhost:3001/api/events/${selectedEvent.id}`, formValues);
-        const updatedEvent = response.data.event;
-        setEvents((prevEvents) =>
-            prevEvents.map((event) => (event.id === updatedEvent.id ? updatedEvent : event))
-        );
-        handleCloseEditEvent();
-        handleShowAlert('success', 'Event updated successfully!');
-        fetchEvents();
-    } catch (error) {
-        console.error('Error updating event:', error);
-        handleShowAlert('error', 'Error updating event. Please try again.');
-    }
-};
+        try {
+            const response = await axios.put(`http://localhost:3001/api/events/${selectedEvent.id}`, formValues);
+            const updatedEvent = response.data.event;
+            setEvents((prevEvents) =>
+                prevEvents.map((event) => (event.id === updatedEvent.id ? updatedEvent : event))
+            );
+            handleCloseEditEvent();
+            handleShowAlert('success', 'Event updated successfully!');
+            fetchEvents();
+        } catch (error) {
+            console.error('Error updating event:', error);
+            handleShowAlert('error', 'Error updating event. Please try again.');
+        }
+    };
 
     const handleOpenDeleteConfirmation = (event) => {
         setDeleteConfirmation(event);
@@ -286,7 +286,7 @@ const handleUpdateEvent = async (e) => {
         {
             field: 'picture',
             headerName: 'Event Image',
-            width:  isMobile ? 120 : 150,
+            width: isMobile ? 120 : 150,
             renderCell: (params) => (
 
                 <div style={{ textAlign: 'center', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -299,54 +299,54 @@ const handleUpdateEvent = async (e) => {
                 </div>
             ),
         },
-        { field: 'eventName', headerName: 'Event Name', width: isMobile ? 100 : 150  },
-        { field: 'startDate', headerName: 'Start Date', width:isMobile ? 90 : 120 },
+        { field: 'eventName', headerName: 'Event Name', width: isMobile ? 100 : 150 },
+        { field: 'startDate', headerName: 'Start Date', width: isMobile ? 90 : 120 },
         { field: 'endDate', headerName: 'End Date', width: isMobile ? 90 : 120 },
         { field: 'time', headerName: 'Time', width: isMobile ? 90 : 120 },
-        { field: 'location', headerName: 'Location', width:  isMobile ? 70 : 90 },
-        { field: 'status', headerName: 'Type', width:  isMobile ? 60 : 70 },
+        { field: 'location', headerName: 'Location', width: isMobile ? 70 : 90 },
+        { field: 'status', headerName: 'Type', width: isMobile ? 60 : 70 },
         {
             field: 'checkIn',
             headerName: 'Check In',
-            width: isMobile ? 200:160,
+            width: isMobile ? 200 : 160,
             renderCell: (params) => (
                 <Button
                     variant="contained"
                     style={{ backgroundColor: 'green', color: 'white', cursor: 'pointer' }}
                     onClick={() => handleCheckIn(params.row.eventName)}
                 >
-                    Check In 
+                    Check In
                 </Button>
             ),
         },
         {
             field: 'edit',
             headerName: 'Edit',
-            width: isMobile ? 60:80,
+            width: isMobile ? 60 : 80,
             renderCell: (params) => (
                 <EditIcon
                     onClick={() => handleOpenEditEvent(params.row)}
                     className="edit-icon"
-                    style={{ color: 'blue', cursor: 'pointer', marginLeft: '2px',marginTop:'10px' }}
+                    style={{ color: 'blue', cursor: 'pointer', marginLeft: '2px', marginTop: '10px' }}
                 />
             ),
         },
         {
             field: 'delete',
             headerName: 'Delete',
-            width: isMobile ? 70:100,
+            width: isMobile ? 70 : 100,
             renderCell: (params) => (
                 <DeleteIcon
                     onClick={() => handleOpenDeleteConfirmation(params.row)}
                     className="delete-icon"
-                    style={{ color: 'red', cursor: 'pointer', marginLeft: '8px', marginTop:'10px' }}
+                    style={{ color: 'red', cursor: 'pointer', marginLeft: '8px', marginTop: '10px' }}
                 />
             ),
         },
         {
             field: 'viewDetails',
             headerName: 'Details',
-            width: isMobile ? 50:100,
+            width: isMobile ? 50 : 100,
             renderCell: (params) => (
                 <Button
                     variant="text" // Change the variant to text for an underlined button
@@ -354,7 +354,7 @@ const handleUpdateEvent = async (e) => {
                         color: 'blue',
                         textDecoration: 'underline', // Underline the text
                         cursor: 'pointer',
-                        marginTop:'-10px'
+                        marginTop: '-10px'
                     }}
                     onClick={() => handleViewDetails(params.row)}
                 >
@@ -367,21 +367,22 @@ const handleUpdateEvent = async (e) => {
     return (
         <div className="event-list-container">
             <div className="event-table">
-               <Typography variant="h4" style={{ textAlign: isMobile ? 'left' : 'left',fontWeight:'bold',marginTop:'30px'}}gutterBottom>
-                Event List
-            </Typography>
- <Typography
-      variant="h5"
-      style={{
-        textAlign: isMobile ? 'left' : 'center', 
-        fontWeight: '800',
-        marginTop: '30px'
-      }}
-      gutterBottom
-    >
-      Top 5 recent event bookings
-      <EventCountList />
-    </Typography>
+                <Typography variant="h4" style={{ textAlign: isMobile ? 'left' : 'left', fontWeight: 'bold', marginTop: '30px' }} gutterBottom>
+                    Event List
+                </Typography>
+                <Typography
+                    variant="h5"
+                    style={{
+                        textAlign: isMobile ? 'left' : 'center',
+                        fontWeight: '800',
+                        marginTop: '30px',
+                        fontFamily: 'Arial'
+                    }}
+                    gutterBottom
+                >
+                    Top 5 recent event bookings
+                    <EventCountList />
+                </Typography>
                 <div className="event-filter">
                     <TextField
                         label="Event Name"
@@ -390,7 +391,30 @@ const handleUpdateEvent = async (e) => {
                         variant="outlined"
                         size="small"
                         style={{ marginLeft: '12px' }}
+                        InputProps={{
+                            sx: {
+                                color: 'black', // Text color
+                                '& .MuiOutlinedInput-notchedOutline': {
+                                    borderColor: 'green', // Green border
+                                },
+                                '&:hover .MuiOutlinedInput-notchedOutline': {
+                                    borderColor: 'darkgreen', // Darker green border on hover
+                                },
+                                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                    borderColor: 'green', // Green border when focused
+                                },
+                            },
+                        }}
+                        InputLabelProps={{
+                            sx: {
+                                color: 'black', // Label color
+                                '&.Mui-focused': {
+                                    color: 'green', // Label color when focused
+                                },
+                            },
+                        }}
                     />
+
                     <Button variant="contained" onClick={handleFilterEvents} >
                         Filter
                     </Button>
@@ -403,8 +427,8 @@ const handleUpdateEvent = async (e) => {
                 </div>
 
                 <div className="event-data-grid-container">
-                    <DataGrid rows={events} columns={columns} pageSize={10} 
-                    sx={{ textAlign: 'left' }} />
+                    <DataGrid rows={events} columns={columns} pageSize={10}
+                        sx={{ textAlign: 'left' }} />
                 </div>
             </div>
             <Modal open={openAddEventModal} onClose={handleCloseEditEvent}>
@@ -423,16 +447,16 @@ const handleUpdateEvent = async (e) => {
                         </div>
                         <div className="form-field">
                             <TextField
-        label="Description"
-        name="description"
-        value={formValues.description}
-        onChange={handleInputChange}
-        fullWidth
-        required
-        multiline
-        rows={5} // Adjust the number of rows to make the TextField taller
-        
-    />
+                                label="Description"
+                                name="description"
+                                value={formValues.description}
+                                onChange={handleInputChange}
+                                fullWidth
+                                required
+                                multiline
+                                rows={5} // Adjust the number of rows to make the TextField taller
+
+                            />
                         </div>
                         <div className="form-field">
                             <TextField

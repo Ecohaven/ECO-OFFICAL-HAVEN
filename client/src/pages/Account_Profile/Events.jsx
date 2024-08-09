@@ -194,29 +194,22 @@ function Account_Profile_Events() {
     }
     return null;
   };
-
-  const filteredEvents = events.filter(event =>
-    new Date(event.startDate).toDateString() === new Date(selectedDate).toDateString()
+  const filteredEvents = events.filter(event => 
+    new Date(event.startDate).toDateString() === new Date(selectedDate).toDateString() &&
+    new Date(event.endDate) >= new Date() // Ensure event is not expired
   );
 
-//ADD to Google CALENDAR
-const addToGoogleCalendar = (event) => {
-  // Extract and format the start and end dates
-  const startDate = new Date(event.startDate).toISOString().slice(0, 10).replace(/-/g, '');
-  const endDate = new Date(event.endDate).toISOString().slice(0, 10).replace(/-/g, '');
-
-  // Use event.time directly for the time range (e.g., "9am - 4pm")
-  const eventTime = event.time;
-
-  // Construct the Google Calendar URL with the formatted date and time
-  const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
-    event.eventName
-  )}&dates=${startDate}/${endDate}&details=${encodeURIComponent(
-    `\nTime: ${eventTime}\n${event.description || ''}`
-  )}&location=${encodeURIComponent(event.location || '')}&sf=true&output=xml`;
-
-  window.open(googleCalendarUrl, '_blank');
-}
+  const addToGoogleCalendar = (event) => {
+    const startDate = new Date(event.startDate).toISOString().slice(0, 10).replace(/-/g, '');
+    const endDate = new Date(event.endDate).toISOString().slice(0, 10).replace(/-/g, '');
+    const eventTime = event.time;
+    const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
+      event.eventName
+    )}&dates=${startDate}/${endDate}&details=${encodeURIComponent(
+      `\nTime: ${eventTime}\n${event.description || ''}`
+    )}&location=${encodeURIComponent(event.location || '')}&sf=true&output=xml`;
+    window.open(googleCalendarUrl, '_blank');
+  };
 
 
   return (
@@ -229,6 +222,7 @@ const addToGoogleCalendar = (event) => {
           <div className="table-container" style={{ marginBottom: '80px' }}>
             {/* Booked Events */}
             <h3 className='header'>Upcoming Events</h3>
+            <h4>You will not be able to see current same date event in here,only upcoming events</h4>
             <hr />
             <Grid container spacing={2}>
               <Grid item xs={12} md={8}>

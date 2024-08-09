@@ -150,28 +150,38 @@ const BookingList = () => {
         { field: 'amount', headerName: 'Event Amount', width: 110 },
         { field: 'qrCodeText', headerName: 'QRCode-Text', width: 120 },
        {
-        field: 'cancel',
-        headerName: 'Cancel Booking',
-        width: 150,
-        renderCell: (params) => (
-            <Tooltip title={params.row.isEventNameDeleted ? "Event is deleted" : params.row.status === 'Cancelled' ? "Booking is already cancelled" : "Cancel Booking"}>
-                <Button
-                    onClick={() => {
-                        if (!params.row.isEventNameDeleted && params.row.status !== 'Cancelled') {
-                            handleCancelBooking(params.row.id);
-                        }
-                    }}
-                    style={{
-                        backgroundColor: params.row.isEventNameDeleted || params.row.status === 'Cancelled' ? 'grey' : 'red',
-                        fontWeight: 'bold',
-                        color: 'white',
-                        cursor: params.row.isEventNameDeleted || params.row.status === 'Cancelled' ? 'not-allowed' : 'pointer',
-                    }}
-                    disabled={params.row.isEventNameDeleted || params.row.status === 'Cancelled'} // Disable button if event is deleted or booking is cancelled
-                >
-                    Cancel
-                </Button>
-            </Tooltip>
+    field: 'cancel',
+    headerName: 'Cancel Booking',
+    width: 150,
+    renderCell: (params) => (
+        <Tooltip
+            title={
+                params.row.isEventNameDeleted
+                    ? "Event is deleted"
+                    : params.row.status === 'Cancelled'
+                        ? "Booking is already cancelled"
+                        : params.row.status === 'Attended'
+                            ? "Booking has been attended"
+                            : "Cancel Booking"
+            }
+        >
+            <Button
+                onClick={() => {
+                    if (!params.row.isEventNameDeleted && params.row.status !== 'Cancelled' && params.row.status !== 'Attended') {
+                        handleCancelBooking(params.row.id);
+                    }
+                }}
+                style={{
+                    backgroundColor: params.row.isEventNameDeleted || params.row.status === 'Cancelled' || params.row.status === 'Attended' ? 'grey' : 'red',
+                    fontWeight: 'bold',
+                    color: 'white',
+                    cursor: params.row.isEventNameDeleted || params.row.status === 'Cancelled' || params.row.status === 'Attended' ? 'not-allowed' : 'pointer',
+                }}
+                disabled={params.row.isEventNameDeleted || params.row.status === 'Cancelled' || params.row.status === 'Attended'}
+            >
+                Cancel
+            </Button>
+        </Tooltip>
         ),
     },
     ];
