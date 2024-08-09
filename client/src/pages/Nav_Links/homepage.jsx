@@ -4,11 +4,13 @@ import { Grid, Typography, Button, Box } from '@mui/material';
 import AccountContext from '../../contexts/AccountContext';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
+import { Star, StarBorder } from '@mui/icons-material';
 
 const HomePage = () => {
   const [latestProducts, setLatestProducts] = useState([]);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 500);
   const [events, setEvents] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const { account } = useContext(AccountContext); // Get account info from context
   const navigate = useNavigate();
 
@@ -46,6 +48,20 @@ const HomePage = () => {
       }
     };
 
+ const fetchReviews = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/review/');
+        if (Array.isArray(response.data)) {
+          setReviews(response.data);
+        } else {
+          console.error('Expected an array from the API response');
+        }
+      } catch (error) {
+        console.error('Error fetching reviews:', error);
+      }
+    };
+
+    fetchReviews();
     fetchLatestProducts();
     fetchEvents();
   }, []);
@@ -68,6 +84,23 @@ const HomePage = () => {
     return eventDate < today;
   };
 
+const renderStarRating = (rating) => {
+    const fullStars = Math.floor(rating);
+    const halfStars = rating % 1 >= 0.5;
+    const emptyStars = 5 - fullStars - (halfStars ? 1 : 0);
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' ,marginBottom:'15px'}}>
+        {[...Array(fullStars)].map((_, i) => (
+          <Star key={`full-${i}`} color="primary" />
+        ))}
+        {halfStars && <StarBorder color="primary" sx={{ position: 'relative', left: '-6px' }} />}
+        {[...Array(emptyStars)].map((_, i) => (
+          <StarBorder key={`empty-${i}`} color="primary" />
+        ))}
+      </Box>
+    );
+  };
+
   const formatDateRange = (startDate, endDate) => {
     const formattedStartDate = format(new Date(startDate), 'dd MMM yyyy');
     const formattedEndDate = format(new Date(endDate), 'dd MMM yyyy');
@@ -77,6 +110,8 @@ const HomePage = () => {
       return `${formattedStartDate} - ${formattedEndDate}`;
     }
   };
+
+
 
   return (
     <div>
@@ -209,6 +244,45 @@ const HomePage = () => {
           </Grid>
         ))}
       </Grid>
+
+      {/* Customer Reviews */}
+      <Typography variant="h4" align="center" gutterBottom sx={{ fontWeight: 'bold', color: 'green', mb: 2 }}>
+        Customer Reviews
+      </Typography>
+
+      <Grid container spacing={5} sx={{ p: 3, mb: 8, justifyContent: 'center' }}>
+       {reviews.map((review, index) => (
+          <Grid item key={review.id} xs={12} sm={6} md={4} sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Box
+              sx={{
+                p: 2,
+                width: '100%',
+                maxWidth: 300,
+                border: '4px solid green',
+                borderRadius: 5,
+                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                backgroundColor: '#fff',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                textAlign: 'center',
+              }}
+            >
+              <Typography variant="body1" sx={{ fontWeight: 'bold', marginBottom: 1 }}>
+                {review.firstName}
+              </Typography>
+ <Typography variant="body1" sx={{ fontWeight: 'bold', marginBottom: 1 }}>
+                {review.event}
+              </Typography>
+             {renderStarRating(review.rating)}
+              <Typography variant="body2" sx={{ mb: 1 }}>
+                {review.reviewDescription}
+              </Typography>
+              
+            </Box>
+          </Grid>
+))}
+ </Grid>
 
       {/* Why Us? Section */}
       <Box sx={{

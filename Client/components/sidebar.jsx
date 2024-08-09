@@ -200,21 +200,14 @@ const Sidebar = () => {
             <ListItemText primary="Volunteers" />
           </ListItem>
 
-          {/* <ListItem button component={Link} to="/staff/refund" selected={isActive('/staff/refund')}>
-            <ListItemIcon style={{ color: 'white' }}>
-              <RefundIcon />
-            </ListItemIcon>
-            <ListItemText primary="Refund" />
-          </ListItem> */}
-
-          <ListItem button component={Link} to="/staff/mailing-list" selected={isActive('/staff/mailing-list')} style={isActive('/staff/mailing-list') ? activeStyle : {}}>
+          {/* <ListItem button component={Link} to="/staff/mailing-list" selected={isActive('/staff/mailing-list')} style={isActive('/staff/mailing-list') ? activeStyle : {}}>
             <ListItemIcon style={{ color: 'white' }}>
               <MailingIcon />
             </ListItemIcon>
             <ListItemText primary="Mailing List" />
-          </ListItem>
+          </ListItem> */}
 
-          <ListItem button component={Link} to="/staff/review" selected={isActive('/staff/review')} style={isActive('/staff/review') ? activeStyle : {}}>
+          <ListItem button component={Link} to="/staff/reviewlist" selected={isActive('/staff/reviewlist')} style={isActive('/staff/reviewlist') ? activeStyle : {}}>
             <ListItemIcon style={{ color: 'white' }}>
               <ReviewIcon />
             </ListItemIcon>

@@ -80,8 +80,8 @@ import AddStaff from './pages/backend/accountpages/AddStaff';
 {/* additional */}
 import Faq from './pages/FAQ/faq';
 import FaqBackend from './pages/FAQ/faqbackend';
-
 import VolunteerList from './pages/volunteerList/VolunteerList';
+import reviewlist from './pages/Review/reviewlist';
 
 {/* Reviews Part  */}
 import reviews from './pages/Review/review';
@@ -237,6 +237,8 @@ function App() {
       <Route path={"/bookings"} element={<StaffAuthorization element={Bookings} allowedRoles={['Admin']} />} />
 
       <Route path={"/attendance"} element={<StaffAuthorization element={Attendance} allowedRoles={['Admin']} />} />
+
+      <Route path={"/reviewlist"} element={<StaffAuthorization element={reviewlist} allowedRoles={['Admin']}/>} />
 
       <Route path={"/faqbackend"} element={<StaffAuthorization element={FaqBackend} allowedRoles={['Admin']}/>} />
     </Routes>

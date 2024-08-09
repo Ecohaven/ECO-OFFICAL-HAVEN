@@ -1,210 +1,274 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 
 const ReviewPage = () => {
-  const [reviews, setReviews] = useState([]);
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [rating, setRating] = useState('');
-  const [reviewToEdit, setReviewToEdit] = useState(null);
-
-  const fetchReviews = async () => {
-  try {
-    const response = await axios.get('http://localhost:3001/review'); // Ensure the correct endpoint
-    console.log('Fetched reviews:', response.data); // Debugging: Check the data structure
-    setReviews(response.data);
-  } catch (err) {
-    console.error('Error fetching reviews:', err);
-  }
-};
-
-  useEffect(() => {
-    fetchReviews();
-  }, []);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [event, setEvent] = useState('');
+  const [rating, setRating] = useState(0); // Initialize as 0
+  const [reviewDescription, setReviewDescription] = useState('');
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  const review = { title, content, rating };
+    e.preventDefault();
+    const review = { firstName, lastName, email, event, rating, reviewDescription };
 
-  try {
-    if (reviewToEdit) {
-      await axios.put(`http://localhost:3001/review/${reviewToEdit.id}`, review);
-      console.log('Updated review:', reviewToEdit.id); // Debugging
-    } else {
-      const response = await axios.post('http://localhost:3001/review/reviews', review);
-      console.log('Posted review:', response.data); // Debugging
-    }
-    fetchReviews();
-    setTitle('');
-    setContent('');
-    setRating('');
-    setReviewToEdit(null);
-  } catch (err) {
-    console.error('Error posting review:', err);
-  }
-};
-
-  const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:3001/review/reviews/${id}`);
-      fetchReviews();
+      await axios.post('http://localhost:3001/review/reviews', review);
+      resetForm();
     } catch (err) {
-      console.error('Error deleting review:', err);
+      console.error('Error posting review:', err);
     }
   };
 
-  const handleEdit = (review) => {
-    setTitle(review.title);
-    setContent(review.content);
-    setRating(review.rating);
-    setReviewToEdit(review);
+  const resetForm = () => {
+    setFirstName('');
+    setLastName('');
+    setEmail('');
+    setEvent('');
+    setRating(0);
+    setReviewDescription('');
   };
 
- const styles = {
-  reviewPage: {
-    maxWidth: '600px',
-    margin: '0 auto',
-    padding: '20px',
-    fontFamily: 'Arial, sans-serif',
-  },
-  form: {
-    marginBottom: '20px',
-  },
-  formGroup: {
-    marginBottom: '10px',
-  },
-  label: {
-    display: 'block',
-    marginBottom: '5px',
-  },
-  input: {
-    width: '100%',
-    padding: '8px',
-    boxSizing: 'border-box',
-  },
-  titleInput: { // Specific style for title input
-    border: '2px solid black',
-  },
-  button: {
-    padding: '10px 15px',
-    marginRight: '10px',
-    backgroundColor: '#007bff',
-    color: 'white',
-    border: 'none',
-    cursor: 'pointer',
-  },
-  buttonHover: {
-    backgroundColor: '#0056b3',
-  },
-  reviewList: {
-    listStyleType: 'none',
-    padding: '0',
-  },
-  reviewItem: {
-    border: '1px solid #ddd',
-    padding: '10px',
-    marginBottom: '10px',
-  },
-  editButton: {
-    padding: '5px 10px',
-    marginRight: '5px',
-    backgroundColor: '#28a745',
-    color: 'white',
-    border: 'none',
-    cursor: 'pointer',
-  },
-  deleteButton: {
-    padding: '5px 10px',
-    backgroundColor: '#dc3545',
-    color: 'white',
-    border: 'none',
-    cursor: 'pointer',
-  },
-  editButtonHover: {
-    backgroundColor: '#218838',
-  },
-  deleteButtonHover: {
-    backgroundColor: '#c82333',
-  },
-};
+  const styles = {
+    container: {
+      maxWidth: '500px',
+      margin: '0 auto',
+      marginTop: '30px',
+      marginBottom: '50px',
+      padding: '30px',
+      fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif',
+      backgroundColor: '#fff',
+      boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)',
+      borderRadius: '10px',
+    },
+    logoText: {
+      fontSize: '28px',
+      fontWeight: 'bold',
+      textAlign: 'center',
+      color: '#2c3e50',
+      marginBottom: '20px',
+      letterSpacing: '1px',
+    },
+    greenText: {
+      color: '#27ae60',
+    },
+    title: {
+      fontSize: '24px',
+      marginBottom: '20px',
+      textAlign: 'center',
+      color: '#2c3e50',
+      fontWeight: '600',
+    },
+    sectionTitle: {
+      fontSize: '18px',
+      marginBottom: '15px',
+      color: '#2c3e50',
+      fontWeight: '500',
+    },
+    formGroup: {
+      marginBottom: '25px',
+    },
+    label: {
+      display: 'block',
+      marginBottom: '10px',
+      fontWeight: '600',
+      color: '#34495e',
+      fontSize: '15px',
+    },
+    input: {
+      width: '100%',
+      padding: '14px',
+      borderRadius: '8px',
+      border: '1px solid #dcdde1',
+      fontSize: '16px',
+      color: '#2c3e50',
+      backgroundColor: '#ecf0f1',
+      boxSizing: 'border-box',
+      transition: 'border-color 0.3s, background-color 0.3s',
+    },
+    inputFocus: {
+      borderColor: '#27ae60',
+      backgroundColor: '#fff',
+    },
+    textarea: {
+      width: '100%',
+      padding: '14px',
+      borderRadius: '8px',
+      border: '1px solid #dcdde1',
+      minHeight: '100px',
+      fontSize: '16px',
+      color: '#2c3e50',
+      backgroundColor: '#ecf0f1',
+      boxSizing: 'border-box',
+      transition: 'border-color 0.3s, background-color 0.3s',
+    },
+    rating: {
+      display: 'flex',
+      justifyContent: 'center',
+      marginBottom: '20px',
+      gap: '10px',
+    },
+    starLabel: {
+      fontSize: '32px',
+      color: '#dcdde1',
+      cursor: 'pointer',
+      transition: 'transform 0.2s, color 0.3s',
+    },
+    starLabelActive: {
+      color: '#f1c40f',
+    },
+    starInput: {
+      display: 'none',
+    },
+    submitButton: {
+      padding: '10px 0',
+      backgroundColor: '#27ae60',
+      color: '#fff',
+      border: 'none',
+      borderRadius: '8px',
+      cursor: 'pointer',
+      width: '100%',
+      maxWidth: '200px',
+      fontSize: '16px',
+      fontWeight: 'bold',
+      textTransform: 'uppercase',
+      letterSpacing: '1px',
+      transition: 'background-color 0.3s, box-shadow 0.3s',
+      boxSizing: 'border-box',
+      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+      margin: '0 auto',
+      display: 'block',
+    },
+    submitButtonHover: {
+      backgroundColor: '#2ecc71',
+      boxShadow: '0 6px 12px rgba(0, 0, 0, 0.15)',
+    },
+  };
 
   return (
-    <div style={styles.reviewPage}>
-      <h1>Reviews</h1>
-      <form style={styles.form} onSubmit={handleSubmit}>
-        <h2>{reviewToEdit ? 'Edit Review' : 'Create Review'}</h2>
+    <div style={styles.container}>
+      <p style={styles.logoText}>
+        <span style={styles.greenText}>Eco</span>Haven
+      </p>
+      <h2 style={styles.title}>Leave a Review</h2>
+      <form onSubmit={handleSubmit}>
         <div style={styles.formGroup}>
-          <label style={styles.label}>Title:</label>
+          <label htmlFor="first-name" style={styles.label}>
+            First Name <span style={{ color: 'red' }}>*</span>
+          </label>
           <input
             type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            id="first-name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
             required
             style={styles.input}
+            onFocus={(e) => (e.target.style.borderColor = styles.inputFocus.borderColor)}
+            onBlur={(e) => (e.target.style.borderColor = '#dcdde1')}
           />
         </div>
+
         <div style={styles.formGroup}>
-          <label style={styles.label}>Content:</label>
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            required
-            style={styles.input}
-          />
-        </div>
-        <div style={styles.formGroup}>
-          <label style={styles.label}>Rating:</label>
+          <label htmlFor="last-name" style={styles.label}>
+            Last Name <span style={{ color: 'red' }}>*</span>
+          </label>
           <input
-            type="number"
-            value={rating}
-            onChange={(e) => setRating(e.target.value)}
+            type="text"
+            id="last-name"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
             required
-            min="1"
-            max="5"
             style={styles.input}
+            onFocus={(e) => (e.target.style.borderColor = styles.inputFocus.borderColor)}
+            onBlur={(e) => (e.target.style.borderColor = '#dcdde1')}
           />
         </div>
+
+        <div style={styles.formGroup}>
+          <label htmlFor="email" style={styles.label}>
+            Email <span style={{ color: 'red' }}>*</span>
+          </label>
+          <input
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            style={styles.input}
+            onFocus={(e) => (e.target.style.borderColor = styles.inputFocus.borderColor)}
+            onBlur={(e) => (e.target.style.borderColor = '#dcdde1')}
+          />
+        </div>
+
+        <div style={styles.formGroup}>
+          <label htmlFor="event" style={styles.label}>
+            Event <span style={{ color: 'red' }}>*</span>
+          </label>
+          <input
+            type="text"
+            id="event"
+            value={event}
+            onChange={(e) => setEvent(e.target.value)}
+            required
+            style={styles.input}
+            onFocus={(e) => (e.target.style.borderColor = styles.inputFocus.borderColor)}
+            onBlur={(e) => (e.target.style.borderColor = '#dcdde1')}
+          />
+        </div>
+
+        <hr />
+
+        <h2 style={styles.sectionTitle}>Share Your Experience</h2>
+        <p style={{ textAlign: 'center', color: '#7f8c8d' }}>How would you rate us?</p>
+        <div style={styles.rating}>
+          {[1, 2, 3, 4, 5].map((star) => (
+            <label
+              key={star}
+              style={{
+                ...styles.starLabel,
+                ...(rating >= star ? styles.starLabelActive : {}),
+              }}
+              htmlFor={`star${star}`}
+            >
+              ★
+              <input
+                type="radio"
+                id={`star${star}`}
+                name="rating"
+                value={star}
+                checked={rating === star}
+                onChange={() => setRating(star)}
+                style={styles.starInput}
+              />
+            </label>
+          ))}
+        </div>
+
+        <div style={styles.formGroup}>
+          <label htmlFor="review-description" style={styles.label}>
+            Review <span style={{ color: 'red' }}>*</span>
+          </label>
+          <textarea
+            id="review-description"
+            value={reviewDescription}
+            onChange={(e) => setReviewDescription(e.target.value)}
+            required
+            style={styles.textarea}
+            onFocus={(e) => (e.target.style.borderColor = styles.inputFocus.borderColor)}
+            onBlur={(e) => (e.target.style.borderColor = '#dcdde1')}
+          ></textarea>
+        </div>
+
         <button
           type="submit"
-          style={styles.button}
-          onMouseOver={(e) => (e.currentTarget.style.backgroundColor = styles.buttonHover.backgroundColor)}
-          onMouseOut={(e) => (e.currentTarget.style.backgroundColor = styles.button.backgroundColor)}
+          style={styles.submitButton}
+          onMouseOver={(e) => (e.target.style.backgroundColor = styles.submitButtonHover.backgroundColor)}
+          onMouseOut={(e) => (e.target.style.backgroundColor = styles.submitButton.backgroundColor)}
         >
-          {reviewToEdit ? 'Update' : 'Submit'}
+          Submit
         </button>
       </form>
-      <div className="review-list">
-        <h2>All Reviews</h2>
-        {Array.isArray(reviews) ? (
-          <ul style={styles.reviewList}>
-            {reviews.map((review) => (
-              <li key={review.id} style={styles.reviewItem}>
-                <h3>{review.title}</h3>
-                <p>{review.content}</p>
-                <p>Rating: {review.rating}</p>
-                <button
-                  onClick={() => handleEdit(review)}
-                  style={styles.editButton}
-                  onMouseOver={(e) => (e.currentTarget.style.backgroundColor = styles.editButtonHover.backgroundColor)}
-                  onMouseOut={(e) => (e.currentTarget.style.backgroundColor = styles.editButton.backgroundColor)}
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(review.id)}
-                  style={styles.deleteButton}
-                  onMouseOver={(e) => (e.currentTarget.style.backgroundColor = styles.deleteButtonHover.backgroundColor)}
-                  onMouseOut={(e) => (e.currentTarget.style.backgroundColor = styles.deleteButton.backgroundColor)}
-                >
-                  Delete
-                </button>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No reviews available.</p>
-        )}
-      </div>
     </div>
   );
 };
