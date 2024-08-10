@@ -8,6 +8,10 @@ function Rewards() {
   const [collectionId, setCollectionId] = useState('');
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     const fetchCollectionId = async () => {
       try {
         const response = await axios.get('http://localhost:3001/collect/collectionIds');
@@ -54,7 +58,7 @@ function Rewards() {
         {/* collection id */}
         <Grid item>
           <div>
-            <p className='summarypage'>You can find all your collection details inside profile page, under 'Rewards'</p>
+            <p className='summarypage'>Confirmation collection details has been sent to your email. <br></br> Additionally, You can find all your past collection details inside profile page, under 'Rewards'</p>
           </div>
         </Grid>
 

@@ -54,6 +54,10 @@ function RewardForm() {
     const { account } = useContext(AccountContext);
 
     useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
+    useEffect(() => {
         if (account && account.name) {
             setInitialValues({
                 name: account.name,
