@@ -454,7 +454,7 @@ const EventDataTable = () => {
                                 fullWidth
                                 required
                                 multiline
-                                rows={5} // Adjust the number of rows to make the TextField taller
+                                rows={3} // Adjust the number of rows to make the TextField taller
 
                             />
                         </div>

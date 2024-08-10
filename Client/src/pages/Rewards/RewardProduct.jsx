@@ -552,7 +552,7 @@ const RewardTable = () => {
 
           {/* Form Fields */}
           <TextField
-            label="Item Name"
+            label="Item Name*"
             name="itemName"
             value={formValues.itemName}
             onChange={handleInputChange}
@@ -560,7 +560,7 @@ const RewardTable = () => {
             margin="normal"
           />
           <TextField
-            label="Leaves"
+            label="Leaves*"
             name="leaves"
             value={formValues.leaves}
             onChange={handleInputChange}
@@ -569,7 +569,7 @@ const RewardTable = () => {
             type="number"
           />
           <TextField
-            label="Stock"
+            label="Stock*"
             name="stock"
             value={formValues.stock}
             onChange={handleInputChange}
@@ -578,7 +578,7 @@ const RewardTable = () => {
             type="number"
           />
           <TextField
-            label="Code"
+            label="Code*"
             name="code"
             value={formValues.code}
             onChange={handleInputChange}
@@ -586,7 +586,7 @@ const RewardTable = () => {
             margin="normal"
           />
           <FormControl fullWidth margin="normal">
-            <InputLabel>Category</InputLabel>
+            <InputLabel>Category*</InputLabel>
             <Select
               name="category"
               value={formValues.category}
