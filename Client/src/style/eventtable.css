@@ -304,9 +304,10 @@ input[type="text"] {
 
 @media (max-width: 1000px) {
     .event-list-container {
-        width: 200%;
+        width: 100%;
         margin-left: 0;
         padding: 10px;
+        overflow-x: auto;
     }
  .addbtn {
         margin-left: 0 !important;
@@ -319,8 +320,13 @@ input[type="text"] {
 
 
 @media (max-width: 768px) {
+    .event-list-container {
+        width: 120% !important;
+    }
+    
     .event-table-content {
         padding: 0 10px;
+        overflow-x: auto;
     }
     
     .filter-section {

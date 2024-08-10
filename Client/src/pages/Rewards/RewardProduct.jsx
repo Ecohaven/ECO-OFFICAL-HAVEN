@@ -597,6 +597,7 @@ const RewardTable = () => {
               <MenuItem value="craft and hobbies">Craft and Hobbies</MenuItem>
               <MenuItem value="household">Household</MenuItem>
               <MenuItem value="electronics">Electronics</MenuItem>
+              <MenuItem value="Others/Miscellaneous">Others/Miscellaneous</MenuItem>
             </Select>
           </FormControl>
           <input type="file" onChange={handleFileChange} />

@@ -40,6 +40,21 @@ function sendConfirmationEmail(email, collectionId, itemName, itemImage) {
             </tr>
         </table>
         <p style="margin-top: 20px; color: black;">
+            <b>Please remember the collection details:</b>
+        </p>
+        <p style="margin-top: 20px; color: black;">
+            Potong Pasir Community Club, 6 Potong Pasir Ave 2, Singapore 358361
+        </p>
+        <p style="margin-top: 20px; color: black;">
+            Monday - Friday: 11:00am - 8:00pm
+        </p>
+        <p style="margin-top: 20px; color: black;">
+            Saturday & Sunday: 12:00pm - 4:00pm
+        </p>
+        <p style="margin-top: 15px; color: red;">
+            *Please collect within a week
+        </p>
+        <p style="margin-top: 20px; color: black;">
             We appreciate your commitment to eco-friendly practices. If you have any questions or need further assistance, please don't hesitate to contact us at <a href="mailto:ecohaven787@gmail.com" style="color: #14772B; font-weight: bold;">ecohaven787@gmail.com</a>.
         </p>
         <p style="color: black;">Best regards,</p>
