@@ -308,7 +308,7 @@ const EventDataTable = () => {
         {
             field: 'checkIn',
             headerName: 'Check In',
-            width: isMobile ? 200 : 160,
+            width: isMobile ? 160 : 160,
             renderCell: (params) => (
                 <Button
                     variant="contained"
@@ -322,7 +322,7 @@ const EventDataTable = () => {
         {
             field: 'edit',
             headerName: 'Edit',
-            width: isMobile ? 60 : 80,
+            width: isMobile ? 60 : 60,
             renderCell: (params) => (
                 <EditIcon
                     onClick={() => handleOpenEditEvent(params.row)}
@@ -334,7 +334,7 @@ const EventDataTable = () => {
         {
             field: 'delete',
             headerName: 'Delete',
-            width: isMobile ? 70 : 100,
+            width: isMobile ? 70 : 70,
             renderCell: (params) => (
                 <DeleteIcon
                     onClick={() => handleOpenDeleteConfirmation(params.row)}
@@ -346,7 +346,7 @@ const EventDataTable = () => {
         {
             field: 'viewDetails',
             headerName: 'Details',
-            width: isMobile ? 50 : 100,
+            width: isMobile ? 75 : 100,
             renderCell: (params) => (
                 <Button
                     variant="text" // Change the variant to text for an underlined button
