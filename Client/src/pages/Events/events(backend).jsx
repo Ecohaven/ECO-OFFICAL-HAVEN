@@ -9,7 +9,6 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
 import { Alert, Snackbar, MenuItem, Typography } from '@mui/material';
-import Sidebar from '../../../components/sidebar';
 import DeleteConfirmationModal from '../../../components/DeleteModal';
 import '../../style/eventtable.css';
 import EventCountList from '../../../components/EventCount';
@@ -349,10 +348,10 @@ const EventDataTable = () => {
             width: isMobile ? 75 : 100,
             renderCell: (params) => (
                 <Button
-                    variant="text" // Change the variant to text for an underlined button
+                    variant="text"
                     sx={{
                         color: 'blue',
-                        textDecoration: 'underline', // Underline the text
+                        textDecoration: 'underline', 
                         cursor: 'pointer',
                         marginTop: '-10px'
                     }}
@@ -407,9 +406,9 @@ const EventDataTable = () => {
                         }}
                         InputLabelProps={{
                             sx: {
-                                color: 'black', // Label color
+                                color: 'black',
                                 '&.Mui-focused': {
-                                    color: 'green', // Label color when focused
+                                    color: 'green', 
                                 },
                             },
                         }}

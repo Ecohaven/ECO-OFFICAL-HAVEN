@@ -169,7 +169,12 @@ function Account_Profile_Events() {
 
       if (Array.isArray(response.data)) {
         setEvents(response.data);
-        const dates = new Set(response.data.map(event => new Date(event.startDate).toDateString()));
+        // Filter out past events when setting highlighted dates
+        const dates = new Set(
+          response.data
+            .filter(event => new Date(event.endDate) >= new Date()) // Only include future events
+            .map(event => new Date(event.startDate).toDateString())
+        );
         setHighlightedDates(dates);
       } else {
         console.error('Expected an array from the API response');
@@ -178,6 +183,7 @@ function Account_Profile_Events() {
       console.error('Error fetching booked events:', error);
     }
   };
+
 
   const handleDateChange = (date) => {
     setValue(date);
@@ -257,7 +263,7 @@ function Account_Profile_Events() {
                     <Button
                       variant="contained"
                       color="primary"
-                      onClick={() => addToGoogleCalendar(filteredEvents[0])} // Add the first event in the list to Google Calendar
+                      onClick={() => addToGoogleCalendar(filteredEvents[0])} 
                       style={{ marginTop: '20px' }}
                     >
                       Add to Google Calendar

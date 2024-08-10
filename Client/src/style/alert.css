@@ -109,7 +109,7 @@
 }
 
 .alert.info {
-  background-color: #26914c !important; /* Green color for info alerts */
+  background-color: #26914c !important; 
   width: 400px;
   border: none !important;
 }

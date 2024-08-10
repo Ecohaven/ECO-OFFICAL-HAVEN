@@ -43,7 +43,7 @@ router.post('/', async (req, res) => {
       return res.status(500).json({ error: paymentResult.message });
     }
 
-    // Create the payment record in the database
+   
     const newPayment = await db.Payment.create({
       eventName,
       eventdate,

@@ -4,7 +4,6 @@ const { Op } = require('sequelize');
 const { Booking, CheckIn,events,Account } = require('../models');
 
 
-
 // Check-in route by QR code text or Pax name
 router.post('/checkin/text', async (req, res) => {
   const { data } = req.body;
@@ -75,7 +74,7 @@ router.post('/checkin/text', async (req, res) => {
         }
       }
 
-      // Commit the transaction
+  
       await transaction.commit();
 
       return res.json({ message: 'Check-in successful' });
@@ -189,13 +188,11 @@ router.post('/checkin', async (req, res) => {
     }
 
     if (!checkInRecord) {
-      // If neither match, return an error
       await transaction.rollback();
       return res.status(404).json({ error: 'Check-in record not found' });
     }
 
     if (checkInRecord.qrCodeStatus === 'Checked-In') {
-      // If already checked-in, return an error
       await transaction.rollback();
       return res.status(400).json({ error: 'QR Code or Pax Name has already been checked in' });
     }
@@ -243,7 +240,6 @@ router.post('/checkin', async (req, res) => {
 
     return res.json({ message: 'Check-in successful' });
   } catch (err) {
-    // Rollback the transaction in case of an error
     await transaction.rollback();
     console.error('Error handling check-in:', err);
     return res.status(500).json({ error: 'An error occurred while handling the check-in' });

@@ -87,8 +87,8 @@ const EventCountTable = () => {
               margin: '0 10px', // Center the cards
               boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
               borderRadius: '8px',
-            color:'white',
-             backgroundColor:'green'
+              color: 'white',
+              backgroundColor: 'green'
             }}
           >
             <CardContent>

@@ -1,11 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { Op } = require('sequelize'); // Import Sequelize operators
+const { Op } = require('sequelize'); 
 const db = require('../models');
 const multer = require('multer');
 const path = require('path');
-const { events, Booking,sequelize } = require('../models'); // Import your models
-
+const { events, Booking,sequelize } = require('../models'); 
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -44,7 +43,7 @@ router.post('/eventcreation', upload.single('picture'), async (req, res) => {
             picture = '/event-picture/' + eventPicture.filename;  // Save the relative file path to the database
         }
 
-        // Create new event in database
+     
         const newEvent = await db.events.create({
             eventName,
             description,
@@ -132,7 +131,7 @@ router.put('/events/:eventId', async (req, res) => {
             eventToUpdate.chosenDate = chosenDate;
         }
       
-        // Save the updated event to the database
+       
         await eventToUpdate.save();
 
         // Fetch the updated event again from the database 
@@ -155,7 +154,7 @@ router.get("/account/:accountName/events", async (req, res) => {
     const eventsList = await events.findAll({
       include: [{
         model: Booking,
-        required: true, // Ensure only booked events are fetched
+        required: true, 
         where: { Name: accountName }
       }],
       attributes: ['eventId', 'eventName', 'description', 'organiser', 'picture', 'leafPoints', 'amount', 'startDate', 'endDate','location','time'] // Specify event attributes to retrieve
@@ -223,6 +222,7 @@ router.get('/events', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch events', details: err.message });
     }
 });
+
 // Route to get all event names
 router.get('/event-names', async (req, res) => {
     try {
@@ -264,10 +264,10 @@ router.get('/countByEvent', async (req, res) => {
             limit: 5  // Limit to the top 5 latest events
         });
 
-        // Get the names of the latest 5 events
+       
         const eventNames = latestEvents.map(event => event.eventName);
 
-        // Fetch booking counts for the latest 5 events
+    
         const bookingCounts = await Booking.findAll({
             attributes: [
                 'eventName',
@@ -279,7 +279,7 @@ router.get('/countByEvent', async (req, res) => {
             group: ['eventName']
         });
 
-        // Format the booking counts
+    
         const formattedCounts = eventNames.map(eventName => {
             const eventCount = bookingCounts.find(booking => booking.eventName === eventName);
             return {

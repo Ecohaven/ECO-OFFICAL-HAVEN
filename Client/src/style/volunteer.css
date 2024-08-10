@@ -31,7 +31,8 @@
 /* Uniform styling for input fields */
 .form-input {
   width: 100%;
-  max-width: 600px; /* Set maximum width  */
+  max-width: 600px;
+  /* Set maximum width  */
   min-width: 300px;
   padding: 10px;
   margin-left: 10px;
@@ -44,7 +45,8 @@
 
 /* Styling for input fields with errors */
 .input-error {
-  border-color: #d32f2f; /* Red border for error */
+  border-color: #d32f2f;
+  /* Red border for error */
 }
 
 /* Dropdown container styling */
@@ -99,7 +101,8 @@
 /* Checkbox and label styling */
 .dropdown-item input[type="checkbox"] {
   margin-right: 10px;
-  accent-color: #4caf50; /* Checkbox color */
+  accent-color: #4caf50;
+  /* Checkbox color */
 }
 
 .dropdown-item label {
@@ -126,20 +129,25 @@
 
 /* Specific button styles */
 .form-buttons button:first-child {
-  background-color: #4caf50; /* Green background for Add Volunteer */
+  background-color: #4caf50;
+  /* Green background for Add Volunteer */
   color: white;
 }
 
 .form-buttons button:last-child {
-  background-color: #f44336; /* Red background for Clear */
+  background-color: #f44336;
+  /* Red background for Clear */
   color: white;
 }
 
 /* Error message styling */
 .error {
-  color: #d32f2f; /* Red color for errors */
-  font-size: 0.875em; /* Slightly smaller font size */
-  margin-top: 20px; /* Space below buttons */
+  color: #d32f2f;
+  /* Red color for errors */
+  font-size: 0.875em;
+  /* Slightly smaller font size */
+  margin-top: 20px;
+  /* Space below buttons */
 }
 
 /* Loading indicator styling */
@@ -150,7 +158,8 @@
 
 /* Specific styling for date input field */
 .form-date-input {
-  width: calc(100% - 22px); /* Adjust for padding and border */
+  width: calc(100% - 22px);
+  /* Adjust for padding and border */
   padding: 10px;
   border: 1px solid #4caf50;
   border-radius: 4px;

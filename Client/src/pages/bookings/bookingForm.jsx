@@ -366,7 +366,7 @@ const sendPaxEmails = async (paxQrCodeRecords) => {
       margin: auto;
       padding: 20px;
       border-radius: 8px;
-      background-color: #e0f7f4;
+      background-color: lightgreen;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       text-align: center;
     }
@@ -524,7 +524,7 @@ const sendPaxEmails = async (paxQrCodeRecords) => {
             control={<Checkbox checked={sendToPax} onChange={() => setSendToPax(!sendToPax)} disabled={bookingSuccessful} />}
             label="Send booking details to additional pax emails"
             sx={{ color: '#555' }}
-            disabled={numberOfPax === 0} // Disable if numberOfPax is 0
+            disabled={numberOfPax === 0} 
           />
         </Grid>
         <Grid item xs={12}>
@@ -533,6 +533,7 @@ const sendPaxEmails = async (paxQrCodeRecords) => {
           </Button>
         </Grid>
       </Grid>
+
 {bookingSuccessful && (
   <Box mt={3} sx={{ border: '1px solid #ddd', padding: 4, borderRadius: 3, boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', bgcolor: '#f9f9f9' }}>
     <Typography variant="h4" sx={{ color: '#4CAF50', fontWeight: 'bold', textAlign: 'center', mb: 2 }}>

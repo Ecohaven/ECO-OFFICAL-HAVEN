@@ -1,4 +1,3 @@
-// Define the Event model
 module.exports = (sequelize, DataTypes) => {
   const Event = sequelize.define('events', {
     eventId: {
@@ -75,7 +74,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     }
   }, {
-    tableName: 'events' // Specify the table name explicitly
+    tableName: 'events' 
   });
 
   // Define associations

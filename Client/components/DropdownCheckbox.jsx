@@ -1,5 +1,3 @@
-// src/components/DropdownCheckbox.jsx
-
 import React, { useState, useRef, useEffect } from 'react';
 
 const DropdownCheckbox = ({ label, options, selectedOptions, onChange, error }) => {

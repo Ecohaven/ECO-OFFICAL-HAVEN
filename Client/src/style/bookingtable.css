@@ -69,7 +69,6 @@ input.searchbox {
         width: 100%;
         /* Full width on mobile */
         margin-left: 10px;
-        /* No left margin on mobile */
         margin-right: -5px;
         padding: 10px;
         /* Reduce padding for smaller screens */
@@ -109,11 +108,8 @@ input.searchbox {
 @media (max-width: 600px) {
     .booking-list-container {
         width: 120%;
-        /* Full width on mobile */
         margin-left: 10px;
-        /* No left margin on mobile */
         margin-right: -5px;
         padding: 10px;
-        /* Reduce padding for smaller screens */
     }
 }

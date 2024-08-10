@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { Booking, events, CheckIn, ProductDetail } = require('../models'); // Ensure your model imports are correct
+const { Booking, events, CheckIn, ProductDetail } = require('../models'); 
 const { Op } = require("sequelize");
 
 // Filter bookings
-// Example URL: http://localhost:3001/api/filter?event=eventID&date=2024-07-15&status=Active&eventName=EventName
 router.get('/filter', async (req, res) => {
     const { date, status, numberOfPax, eventName } = req.query;
 
@@ -51,7 +50,7 @@ router.get('/filter', async (req, res) => {
     }
 });
 
-// Example URL: http://localhost:3001/api/filter-records?eventName=EventName&date=2024-07-15&eventId=123
+
 // for check in
 router.get('/filter-records', async (req, res) => {
     const { eventName, date, qrCodeStatus} = req.query;
@@ -81,7 +80,6 @@ router.get('/filter-records', async (req, res) => {
 });
 
 // Route to filter products
-// Example URL: http://localhost:3001/api/filter-products?category=Electronics&itemName=Smartphone
 router.get('/filter-products', async (req, res) => {
     const { category, itemName } = req.query;
 
@@ -108,7 +106,6 @@ router.get('/filter-products', async (req, res) => {
 });
 
 // Route to filter events
-// Example URL: http://localhost:3001/api/filter-events?eventName=EventName
 router.get('/filter-events', async (req, res) => {
     const { eventName } = req.query;
 

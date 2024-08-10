@@ -6,9 +6,6 @@ const yup = require('yup');
 const { Op } = require("sequelize");
 const moment = require('moment');
 
-
-// Define the validation schema for bookings
-//Booking date only needed for event 1 or 2 the rest booking date are allowed to be null -- tentative settings 
 const validationSchema = yup.object({
   email: yup.string().trim().email().required(),
   phoneNumber: yup.string().trim().required(),
@@ -127,9 +124,6 @@ router.post("/", async (req, res) => {
 });
 
 
-
-
-// GET route to fetch all bookings
 router.get("/", async (req, res) => {
   let condition = {};
   let search = req.query.search;
@@ -165,8 +159,8 @@ router.get("/account/:accountName/bookings", async (req, res) => {
   try {
     // Find bookings associated with the accountName
     const bookings = await Booking.findAll({
-      where: { Name: accountName }, // Adjust based on your actual model field for account name
-      attributes: ['id', 'eventName', 'qrCodeText', 'qrCodeUrl', 'status'] // Specify booking attributes to retrieve
+      where: { Name: accountName }, 
+      attributes: ['id', 'eventName', 'qrCodeText', 'qrCodeUrl', 'status'] 
     });
 
     if (!bookings || bookings.length === 0) {
@@ -189,7 +183,7 @@ router.get("/account/:accountName/notify", async (req, res) => {
     // Find bookings associated with the accountName
     const bookings = await Booking.findAll({
       where: { Name: accountName }, 
-      attributes: ['id', 'eventName'], // Specify booking attributes to retrieve
+      attributes: ['id', 'eventName'], 
     });
 
     if (!bookings || bookings.length === 0) {
@@ -201,7 +195,7 @@ router.get("/account/:accountName/notify", async (req, res) => {
 
     // Iterate over bookings to fetch event details
     for (const booking of bookings) {
-      const event = await events.findOne({ // Ensure 'Event' is the correct model name
+      const event = await events.findOne({ 
         where: { eventName: booking.eventName },
         attributes: ['startDate', 'endDate'],
       });
@@ -222,8 +216,8 @@ router.get("/account/:accountName/notify", async (req, res) => {
 
   // Fetch user's leaf points
     const user = await Account.findOne({
-      where: { name: accountName }, // Fetch by accountName (user's name)
-      attributes: ['leaf_points'], // Adjust attributes as needed
+      where: { name: accountName }, 
+      attributes: ['leaf_points'], 
     });
 
     if (!user) {
@@ -234,7 +228,7 @@ router.get("/account/:accountName/notify", async (req, res) => {
 
     // Fetch product rewards and check if the user's leaf points match any
     const productRewards = await ProductDetail.findAll({
-      attributes: ['itemName', 'leaves'], // Adjust as needed
+      attributes: ['itemName', 'leaves'], 
     });
 
     const matchingRewards = productRewards.filter(reward => reward.leaves <= leafPoints);
@@ -267,7 +261,7 @@ router.get("/:bookingId", async (req, res) => {
       where: {
         id: bookingId,
       },
-      attributes: { exclude: ['createdAt', 'updatedAt'] } // Example: Exclude timestamps if not needed
+      attributes: { exclude: ['createdAt', 'updatedAt'] } 
     });
 
     if (!booking) {
@@ -354,8 +348,6 @@ router.put('/cancel/:id', async (req, res) => {
       return res.status(404).json({ message: 'Updated booking not found' });
     }
 
-    // Now you can perform operations with updatedBooking.status or any other properties
-
     res.json({ message: 'Booking has been cancelled successfully', booking: updatedBooking });
   } catch (error) {
     console.error('Error cancelling booking:', error);
@@ -383,7 +375,7 @@ router.put("/:id/update-details", async (req, res) => {
       return res.status(404).json({ error: 'Booking not found' });
     }
 
-    // iimportant to store updated details 
+    // Store updated details 
     booking.numberOfPax = numberOfPax;
     booking.event = event;
     await booking.save();

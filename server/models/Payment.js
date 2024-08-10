@@ -104,14 +104,13 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true
     },
-    // New fields
     Name: {
       type: DataTypes.STRING,
-      allowNull: true // Allow null if this information is optional
+      allowNull: true 
     },
     numberOfPax: {
       type: DataTypes.INTEGER,
-      allowNull: true, // Allow null if this information is optional
+      allowNull: true, 
     }
   });
 

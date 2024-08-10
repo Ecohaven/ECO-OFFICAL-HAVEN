@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true,
       validate: {
-        isIn: [['Debit', 'Credit']] // Assuming refund methods are Debit and Credit
+        isIn: [['Debit', 'Credit']] 
       }
     },
     reason: {

@@ -3,7 +3,7 @@ import { Input, IconButton, CircularProgress, List, ListItem, ListItemText, Divi
 import { Clear } from '@mui/icons-material';
 import axios from 'axios';
 
-// Array for menu items
+// search for homepage 
 const menuItems = [
   { text: 'Home', path: '/' },
   { text: 'About Us', path: '/about_us' },
@@ -104,8 +104,9 @@ const SearchComponent = () => {
             <IconButton onClick={closeSearch}><Clear /></IconButton>
           )
         }
-        sx={{ marginBottom: '1rem', marginTop: '10px',
-          maxWidth: { xs: '150px', sm: '250px', md: '160px', lg: '200px'}
+        sx={{
+          marginBottom: '1rem', marginTop: '10px',
+          maxWidth: { xs: '150px', sm: '250px', md: '160px', lg: '200px' }
         }}
       />
       {results.length > 0 && !noResults && (
@@ -158,7 +159,7 @@ const SearchComponent = () => {
             <h2 style={{ fontSize: '1.5rem' }}>Details for {selectedResult ? selectedResult.type : 'Search'}</h2>
             {noResults && (
               <Typography variant="body1" color="textSecondary" align="center">
-                No data relevant found for "{search}". 
+                No data relevant found for "{search}".
               </Typography>
             )}
             {!noResults && selectedResult && selectedResult.type === 'Product' && (
@@ -167,12 +168,12 @@ const SearchComponent = () => {
                 <br />
                 <strong>Leaf points:</strong> {selectedResult.leaves}
                 <br />
-                <strong><a href='http://localhost:3000/rewards'>View more Information at Rewards page</a></strong>  
+                <strong><a href='http://localhost:3000/rewards'>View more Information at Rewards page</a></strong>
               </div>
             )}
             {!noResults && selectedResult && selectedResult.type === 'Event' && (
               <div>
-              <strong>Our Current Event:</strong> {selectedResult.eventName}
+                <strong>Our Current Event:</strong> {selectedResult.eventName}
                 <br />
                 <strong>Date:</strong> {selectedResult.startDate}
                 <br />
@@ -180,7 +181,7 @@ const SearchComponent = () => {
                 <br />
                 <strong>Description:</strong> {selectedResult.description}
                 <br />
-                <strong><a href='http://localhost:3000/events'>View more Information at Event page</a></strong> 
+                <strong><a href='http://localhost:3000/events'>View more Information at Event page</a></strong>
               </div>
             )}
             {!noResults && selectedResult && selectedResult.type === 'Menu' && (

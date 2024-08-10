@@ -1,7 +1,7 @@
 import React from 'react';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import { Facebook, Instagram } from '@mui/icons-material'; // Import MUI icons
+import { Facebook, Instagram } from '@mui/icons-material';
 import '../src/style/footer.css';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -65,12 +65,12 @@ function Footer() {
                                 <form onSubmit={subscribe.handleSubmit}>
                                     <div>
                                         <div className="form-group">
-                                            <input 
-                                                type="email" 
-                                                className="form-control" 
-                                                id="newsletter-email" 
-                                                name='email' 
-                                                aria-describedby="emailHelp" 
+                                            <input
+                                                type="email"
+                                                className="form-control"
+                                                id="newsletter-email"
+                                                name='email'
+                                                aria-describedby="emailHelp"
                                                 placeholder="Enter email here"
                                                 value={subscribe.values.email}
                                                 onChange={subscribe.handleChange}
