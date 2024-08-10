@@ -235,25 +235,25 @@ function StaffAccounts() {
     // handle status change
     const handleStatusChange = async (staffId, status) => {
         try {
-            // check if account is active or inactive
+            // check if account is activated or deactivated
             if (staffId === loggedInAdminId) {
                 console.log("Cannot deactivate your own account!");
                 return;
             }
 
-            if (status === 'Active') {
+            if (status === 'Activated') {
                 const response = await http.put(`/staff/deactivate_staff_account/${staffId}`);
                 console.log("API Response:", response.data); // Log API response
 
             }
-            else if (status === 'Inactive') {
+            else if (status === 'Deactivated') {
                 const response = await http.put(`/staff/activate_staff_account/${staffId}`);
                 console.log("API Response:", response.data); // Log API response
             }
             // Update the staff accounts list to reflect the status change
             const updatedStaffAccounts = staffAccounts.map((staff) => {
                 if (staff.id === staffId) {
-                    staff.status = status === 'Active' ? 'Inactive' : 'Active';
+                    staff.status = status === 'Activated' ? 'Deactivated' : 'Activated';
                 }
                 return staff;
             });
@@ -271,22 +271,22 @@ function StaffAccounts() {
         { field: 'email', headerName: 'Email', width: 250 },
         { field: 'phone_no', headerName: 'Phone No', width: 110 },
         { field: 'birthdate', headerName: 'Birthdate', width: 150 },
-        { field: 'role', headerName: 'Role', width: 100 },
+        { field: 'role', headerName: 'Role', width: 160 },
         { field: 'createdAt', headerName: 'Created At', width: 190 },
         { field: 'lastLogin', headerName: 'Last Login', width: 190 },
         { field: 'updatedAt', headerName: 'Updated At', width: 190 },
-        { field: 'status', headerName: 'Status', width: 130, renderCell: (params) => (
+        { field: 'status', headerName: 'Status', width: 160, renderCell: (params) => (
             // Do not allow staff to deactivate their own account
             <>
                 <Switch disabled={params.row.id === loggedInAdminId}
-                checked={params.row.status === 'Active'}
+                checked={params.row.status === 'Activated'}
                 onChange={() => {
                     setStatusChangeDetails({ staffId: params.row.id, status: params.row.status });
                     setStatusChangePopup(true);
                 }}
                 />
                 <Typography variant="body2" 
-                    color={params.row.status === 'Active' ? 'green' : 'text.secondary'}
+                    color={params.row.status === 'Activated' ? 'green' : 'text.secondary'}
                     component="span">
                     {params.row.status}
                 </Typography>
@@ -375,7 +375,7 @@ function StaffAccounts() {
                 <Box sx={{ width: 300, p: 3 }}>
                     <img src={ExclamationMarkIcon} alt='Exclamation Mark' width={'70px'} height={'70px'} className='icon'
                     style={{ display: 'flex', margin: 'auto' }} />
-                    <p>Are you sure you want to {staffAccounts.find((staff) => staff.id === statusChangeDetails.staffId).status === 'Active' ? 'deactivate' : 'activate'} ID #{statusChangeDetails.staffId}?</p>
+                    <p>Are you sure you want to {staffAccounts.find((staff) => staff.id === statusChangeDetails.staffId).status === 'Activated' ? 'deactivate' : 'activate'} ID #{statusChangeDetails.staffId}?</p>
                     <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
                     <Button variant="contained" className='deletebutton' onClick={() => handleStatusChange(statusChangeDetails.staffId, statusChangeDetails.status)}
                         sx={{ paddingLeft: 3, paddingRight: 3 }}>
@@ -481,7 +481,7 @@ function StaffAccounts() {
                                 inputProps={{ sx: { textAlign: 'left' } }} // Ensures text is aligned to the left
                                 sx={{ display: 'absolute' }}
                             >
-                                {[ 'Admin', 'Staff' ].map((role) => (
+                                {[ 'Admin', 'Event Manager', 'Rewards Manager', 'Customer Support', 'Staff' ].map((role) => (
                                     <MenuItem key={role} value={role}>{role}</MenuItem>
                                 ))}
                             </Select>

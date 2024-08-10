@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         role: {
-            type: DataTypes.ENUM('Admin', 'Staff'),
+            type: DataTypes.ENUM('Admin', 'Staff', 'Event Manager', 'Rewards Manager', 'Customer Support'),
             allowNull: false,
             defaultValue: 'Staff'
         },
@@ -30,9 +30,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         status: {
-            type: DataTypes.ENUM('Active', 'Inactive'),
+            type: DataTypes.ENUM('Activated', 'Deactivated'),
             allowNull: false,
-            defaultValue: 'Active'
+            defaultValue: 'Activated'
         },
         // New fields for password reset
         verificationCode: {

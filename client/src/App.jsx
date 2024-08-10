@@ -215,7 +215,7 @@ function App() {
   const staffRoutes = ( // Staff routes are protected by StaffAuthorization HOC
     // Staff routes start with "/staff" e.g. "/staff/staff_login"
     <Routes>
-      <Route path="/unauthorized" element={<StaffAuthorization element={StaffUnauthorized} allowedRoles={['Admin', 'Staff']} />} />
+      <Route path="/unauthorized" element={<StaffAuthorization element={StaffUnauthorized} allowedRoles={['Admin', 'Staff', 'Event Manager', 'Rewards Manager', 'Customer Support']} />} />
 
       <Route path="*" element={<Navigate to="/staff/dashboard" />} /> {/* Redirect to dashboard if invalid path */}
       <Route path="/staff_login" element={<GuestRoute element={StaffLogin} />} />
@@ -223,32 +223,32 @@ function App() {
       <Route path="/staff_reset_password/verify" element={<GuestRoute element={StaffResetPasswordVerify} />} />
       <Route path="/staff_reset_password/reset" element={<GuestRoute element={StaffResetPassword} />} />
 
-      <Route path={"/account"} element={<StaffAuthorization element={Staff_Account_Profile} allowedRoles={['Admin', 'Staff']} />} />
+      <Route path={"/account"} element={<StaffAuthorization element={Staff_Account_Profile} allowedRoles={['Admin', 'Staff', 'Event Manager', 'Rewards Manager', 'Customer Support']} />} />
 
-      <Route path={"/usersaccounts"} element={<StaffAuthorization element={UserAccounts} allowedRoles={['Admin']} />} />
+      <Route path={"/usersaccounts"} element={<StaffAuthorization element={UserAccounts} allowedRoles={['Admin', 'Event Manager', 'Rewards Manager', 'Customer Support']} />} />
       <Route path={"/staffaccounts"} element={<StaffAuthorization element={StaffAccounts} allowedRoles={['Admin']} />} />
       <Route path={"/addstaff"} element={<StaffAuthorization element={AddStaff} allowedRoles={['Admin']} />} />
 
-      <Route path={"/dashboard"} element={<StaffAuthorization element={dashboard} allowedRoles={['Admin', 'Staff']} />} />
+      <Route path={"/dashboard"} element={<StaffAuthorization element={dashboard} allowedRoles={['Admin', 'Staff', 'Event Manager', 'Rewards Manager', 'Customer Support']} />} />
 
-      <Route path={"/rewardproduct"} element={<StaffAuthorization element={RewardProduct} allowedRoles={['Admin', 'Staff']} />} />
-      <Route path={"/collectionproduct"} element={<StaffAuthorization element={CollectionProduct} allowedRoles={['Admin', 'Staff']} />} />
+      <Route path={"/rewardproduct"} element={<StaffAuthorization element={RewardProduct} allowedRoles={['Admin', 'Staff', 'Rewards Manager']} />} />
+      <Route path={"/collectionproduct"} element={<StaffAuthorization element={CollectionProduct} allowedRoles={['Admin', 'Staff', 'Rewards Manager', 'Customer Support']} />} />
 
-      <Route path={"/eventbackend"} element={<StaffAuthorization element={EventsBackend} allowedRoles={['Admin', 'Staff']} />} />
-      <Route path={"/AddEvent"} element={<StaffAuthorization element={AddEventBackend} allowedRoles={['Admin', 'Staff']} />} />
+      <Route path={"/eventbackend"} element={<StaffAuthorization element={EventsBackend} allowedRoles={['Admin', 'Staff', 'Event Manager', 'Customer Support']} />} />
+      <Route path={"/AddEvent"} element={<StaffAuthorization element={AddEventBackend} allowedRoles={['Admin', 'Staff', 'Event Manager']} />} />
 
-      <Route path={"/historypayment"} element={<StaffAuthorization element={Paymenthistory} allowedRoles={['Admin', 'Staff']} />} />
+      <Route path={"/historypayment"} element={<StaffAuthorization element={Paymenthistory} allowedRoles={['Admin', 'Staff', 'Event Manager', 'Customer Support']} />} />
 
-      <Route path={"/volunteerlist"} element={<StaffAuthorization element={VolunteerList} allowedRoles={['Admin', 'Staff']} />} />
+      <Route path={"/volunteerlist"} element={<StaffAuthorization element={VolunteerList} allowedRoles={['Admin', 'Staff', 'Event Manager']} />} />
 
 
-      <Route path={"/bookings"} element={<StaffAuthorization element={Bookings} allowedRoles={['Admin', 'Staff']} />} />
+      <Route path={"/bookings"} element={<StaffAuthorization element={Bookings} allowedRoles={['Admin', 'Staff', 'Event Manager', 'Customer Support']} />} />
 
-      <Route path={"/attendance"} element={<StaffAuthorization element={Attendance} allowedRoles={['Admin', 'Staff']} />} />
+      <Route path={"/attendance"} element={<StaffAuthorization element={Attendance} allowedRoles={['Admin', 'Staff', 'Event Manager', 'Customer Support']} />} />
 
-      <Route path={"/reviewlist"} element={<StaffAuthorization element={reviewlist} allowedRoles={['Admin', 'Staff']} />} />
+      <Route path={"/reviewlist"} element={<StaffAuthorization element={reviewlist} allowedRoles={['Admin', 'Staff', 'Customer Support']} />} />
 
-      <Route path={"/faqbackend"} element={<StaffAuthorization element={FaqBackend} allowedRoles={['Admin', 'Staff']}/>} />
+      <Route path={"/faqbackend"} element={<StaffAuthorization element={FaqBackend} allowedRoles={['Admin', 'Staff', 'Customer Support']}/>} />
     </Routes>
   );
 

@@ -129,7 +129,7 @@ const Sidebar = () => {
             <ListItemText primary="Overview" />
           </ListItem>
 
-        {account && account.role === 'Admin' && (
+        {((account && account.role === 'Admin') || (account && account.role === 'Event Manager') || (account && account.role === 'Rewards Manager') || (account && account.role === 'Customer Support')) && (
           <>
           <ListItem button onClick={handleAccountClick}>
             <ListItemIcon style={{ color: 'white' }}>
@@ -140,38 +140,50 @@ const Sidebar = () => {
           </ListItem>
           <Collapse in={openAccount} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
+              {((account && account.role === 'Admin') || (account && account.role === 'Event Manager') || (account && account.role === 'Rewards Manager') || (account && account.role === 'Customer Support')) &&
               <ListItem button component={Link} to="/staff/usersaccounts" selected={isActive('/staff/usersaccounts')} style={isActive('/staff/usersaccounts') ? activeStyle : {}}>
                 <ListItemText primary="Users" />
               </ListItem>
+              }
+              {((account && account.role === 'Admin')) &&
               <ListItem button component={Link} to="/staff/staffaccounts" selected={isActive('/staff/staffaccounts')} style={isActive('/staff/staffaccounts') ? activeStyle : {}}>
                 <ListItemText primary="Staff" />
               </ListItem>
+              }
             </List>
           </Collapse>
           </>
         )}
 
+        {((account && account.role === 'Admin') || (account && account.role === 'Staff') || (account && account.role === 'Event Manager') || (account && account.role === 'Customer Support'))  && ( 
           <ListItem button component={Link} to="/staff/eventbackend" selected={isActive('/staff/eventbackend')} style={isActive('/staff/eventbackend') ? activeStyle : {}}>
             <ListItemIcon style={{ color: 'white' }}>
               <EventIcon />
             </ListItemIcon>
             <ListItemText primary="Events" />
           </ListItem>
+        )}
 
+        {((account && account.role === 'Admin') || (account && account.role === 'Staff') || (account && account.role === 'Event Manager') || (account && account.role === 'Customer Support')) && (
           <ListItem button component={Link} to="/staff/bookings" selected={isActive('/staff/bookings')} style={isActive('/staff/bookings') ? activeStyle : {}}>
             <ListItemIcon style={{ color: 'white' }}>
               <BookingsIcon />
             </ListItemIcon>
             <ListItemText primary="Bookings" />
           </ListItem>
+        )}
 
+        {((account && account.role === 'Admin') || (account && account.role === 'Staff') || (account && account.role === 'Event Manager') || (account && account.role === 'Customer Support')) && (
           <ListItem button component={Link} to="/staff/attendance" selected={isActive('/staff/attendance')} style={isActive('/staff/attendance') ? activeStyle : {}}>
             <ListItemIcon style={{ color: 'white' }}>
               <AttendanceIcon />
             </ListItemIcon>
             <ListItemText primary="Attendance" />
           </ListItem>
+        )}
 
+        {((account && account.role === 'Admin') || (account && account.role === 'Staff') || (account && account.role === 'Rewards Manager')  || (account && account.role === 'Customer Support')) && (
+          <>
           <ListItem button onClick={handleRewardClick}>
             <ListItemIcon style={{ color: 'white' }}>
               <RewardIcon />
@@ -181,28 +193,38 @@ const Sidebar = () => {
           </ListItem>
           <Collapse in={openReward} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
+              {((account && account.role === 'Admin') || (account && account.role === 'Staff') || (account && account.role === 'Rewards Manager') || (account && account.role === 'Customer Support')) && (
               <ListItem button component={Link} to="/staff/collectionproduct" selected={isActive('/staff/collectionproduct')} style={isActive('/staff/collectionproduct') ? activeStyle : {}}>
                 <ListItemText primary="Collection" />
               </ListItem>
+              )}
+              {((account && account.role === 'Admin') || (account && account.role === 'Staff') || (account && account.role === 'Rewards Manager')) && (
               <ListItem button component={Link} to="/staff/rewardproduct" selected={isActive('/staff/rewardproduct')} style={isActive('/staff/rewardproduct') ? activeStyle : {}}>
                 <ListItemText primary="Shop" />
               </ListItem>
+              )}
             </List>
           </Collapse>
+          </>
+        )}
 
+        {((account && account.role === 'Admin') || (account && account.role === 'Staff') || (account && account.role === 'Event Manager') || (account && account.role === 'Customer Support')) && (
           <ListItem button component={Link} to="/staff/historypayment" selected={isActive('/staff/historypayment')} style={isActive('/staff/historypayment') ? activeStyle : {}}>
             <ListItemIcon style={{ color: 'white' }}>
               <PaymentIcon />
             </ListItemIcon>
             <ListItemText primary="Payment" />
           </ListItem>
+        )}
 
+        {((account && account.role === 'Admin') || (account && account.role === 'Staff') || (account && account.role === 'Event Manager')) && (
           <ListItem button component={Link} to="/staff/volunteerlist" selected={isActive('/staff/volunteerlist')} style={isActive('/staff/volunteerList') ? activeStyle : {}}>
             <ListItemIcon style={{ color: 'white' }}>
               <VolunteerActivismIcon />
             </ListItemIcon>
             <ListItemText primary="Volunteers" />
           </ListItem>
+        )}
 
           {/* <ListItem button component={Link} to="/staff/mailing-list" selected={isActive('/staff/mailing-list')} style={isActive('/staff/mailing-list') ? activeStyle : {}}>
             <ListItemIcon style={{ color: 'white' }}>
@@ -211,19 +233,23 @@ const Sidebar = () => {
             <ListItemText primary="Mailing List" />
           </ListItem> */}
 
+        {((account && account.role === 'Admin') || (account && account.role === 'Staff') || (account && account.role === 'Customer Support')) && (
           <ListItem button component={Link} to="/staff/reviewlist" selected={isActive('/staff/reviewlist')} style={isActive('/staff/reviewlist') ? activeStyle : {}}>
             <ListItemIcon style={{ color: 'white' }}>
               <ReviewIcon />
             </ListItemIcon>
             <ListItemText primary="Review" />
           </ListItem>
+        )}
 
+        {((account && account.role === 'Admin') || (account && account.role === 'Staff') || (account && account.role === 'Customer Support')) && (
           <ListItem button component={Link} to="/staff/faqbackend" selected={isActive('/staff/faqbackend')} style={isActive('/staff/faqbackend') ? activeStyle : {}}>
             <ListItemIcon style={{ color: 'white' }}>
               <LiveHelpIcon />
             </ListItemIcon>
             <ListItemText primary="FAQ" />
           </ListItem>
+        )}
         </List>
       </Drawer>
 

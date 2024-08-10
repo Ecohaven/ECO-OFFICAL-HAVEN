@@ -60,16 +60,6 @@ const StaffAuthorization = ({ element: Component, allowedRoles, ...rest }) => {
         return <Navigate to="/staff/unauthorized" />;
     }
 
-    // if (account && account.status !== 'Active') {
-    //     console.log('Inactive');
-    //     localStorage.removeItem('accessToken');
-    //     localStorage.clear();
-    //     setAccount(null);
-    //     setRole(null);
-    //     setStatus(null);
-    //     console.log('Logged out');
-    //     return <Navigate to="/staff/staff_login" />;
-    // }
 
     if (loading) {
         return <div>Loading...</div>;

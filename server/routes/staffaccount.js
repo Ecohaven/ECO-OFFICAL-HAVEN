@@ -10,7 +10,7 @@ const { validateToken, checkRole } = require('../middlewares/auth');
 
 router.post('/create_new_account', async (req, res) => {
     let data = req.body;
-    const allowedRoles = ['Admin', 'Staff']; // define allowed roles
+    const allowedRoles = ['Admin', 'Staff', 'Event Manager', 'Rewards Manager', 'Customer Support']; // define allowed roles
 
     // Validate request body
     let validationSchema = yup.object({
@@ -60,7 +60,7 @@ router.post('/create_new_account', async (req, res) => {
             role: result.role,
             last_login: null,
             password: result.password,
-            status: 'Active'
+            status: 'Activated'
         };
         res.json({
             account: newStaffAccount,
@@ -91,7 +91,7 @@ router.post('/login', async (req, res) => {
         }
         
         // Check status of account
-        if (staffAccount.status !== 'Active') {
+        if (staffAccount.status !== 'Activated') {
             return res.status(404).json({ message: "Your account has been deactivated. Please contact the administrator for support." });
         }
 
@@ -131,7 +131,7 @@ router.post('/login', async (req, res) => {
     }
 });
 
-router.get('/auth', validateToken, checkRole(['Admin', 'Staff']), async (req, res) => { // Validate token
+router.get('/auth', validateToken, checkRole(['Admin', 'Staff', 'Event Manager', 'Rewards Manager', 'Customer Support']), async (req, res) => { // Validate token
     try {
         let staffInfo = {
             id: req.user.id,
@@ -148,7 +148,7 @@ router.get('/auth', validateToken, checkRole(['Admin', 'Staff']), async (req, re
     }
 });
 
-router.post('/logout', validateToken, checkRole(['Admin', 'Staff']), async (req, res) => {
+router.post('/logout', validateToken, checkRole(['Admin', 'Staff', 'Event Manager', 'Rewards Manager', 'Customer Support']), async (req, res) => {
     try {
         req.user = null; // Invalidate token
         res.json({ message: "Logged out successfully" });
@@ -157,7 +157,7 @@ router.post('/logout', validateToken, checkRole(['Admin', 'Staff']), async (req,
     }
 });
 
-router.get('/get_account', validateToken, checkRole(['Admin', 'Staff']),  async (req, res) => {
+router.get('/get_account', validateToken, checkRole(['Admin', 'Staff', 'Event Manager', 'Rewards Manager', 'Customer Support']),  async (req, res) => {
     try {
         // Access account ID from the decoded token data
         const accountId = req.user.id;
@@ -167,7 +167,7 @@ router.get('/get_account', validateToken, checkRole(['Admin', 'Staff']),  async 
         if (!staffAccount) {
             return res.status(404).json({ message: "Account not found" });
         }
-        if (staffAccount.status !== 'Active') {
+        if (staffAccount.status !== 'Activated') {
             return res.status(404).json({ message: "Your account has been deactivated. Please contact the administrator for support." });
         }
         res.json({ account: staffAccount });
@@ -177,7 +177,7 @@ router.get('/get_account', validateToken, checkRole(['Admin', 'Staff']),  async 
 });
 
 // update password
-router.put('/update_password/:id', validateToken, checkRole(['Admin', 'Staff']), async (req, res) => {
+router.put('/update_password/:id', validateToken, checkRole(['Admin', 'Staff', 'Event Manager', 'Rewards Manager', 'Customer Support']), async (req, res) => {
     let id = req.params.id;
     let validationSchema = yup.object({
         current_password: yup.string().trim().required("This is a required field"),
@@ -192,7 +192,7 @@ router.put('/update_password/:id', validateToken, checkRole(['Admin', 'Staff']),
         if (!staffAccount) {
             return res.status(404).json({ message: "Account not found" });
         }
-        if (staffAccount.status !== 'Active') {
+        if (staffAccount.status !== 'Activated') {
             return res.status(404).json({ message: "Your account has been deactivated. Please contact the administrator for support." });
         }
         // Check if current password is correct
@@ -239,7 +239,7 @@ router.get('/get_staff_account/:id', validateToken, checkRole(['Admin']), async 
 // update staff account (accessible by staff with Admin role)
 router.put('/update_staff_account/:id', validateToken, checkRole(['Admin']),  async (req, res) => {
     let data = req.body;
-    const allowedRoles = ['Admin', 'Staff']; // define allowed roles
+    const allowedRoles = ['Admin', 'Staff', 'Event Manager', 'Rewards Manager', 'Customer Support']; // define allowed roles
 
     let validationSchema = yup.object({
         name: yup.string().trim().min(3).max(50).required()
@@ -305,7 +305,7 @@ router.delete('/delete_staff_account/:id', validateToken, checkRole(['Admin']), 
 
 
 // get all user accounts (accessible by staff with Admin role)
-router.get('/get_user_accounts', validateToken, checkRole(['Admin']), async (req, res) => {
+router.get('/get_user_accounts', validateToken, checkRole(['Admin', 'Event Manager', 'Rewards Manager', 'Customer Support']), async (req, res) => {
     try {
         let accounts = await Account.findAll();
         res.json({ accounts });
@@ -315,7 +315,7 @@ router.get('/get_user_accounts', validateToken, checkRole(['Admin']), async (req
 });
 
 // get user account (accessible by staff with Admin role)
-router.get('/get_user_account/:id', validateToken, checkRole(['Admin']), async (req, res) => {
+router.get('/get_user_account/:id', validateToken, checkRole(['Admin', 'Customer Support']), async (req, res) => {
     try {
         let account = await Account.findByPk(req.params.id);
         if (!account) {
@@ -328,9 +328,8 @@ router.get('/get_user_account/:id', validateToken, checkRole(['Admin']), async (
 });
 
 // update user account (accessible by staff with Admin role)
-router.put('/update_user_account/:id', validateToken, checkRole(['Admin']),  async (req, res) => {
+router.put('/update_user_account/:id', validateToken, checkRole(['Admin', 'Customer Support']),  async (req, res) => {
     let data = req.body;
-    const allowedRoles = ['Admin']; // define allowed roles
 
     let validationSchema = yup.object({
         name: yup.string().trim().min(3).max(50).required()
@@ -386,56 +385,56 @@ router.delete('/delete_user_account/:id', validateToken, checkRole(['Admin']), a
 });
 
 
-// make user account inactive (accessible by staff with Admin role)
-router.put('/deactivate_user_account/:id', validateToken, checkRole(['Admin']), async (req, res) => {
+// make user account deactivated (accessible by staff with Admin role)
+router.put('/deactivate_user_account/:id', validateToken, checkRole(['Admin', 'Customer Support']), async (req, res) => {
     try {
         let account = await Account.findByPk(req.params.id);
         if (!account) {
             return res.status(404).json({ message: "Account not found" });
         }
-        await Account.update({ status: 'Inactive' }, { where: { id: req.params.id } });
+        await Account.update({ status: 'Deactivated' }, { where: { id: req.params.id } });
         res.json({ message: `Account ${account.id} was deactivated successfully` });
     } catch (err) {
         res.status(400).json({ message: "Error deactivating account" });
     }
 });
 
-// make user account active (accessible by staff with Admin role)
-router.put('/activate_user_account/:id', validateToken, checkRole(['Admin']), async (req, res) => {
+// make user account activated (accessible by staff with Admin role)
+router.put('/activate_user_account/:id', validateToken, checkRole(['Admin', 'Customer Support']), async (req, res) => {
     try {
         let account = await Account.findByPk(req.params.id);
         if (!account) {
             return res.status(404).json({ message: "Account not found" });
         }
-        await Account.update({ status: 'Active' }, { where: { id: req.params.id } });
+        await Account.update({ status: 'Activated' }, { where: { id: req.params.id } });
         res.json({ message: `Account ${account.id} was activated successfully` });
     } catch (err) {
         res.status(400).json({ message: "Error activating account" });
     }
 });
 
-// make staff account inactive (accessible by staff with Admin role)
+// make staff account deactivated (accessible by staff with Admin role)
 router.put('/deactivate_staff_account/:id', validateToken, checkRole(['Admin']), async (req, res) => {
     try {
         let staffAccount = await StaffAccount.findByPk(req.params.id);
         if (!staffAccount) {
             return res.status(404).json({ message: "Account not found" });
         }
-        await StaffAccount.update({ status: 'Inactive' }, { where: { id: req.params.id } });
+        await StaffAccount.update({ status: 'Deactivated' }, { where: { id: req.params.id } });
         res.json({ message: `Account ${staffAccount.id} was deactivated successfully` });
     } catch (err) {
         res.status(400).json({ message: "Error deactivating account" });
     }
 });
 
-// make staff account active (accessible by staff with Admin role)
+// make staff account activated (accessible by staff with Admin role)
 router.put('/activate_staff_account/:id', validateToken, checkRole(['Admin']), async (req, res) => {
     try {
         let staffAccount = await StaffAccount.findByPk(req.params.id);
         if (!staffAccount) {
             return res.status(404).json({ message: "Account not found" });
         }
-        await StaffAccount.update({ status: 'Active' }, { where: { id: req.params.id } });
+        await StaffAccount.update({ status: 'Activated' }, { where: { id: req.params.id } });
         res.json({ message: `Account ${staffAccount.id} was activated successfully` });
     } catch (err) {
         res.status(400).json({ message: "Error activating account" });

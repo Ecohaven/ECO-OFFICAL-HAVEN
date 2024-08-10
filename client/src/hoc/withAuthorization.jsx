@@ -53,8 +53,8 @@ const WithAuthorization = ({ element: Component, allowedRoles, ...rest }) => {
             return <Navigate to="/staff/unauthorized" />;
         }
 
-        // Check if user status is inactive
-        if (account.status !== 'Active') {
+        // Check if user status is deactivated
+        if (account.status !== 'Activated') {
             localStorage.clear(); // Clear local storage
             setAccount(null);
             return <Navigate to="/staff/staff_login" />;

@@ -160,7 +160,7 @@ function AddStaff() {
                                 <MenuItem value="" 
                                 sx={{ justifyContent: 'flex-start', textAlign: 'left' }}
                                 disabled>Select Role</MenuItem>
-                                {[ 'Admin', 'Staff' ].map((role) => (
+                                {[ 'Admin', 'Event Manager', 'Rewards Manager', 'Customer Support', 'Staff' ].map((role) => (
                                     <MenuItem key={role} value={role}>{role}</MenuItem>
                                 ))}
                             </Select>

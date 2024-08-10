@@ -60,7 +60,7 @@ router.post("/register", async (req, res) => {
             email: result.email,
             phone_no: result.phone_no,
             profile_pic: result.profile_pic,
-            status: "Active",
+            status: "Activated",
             role: "User",
             leaf_points: 10,
             last_login: result.last_login,
@@ -106,7 +106,7 @@ router.post("/login", async (req, res) => {
             return;
         }
         // Check status
-        if (account.status !== "Active") {
+        if (account.status !== "Activated") {
             res.status(400).json({ message: "Your account has been deactivated. Please contact the administrator for support." });
             return;
         }
@@ -194,7 +194,7 @@ router.get("/:username", validateToken, checkRole(['User']), async (req, res) =>
             leaf_points: account.leaf_points
         };
         // Check status
-        if (account.status !== "Active") {
+        if (account.status !== "Activated") {
             res.status(400).json({ message: "Your account has been deactivated. Please contact the administrator for support." });
             return;
         }
@@ -240,7 +240,7 @@ router.put("/:username", validateToken, checkRole(['User']), async (req, res) =>
             return;
         }
         // Check status
-        if (account.status !== "Active") {
+        if (account.status !== "Activated") {
             res.status(400).json({ message: "Your account has been deactivated. Please contact the administrator for support." });
             return;
         }
@@ -276,7 +276,7 @@ router.put("/:username/password", validateToken, checkRole(['User']), async (req
         }
 
         // Check status
-        if (account.status !== "Active") {
+        if (account.status !== "Activated") {
             res.status(400).json({ message: "Your account has been deactivated. Please contact the administrator for support." });
             return;
         }
@@ -339,7 +339,7 @@ router.delete("/:username", validateToken, checkRole(['User']), async (req, res)
         }
 
         // Check status
-        if (account.status !== "Active") {
+        if (account.status !== "Activated") {
             res.status(400).json({ message: "Your account has been deactivated. Please contact the administrator for support." });
             return;
         }
