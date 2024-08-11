@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+// import SearchVolunteers from '../../../components/searchvolunteer';
 import {
   Table,
   TableBody,
@@ -108,6 +109,7 @@ const VolunteerList = () => {
       >
         Volunteer List
       </Typography>
+      <SearchVolunteers></SearchVolunteers>
       {loading && <CircularProgress />}
       {error && <Alert severity="error">{error}</Alert>}
       {successMessage && <Alert severity="success">{successMessage}</Alert>}

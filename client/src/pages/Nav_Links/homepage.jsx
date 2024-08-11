@@ -127,7 +127,7 @@ const renderStarRating = (rating) => {
       </Typography>
 
       <Typography variant="body1" align="center" gutterBottom sx={{ mb: 2 }}>
-        Here are the latest events & workshops happening in Singapore!
+        Here are the latest events & workshops happening at EcoHaven!
       </Typography>
 
       <Grid container spacing={8} sx={{ p: 3, mb: 8, justifyContent: 'center' }}>
