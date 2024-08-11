@@ -227,9 +227,9 @@ const AddEventForm = () => {
                         sx={{ marginBottom: 2 }}
                         error={touched.category && Boolean(errors.category)}
                         helperText={touched.category && errors.category}
-                        inputProps={{ sx: { textAlign: 'left' } }} // Ensures text is aligned to the left
+                        inputProps={{ sx: { textAlign: 'left' } }} 
                       >
-                        {['recycling', 'upcycling', 'workshop', 'garden-walk'].map(
+                        {['Recycling', 'Upcycling', 'Workshop', 'Garden-walk'].map(
                           (option) => (
                             <MenuItem key={option} value={option}>
                               {option}
@@ -353,7 +353,7 @@ const AddEventForm = () => {
                         sx={{ marginBottom: 2 }}
                         error={touched.status && Boolean(errors.status)}
                         helperText={touched.status && errors.status}
-                        inputProps={{ sx: { textAlign: 'left' } }} // Ensures text is aligned to the left
+                        inputProps={{ sx: { textAlign: 'left' } }} 
                       >
                         {['Free', 'Paid'].map((option) => (
                           <MenuItem key={option} value={option}>
@@ -425,7 +425,7 @@ const labelStyle = {
   '&.MuiInputLabel-root': {
     color: 'black',
     '&.Mui-required::after': {
-  content:'none', // Add the asterisk
+  content:'none', // hide asterisk
      color: 'red',
     },
     

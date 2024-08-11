@@ -430,6 +430,8 @@ const EventDataTable = () => {
                         sx={{ textAlign: 'left' }} />
                 </div>
             </div>
+
+{/* Edit modal */}
             <Modal open={openAddEventModal} onClose={handleCloseEditEvent}>
                 <Box className="modal-box">
                     <h2 className="modal-heading">{selectedEvent ? 'Edit Event' : 'Add Event'}</h2>
@@ -442,6 +444,7 @@ const EventDataTable = () => {
                                 onChange={handleInputChange}
                                 fullWidth
                                 required
+                                InputLabelProps={{ style: { color: 'black' } }} 
                             />
                         </div>
                         <div className="form-field">
@@ -453,8 +456,8 @@ const EventDataTable = () => {
                                 fullWidth
                                 required
                                 multiline
-                                rows={3} // Adjust the number of rows to make the TextField taller
-
+                                rows={3} //  TextField Height
+                                InputLabelProps={{ style: { color: 'black' } }} 
                             />
                         </div>
                         <div className="form-field">
@@ -465,6 +468,7 @@ const EventDataTable = () => {
                                 onChange={handleInputChange}
                                 fullWidth
                                 required
+                                InputLabelProps={{ style: { color: 'black' } }} 
                             />
                         </div>
                         <div className="date-fields-container">
@@ -475,6 +479,7 @@ const EventDataTable = () => {
                                 onChange={handleInputChange}
                                 fullWidth
                                 required
+                                InputLabelProps={{ style: { color: 'black' } }} 
                             />
                             <TextField
                                 label="End Date"
@@ -483,6 +488,7 @@ const EventDataTable = () => {
                                 onChange={handleInputChange}
                                 fullWidth
                                 required
+                                InputLabelProps={{ style: { color: 'black' } }} 
                             />
                         </div>
                         <div className="form-field">
@@ -494,6 +500,7 @@ const EventDataTable = () => {
                                 fullWidth
                                 required
                                 style={{ marginTop: '20px' }}
+                                InputLabelProps={{ style: { color: 'black' } }} 
                             />
                         </div>
                         <div className="leaf-status-container">
@@ -504,6 +511,7 @@ const EventDataTable = () => {
                                     value={formValues.leafPoints}
                                     onChange={handleInputChange}
                                     fullWidth
+                                    InputLabelProps={{ style: { color: 'black' } }} 
                                 />
                             </div>
                             <div className="form-field">
@@ -515,6 +523,7 @@ const EventDataTable = () => {
                                     fullWidth
                                     required
                                     select
+                                    InputLabelProps={{ style: { color: 'black' } }} 
                                 >
                                     <MenuItem value="Free">Free</MenuItem>
                                     <MenuItem value="Paid">Paid</MenuItem>
@@ -530,6 +539,7 @@ const EventDataTable = () => {
                                     onChange={handleInputChange}
                                     fullWidth
                                     required
+                                    InputLabelProps={{ style: { color: 'black' } }} 
                                 />
                             </div>
                         )}
@@ -551,6 +561,7 @@ const EventDataTable = () => {
                     </form>
                 </Box>
             </Modal>
+
             <Modal open={openZoomModal} onClose={handleCloseZoomModal}>
                 <Box className="zoom-modal-box">
                     <button

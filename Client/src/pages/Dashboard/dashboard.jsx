@@ -3,7 +3,7 @@ import { Card, CardContent, Typography, Grid, Box } from '@mui/material';
 import axios from 'axios';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 import { Timeline, TimelineItem, TimelineSeparator, TimelineConnector, TimelineContent, TimelineDot, TimelineOppositeContent } from '@mui/lab';
-import EventIcon from '@mui/icons-material/Event';
+
 
 const Dashboard = () => {
     const [newSignUpsToday, setNewSignUpsToday] = useState(0);
@@ -11,7 +11,7 @@ const Dashboard = () => {
     const [highestUserLeafPoints, setHighestUserLeafPoints] = useState(null);
     const [events, setEvents] = useState([]);
     const [cancelledBookingsCount, setCancelledBookingsCount] = useState(0);
-const [totalVolunteers, setTotalVolunteers] = useState(0);
+    const [totalVolunteers, setTotalVolunteers] = useState(0);
 
     useEffect(() => {
         axios.get('http://localhost:3001/dash/newSignUpsToday')
@@ -44,7 +44,7 @@ const [totalVolunteers, setTotalVolunteers] = useState(0);
     return (
         <Box sx={{ padding: '20px', marginLeft: { xs: '0', md: '300px' } }}>
             <Typography variant="h4" style={{ textAlign: 'left', fontWeight: 'bold' }} gutterBottom>
-                Dashboard
+                <span style={{color:'green'}}>Eco</span>Haven Dashboard
             </Typography>
 
             <Grid container spacing={3}>
@@ -110,7 +110,7 @@ const [totalVolunteers, setTotalVolunteers] = useState(0);
                 <Grid item xs={12}>
                     <Card sx={{ backgroundColor: '#fff', boxShadow: 3, borderRadius: 2, p: 2 }}>
                         <CardContent>
-                            <Typography variant="h5" style={{color:'black',fontWeight:'bold'}} gutterBottom>
+                            <Typography variant="h5" style={{ color: 'black', fontWeight: 'bold' }} gutterBottom>
                                 Revenue by Day
                             </Typography>
                             <Typography variant="subtitle1" color="textSecondary" gutterBottom>
@@ -139,34 +139,58 @@ const [totalVolunteers, setTotalVolunteers] = useState(0);
                     </Card>
                 </Grid>
 
-                {/* Events Timeline */}
+                {/* Event timeline */}
+
                 <Grid item xs={12}>
                     <Card sx={{ backgroundColor: '#fff', color: 'black', boxShadow: 3 }}>
                         <CardContent>
-                            <Typography variant="h5" style={{color:'black',fontWeight:'bold'}} gutterBottom>
-                                Events
+                            <Typography variant="h5" style={{ color: 'black', fontWeight: 'bold' }} gutterBottom>
+                                Event Overview
                             </Typography>
+
+                            {/* Legend Section */}
+                            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', marginRight: '16px' }}>
+                                    <TimelineDot sx={{ bgcolor: 'primary.main', width: '12px', height: '12px', marginRight: '8px' }} />
+                                    <Typography variant="body2" sx={{ color: 'black', fontWeight: 'bold' }}>
+                                        Active Event
+                                    </Typography>
+                                </Box>
+                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                    <TimelineDot sx={{ bgcolor: 'grey.500', width: '12px', height: '12px', marginRight: '8px' }} />
+                                    <Typography variant="body2" sx={{ color: 'black', fontWeight: 'bold' }}>
+                                        Past Event
+                                    </Typography>
+                                </Box>
+                            </Box>
+
+                            {/* Events Timeline */}
                             <Timeline position="alternate">
-                                {events.map((event, index) => (
-                                    <TimelineItem key={index} sx={{ minHeight: '50px' }}>
-                                        <TimelineOppositeContent sx={{ flex: 0.2, paddingTop: '10px', textAlign: 'center' }}>
-                                            <Typography variant="body2" sx={{ color: 'primary.main', fontWeight: 'bold' }}>
-                                                {event.date}
-                                            </Typography>
-                                        </TimelineOppositeContent>
-                                        <TimelineSeparator sx={{ flex: 'none' }}>
-                                            <TimelineDot sx={{ bgcolor: 'primary.main', width: '12px', height: '12px' }} />
-                                            {index < events.length - 1 && <TimelineConnector />}
-                                        </TimelineSeparator>
-                                        <TimelineContent sx={{ flex: 0.8, padding: '5px 0' }}>
-                                            <Card sx={{ backgroundColor: '#f5f5f5', padding: '5px', borderRadius: '8px' }}>
-                                                <Typography variant="subtitle1" style={{ color: 'black', fontSize: '1rem', fontWeight: 'bold' }}>
-                                                    {event.eventName}
+                                {events.map((event, index) => {
+                                    const eventDate = new Date(event.date);
+                                    const isPastEvent = eventDate < new Date(); // Check if the event date has passed
+
+                                    return (
+                                        <TimelineItem key={index} sx={{ minHeight: '50px' }}>
+                                            <TimelineOppositeContent sx={{ flex: 0.2, paddingTop: '10px', textAlign: 'center' }}>
+                                                <Typography variant="body2" sx={{ color: isPastEvent ? 'grey.500' : 'primary.main', fontWeight: 'bold' }}>
+                                                    {event.date}
                                                 </Typography>
-                                            </Card>
-                                        </TimelineContent>
-                                    </TimelineItem>
-                                ))}
+                                            </TimelineOppositeContent>
+                                            <TimelineSeparator sx={{ flex: 'none' }}>
+                                                <TimelineDot sx={{ bgcolor: isPastEvent ? 'grey.500' : 'primary.main', width: '12px', height: '12px' }} />
+                                                {index < events.length - 1 && <TimelineConnector sx={{ bgcolor: isPastEvent ? 'grey.500' : 'inherit' }} />}
+                                            </TimelineSeparator>
+                                            <TimelineContent sx={{ flex: 0.8, padding: '5px 0' }}>
+                                                <Card sx={{ backgroundColor: isPastEvent ? '#e0e0e0' : '#f5f5f5', padding: '5px', borderRadius: '8px' }}>
+                                                    <Typography variant="subtitle1" style={{ color: isPastEvent ? 'grey' : 'black', fontSize: '1rem', fontWeight: 'bold' }}>
+                                                        {event.eventName}
+                                                    </Typography>
+                                                </Card>
+                                            </TimelineContent>
+                                        </TimelineItem>
+                                    );
+                                })}
                             </Timeline>
                         </CardContent>
                     </Card>
