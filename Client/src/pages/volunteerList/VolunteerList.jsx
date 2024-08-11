@@ -180,7 +180,7 @@ const VolunteerList = () => {
             backgroundColor: '#f9f9f9',
             boxShadow: 1,
             width: '100%',
-            maxWidth: '600px', // Limit max width for larger screens
+            maxWidth: '600px', 
             marginLeft: isMobile ? '0' : 'auto',
             marginRight: isMobile ? '0' : 'auto'
           }}

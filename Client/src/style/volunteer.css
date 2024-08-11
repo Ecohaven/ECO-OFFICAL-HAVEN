@@ -1,4 +1,4 @@
-/* banner FOR VOLUNTEER */
+/* Base Styles */
 .volunteerbanner {
   position: relative;
   width: 100%; 
@@ -6,18 +6,18 @@
   text-align: center;
   margin-bottom: 50px;
   overflow: hidden;
-  max-width: 1520.4px; 
+  max-width: 1520px; /* Ensures consistent max-width */
 }
 
 .volunteerbanner img {
   width: 100%;
-  height: auto; /* Set height to auto to maintain aspect ratio */
+  height: auto; 
   object-fit: cover;
 }
 
-/* General form styling */
 .volunteer-form {
   max-width: 600px;
+  text-align: center;
   margin: 0 auto;
   margin-top: 20px;
   margin-bottom: 40px;
@@ -28,33 +28,33 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Uniform styling for input fields */
+.form-label {
+  margin-bottom: 2px; 
+  font-size: 16px; 
+  width: 45%; 
+  text-align: left; 
+  font-weight: 600;
+}
+
 .form-input {
   width: 100%; 
-  max-width: 600px; 
-  min-width: 300px; 
-  padding: 10px;
-  margin-left: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #4caf50;
-  border-radius: 4px;
+  height: 40px;
+  margin-bottom: 10px; 
   font-size: 16px;
-  box-sizing: border-box;
+  padding: 0 10px; 
+  box-sizing: border-box; 
 }
 
-/* Styling for input fields with errors */
 .input-error {
-  border-color: #d32f2f; /* Red border for error */
+  border-color: #d32f2f; 
 }
 
-/* Dropdown container styling */
 .dropdown-checkbox {
   width: 100%;
   position: relative;
   margin-bottom: 15px;
 }
 
-/* Dropdown toggle button */
 .dropdown-toggle {
   width: 100%;
   padding: 10px;
@@ -67,21 +67,18 @@
   font-size: 16px;
 }
 
-/* Dropdown menu styling */
 .dropdown-menu {
   position: absolute;
   width: 100%;
   max-height: 200px;
   overflow-y: auto;
   background-color: #ffffff;
-  border: 1px solid #4caf50;
   border-radius: 4px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   margin-top: 5px;
   z-index: 1;
 }
 
-/* Styling for each item in the dropdown menu */
 .dropdown-item {
   padding: 10px;
   display: flex;
@@ -98,8 +95,9 @@
 
 /* Checkbox and label styling */
 .dropdown-item input[type="checkbox"] {
-  margin-right: 10px;
-  accent-color: #4caf50; /* Checkbox color */
+  margin-right: 20px;
+  text-align: center;
+  accent-color: #4caf50;
 }
 
 .dropdown-item label {
@@ -108,22 +106,20 @@
   flex-grow: 1;
 }
 
-/* Button container styling */
 .form-buttons {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* Space between buttons */
   margin-top: 20px;
 }
 
 .form-buttons button {
-  width: 48%;
+  width: 48%; /* Make buttons take up 48% of the container width */
   padding: 10px;
   border: none;
   border-radius: 4px;
   font-size: 16px;
   cursor: pointer;
 }
-
 
 .form-buttons button:first-child {
   background-color: #4caf50; 
@@ -135,27 +131,15 @@
   color: white; 
 }
 
-/* Error message styling */
 .error {
   color: #d32f2f;
   font-size: 0.875em; 
   margin-top: 20px; 
 }
 
-/* Loading indicator styling */
 .loading {
   font-size: 14px;
   color: #666;
-}
-
-/* Specific styling for date input field */
-.form-date-input {
-  width: calc(100% - 22px); 
-  padding: 10px;
-  border: 1px solid #4caf50;
-  border-radius: 4px;
-  font-size: 16px;
-  box-sizing: border-box;
 }
 
 .success-message {
@@ -173,13 +157,47 @@
   color: #666;
 }
 
+/* Media Queries for Mobile Responsiveness */
+@media (max-width: 768px) {
+  .volunteer-form {
+    padding: 15px;
+  }
+
+  .form-label {
+    font-size: 14px; /* Slightly smaller font size on smaller screens */
+  }
+
+  .form-input {
+    font-size: 14px; /* Slightly smaller font size on smaller screens */
+    padding: 0 8px; /* Adjust padding */
+  }
+
+  .dropdown-toggle {
+    font-size: 14px; /* Slightly smaller font size on smaller screens */
+  }
+
+  .form-buttons {
+    flex-direction: column; /* Stack buttons vertically on smaller screens */
+  }
+
+  .form-buttons button {
+    width: 100%; /* Full width for buttons */
+    font-size: 14px; /* Slightly smaller font size on smaller screens */
+    margin-bottom: 10px; /* Space between buttons */
+  }
+
+  .form-buttons button:last-child {
+    margin-bottom: 0; /* Remove margin from the last button */
+  }
+}
+
 @media (max-width: 500px) {
   .header {
-    font-size: 7vw;
+    font-size: 7vw; /* Responsive font size */
   }
 
   .success-message,
   .error {
-    font-size: 4vw;
+    font-size: 4vw; /* Responsive font size */
   }
 }

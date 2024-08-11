@@ -305,7 +305,7 @@ const currentDate = new Date().toISOString().split('T')[0];
         <div class="guest-qr-code">
           <p>${record.paxName}</p>
           <img src="${record.paxQrCodeUrl}" alt="QR Code for ${record.paxName}">
-        </div>`).join('')}
+        </div>`)}
       </div>` : ''}
       <p style="text-align: center; color: #666;">Please show this QR-Code for check-in.</p>
     </div>
