@@ -1,17 +1,17 @@
 /* banner FOR VOLUNTEER */
 .volunteerbanner {
   position: relative;
-  width: 100%;
-  height: auto;
+  width: 100%; 
+  height: auto; 
   text-align: center;
   margin-bottom: 50px;
   overflow: hidden;
-  max-width: 1520.4px;
+  max-width: 1520.4px; 
 }
 
 .volunteerbanner img {
   width: 100%;
-  height: auto;
+  height: auto; /* Set height to auto to maintain aspect ratio */
   object-fit: cover;
 }
 
@@ -30,10 +30,9 @@
 
 /* Uniform styling for input fields */
 .form-input {
-  width: 100%;
-  max-width: 600px;
-  /* Set maximum width  */
-  min-width: 300px;
+  width: 100%; 
+  max-width: 600px; 
+  min-width: 300px; 
   padding: 10px;
   margin-left: 10px;
   margin-bottom: 15px;
@@ -45,8 +44,7 @@
 
 /* Styling for input fields with errors */
 .input-error {
-  border-color: #d32f2f;
-  /* Red border for error */
+  border-color: #d32f2f; /* Red border for error */
 }
 
 /* Dropdown container styling */
@@ -101,8 +99,7 @@
 /* Checkbox and label styling */
 .dropdown-item input[type="checkbox"] {
   margin-right: 10px;
-  accent-color: #4caf50;
-  /* Checkbox color */
+  accent-color: #4caf50; /* Checkbox color */
 }
 
 .dropdown-item label {
@@ -127,27 +124,22 @@
   cursor: pointer;
 }
 
-/* Specific button styles */
+
 .form-buttons button:first-child {
-  background-color: #4caf50;
-  /* Green background for Add Volunteer */
-  color: white;
+  background-color: #4caf50; 
+  color: white; 
 }
 
 .form-buttons button:last-child {
-  background-color: #f44336;
-  /* Red background for Clear */
-  color: white;
+  background-color: #f44336; 
+  color: white; 
 }
 
 /* Error message styling */
 .error {
   color: #d32f2f;
-  /* Red color for errors */
-  font-size: 0.875em;
-  /* Slightly smaller font size */
-  margin-top: 20px;
-  /* Space below buttons */
+  font-size: 0.875em; 
+  margin-top: 20px; 
 }
 
 /* Loading indicator styling */
@@ -158,8 +150,7 @@
 
 /* Specific styling for date input field */
 .form-date-input {
-  width: calc(100% - 22px);
-  /* Adjust for padding and border */
+  width: calc(100% - 22px); 
   padding: 10px;
   border: 1px solid #4caf50;
   border-radius: 4px;
@@ -167,7 +158,6 @@
   box-sizing: border-box;
 }
 
-/* volunteer.css */
 .success-message {
   text-align: center;
   margin: 20px 0;
