@@ -72,18 +72,24 @@ router.get("/newSignUpsToday", async (req, res) => {
 });
 
 // Get event names
+// Get event names
 router.get("/events", async (req, res) => {
   try {
     const eventList = await events.findAll({
       attributes: ['eventName', 'startDate', 'endDate']
     });
 
-    const formattedEvents = eventList.map(event => ({
-      eventName: event.eventName,
-      date: event.startDate.getTime() === event.endDate.getTime() 
-        ? event.startDate 
-        : `${event.startDate} - ${event.endDate}`
-    }));
+    const formattedEvents = eventList.map(event => {
+      const startDate = new Date(event.startDate);
+      const endDate = new Date(event.endDate);
+
+      return {
+        eventName: event.eventName,
+        date: startDate.getTime() === endDate.getTime()
+          ? startDate.toISOString().split('T')[0] // format as YYYY-MM-DD
+          : `${startDate.toISOString().split('T')[0]} - ${endDate.toISOString().split('T')[0]}`
+      };
+    });
 
     res.json({ events: formattedEvents });
   } catch (error) {
@@ -91,6 +97,7 @@ router.get("/events", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
 
 // Total refunds (use correct enum value)
 router.get('/totalRefunds', async (req, res) => {
