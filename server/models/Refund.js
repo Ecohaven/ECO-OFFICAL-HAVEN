@@ -48,9 +48,5 @@ module.exports = (sequelize, DataTypes) => {
     }
   });
 
-  Refund.associate = function(models) {
-    Refund.belongsTo(models.Payment, { foreignKey: 'paymentId', as: 'payment' });
-  };
-
   return Refund;
 };

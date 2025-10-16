@@ -1,145 +1,122 @@
 const express = require('express');
 const router = express.Router();
-const { events,Booking,Payment,Account,Reward,Refund,Collection,sequelize,Volunteer } = require('../models');
+const { events, Booking, Payment, Account, Volunteer, sequelize } = require('../models');
 const { Op } = require("sequelize");
 
-// Summary API route to count the total number of volunteers
+// Total volunteers
 router.get('/totalVolunteers', async (req, res) => {
   try {
-    // Count the total number of volunteer entries
-    const totalVolunteers = await Volunteer.count(); // Use count for counting
-
-    res.status(200).json({
-      totalVolunteers
-    });
+    const totalVolunteers = await Volunteer.count();
+    res.status(200).json({ totalVolunteers });
   } catch (err) {
-    // Log the error for debugging
     console.error(err);
-
-    // Return a more generic error message
     res.status(500).json({ message: 'Internal server error' });
   }
 });
 
-// Get revenue by day
+// Revenue by day (PostgreSQL version)
 router.get("/revenueByDay", async (req, res) => {
-    try {
-        const dailyRevenue = await Payment.findAll({
-            attributes: [
-                [sequelize.fn('DATE_FORMAT', sequelize.col('createdAt'), '%Y-%m-%d'), 'day'],
-                [sequelize.fn('SUM', sequelize.col('amount')), 'totalRevenue']
-            ],
-            group: [sequelize.fn('DATE_FORMAT', sequelize.col('createdAt'), '%Y-%m-%d')],
-            order: [[sequelize.fn('DATE_FORMAT', sequelize.col('createdAt'), '%Y-%m-%d'), 'ASC']]
-        });
+  try {
+    const dailyRevenue = await Payment.findAll({
+      attributes: [
+        [sequelize.fn('DATE', sequelize.col('createdAt')), 'day'],
+        [sequelize.fn('SUM', sequelize.col('amount')), 'totalRevenue']
+      ],
+      where: {
+        status: { [Op.ne]: 'Refunded' } // Exclude refunded payments
+      },
+      group: [sequelize.fn('DATE', sequelize.col('createdAt'))],
+      order: [[sequelize.fn('DATE', sequelize.col('createdAt')), 'ASC']]
+    });
 
-        res.json({ dailyRevenue });
-    } catch (error) {
-        console.error("Error fetching revenue by day", error);
-        res.status(500).json({ error: "Internal server error" });
-    }
+    res.json({ dailyRevenue });
+  } catch (error) {
+    console.error("Error fetching revenue by day", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
-//Get highest customer leaf points 
-// Route to get the account with the highest leaf points
+// Account with highest leaf points
 router.get('/highestLeafPoints', async (req, res) => {
-    try {
-        const accounts = await Account.findAll();
-        if (accounts.length === 0) {
-            return res.status(404).json({ message: 'No accounts found' });
-        }
+  try {
+    const accounts = await Account.findAll();
+    if (!accounts.length) return res.status(404).json({ message: 'No accounts found' });
 
-        // Find the account with the highest leaf points
-        const highestLeafPointsAccount = accounts.reduce((max, account) => 
-            account.leafPoints > max.leafPoints ? account : max, accounts[0]);
+    const highestLeafPointsAccount = accounts.reduce((max, account) => 
+      account.leafPoints > max.leafPoints ? account : max, accounts[0]);
 
-        res.json(highestLeafPointsAccount);
-    } catch (error) {
-        console.error('Error fetching accounts:', error);
-        res.status(500).json({ message: 'Server error' });
-    }
+    res.json(highestLeafPointsAccount);
+  } catch (error) {
+    console.error('Error fetching accounts:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
-
-//Account new sign ups 
+// New sign-ups today
 router.get("/newSignUpsToday", async (req, res) => {
-    try {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const tomorrow = new Date(today);
-        tomorrow.setDate(today.getDate() + 1);
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
 
-        const newSignUpsToday = await Account.findAll({
-            where: {
-                createdAt: {
-                    [Op.gte]: today,
-                    [Op.lt]: tomorrow
-                }
-            }
-        });
+    const newSignUpsToday = await Account.findAll({
+      where: { createdAt: { [Op.gte]: today, [Op.lt]: tomorrow } }
+    });
 
-        res.json({ newSignUpsToday });
-    } catch (error) {
-        console.error("Error fetching new sign-ups for today", error);
-        res.status(500).json({ error: "Internal server error" });
-    }
+    res.json({ newSignUpsToday });
+  } catch (error) {
+    console.error("Error fetching new sign-ups for today", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
-//get event Names 
+// Get event names
 router.get("/events", async (req, res) => {
-    try {
-        const eventList = await events.findAll({
-            attributes: [
-                'eventName',
-                'startDate',
-                'endDate'
-            ]
-        });
+  try {
+    const eventList = await events.findAll({
+      attributes: ['eventName', 'startDate', 'endDate']
+    });
 
-        const formattedEvents = eventList.map(event => ({
-            eventName: event.eventName,
-            date: event.startDate === event.endDate 
-                ? event.startDate 
-                : `${event.startDate} - ${event.endDate}`
-        }));
+    const formattedEvents = eventList.map(event => ({
+      eventName: event.eventName,
+      date: event.startDate.getTime() === event.endDate.getTime() 
+        ? event.startDate 
+        : `${event.startDate} - ${event.endDate}`
+    }));
 
-        res.json({ events: formattedEvents });
-    } catch (error) {
-        console.error("Error fetching events", error);
-        res.status(500).json({ error: "Internal server error" });
-    }
+    res.json({ events: formattedEvents });
+  } catch (error) {
+    console.error("Error fetching events", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
-// Route to get the total refunds
+// Total refunds (use correct enum value)
 router.get('/totalRefunds', async (req, res) => {
-    try {
-        // Sum the amount of payments where the status is 'refunded'
-        const totalRefunds = await Payment.sum('amount', { where: { status: 'refunded' } });
-        res.json({ totalRefunds });
-    } catch (error) {
-        console.error('Error fetching total refunds:', error);
-        res.status(500).json({ message: 'Server error' });
-    }
+  try {
+    const totalRefunds = await Payment.sum('amount', { where: { status: 'Refunded' } });
+    res.json({ totalRefunds });
+  } catch (error) {
+    console.error('Error fetching total refunds:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
-
-// Route to count the number of users with canceled bookings
+// Cancelled bookings count
 router.get('/cancelledBookingsCount', async (req, res) => {
-    try {
-        // Count the number of distinct users who have canceled their bookings
-        const cancelledBookingsCount = await Booking.count({
-            where: {
-                status: 'cancelled'  
-            },
-            distinct: true,
-            col: 'id'  
-        });
+  try {
+    const cancelledBookingsCount = await Booking.count({
+      where: { status: 'cancelled' },
+      distinct: true,
+      col: 'id'
+    });
 
-        res.json({ cancelledBookingsCount });
-    } catch (error) {
-        console.error('Error fetching cancelled bookings count:', error);
-        res.status(500).json({ message: 'Server error' });
-    }
+    res.json({ cancelledBookingsCount });
+  } catch (error) {
+    console.error('Error fetching cancelled bookings count:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 module.exports = router;

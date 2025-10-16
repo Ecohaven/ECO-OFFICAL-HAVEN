@@ -97,14 +97,7 @@ router.post('/', async (req, res) => {
 // GET all payments
 router.get('/', async (req, res) => {
   try {
-    const payments = await db.Payment.findAll({
-      include: [
-        {
-          model: db.Refund,
-          as: 'refunds'
-        }
-      ]
-    });
+    const payments = await db.Payment.findAll();
     res.status(200).json(payments);
   } catch (err) {
     console.error(err);

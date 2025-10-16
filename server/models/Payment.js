@@ -114,9 +114,6 @@ module.exports = (sequelize, DataTypes) => {
     }
   });
 
-  Payment.associate = function(models) {
-    Payment.hasMany(models.Refund, { foreignKey: 'paymentId', as: 'refunds' });
-  };
 
   return Payment;
 };
