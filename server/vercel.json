@@ -1,6 +1,5 @@
 {
   "version": 3,
-  "projects": {},
   "builds": [
     {
       "src": "backend/package.json",
